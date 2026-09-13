@@ -92,13 +92,14 @@
   .verse-card{
     background:linear-gradient(160deg, #F6EFD8, #EEE2BF);
     border:1px solid #C9A85C; position:relative; text-align:center;
+    padding:11px 16px;
   }
-  .verse-card h2{ color:#5B4A22; }
+  .verse-card h2{ color:#5B4A22; margin-bottom:6px; }
   .verse-card .verse-text{
-    font-size:1rem; font-style:italic; color:#3A3524; line-height:1.5; margin:6px 0 8px;
+    font-size:1rem; font-style:italic; color:#3A3524; line-height:1.4; margin:4px 0 6px;
   }
   .verse-card .verse-ref{ font-weight:bold; color:#5B4A22; font-size:.85rem; }
-  .verse-card .verse-source{ font-size:.68rem; color:#8A7C55; margin-top:6px; font-style:italic; }
+  .verse-card .verse-source{ font-size:.68rem; color:#8A7C55; margin-top:4px; font-style:italic; }
 
   .verse-card.vc1{ background:linear-gradient(160deg,#DCEAF5,#C3DCED); border-color:#5B87A8; }
   .verse-card.vc1 h2, .verse-card.vc1 .verse-ref{ color:#2C4F66; }

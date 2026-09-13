@@ -18,5 +18,6 @@ const spotifyPlaylistUrl = "";
 // Exemple : "https://open.spotify.com/playlist/37i9dQZF1DXcfZ6moR6J0G"
 
 const musicLinks = [
+  "https://youtu.be/kNWiu6BNcEA?is=jeOJXVtSbHdP2EqO",
   // "https://www.youtube.com/watch?v=XXXXXXXXXXX",
 ];

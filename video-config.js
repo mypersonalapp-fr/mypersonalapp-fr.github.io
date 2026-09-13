@@ -14,6 +14,10 @@
    fichier de configuration, comme firebase-config.js.
    ========================================================================= */
 const videoLinks = [
-  "https://www.youtube.com/live/baJalGsfTxk",
+  "https://youtube.com/live/cJJFQEy10xk?is=UxBOzVitUIprQImf",
+  "https://youtube.com/watch?v=4C2FUXTukbE&is=3S6CFTEQxB-wE8wq",
+  "https://youtu.be/qgWZejEAIc8?is=RW0SNeF1WxenVGnE",
+  "https://youtu.be/go-_-_qSw6s?is=agqlaeoXgF1I0RMk",
+  "https://youtu.be/hRXOPLK-wjA?is=WHnqFpTvP4k2rR5N",
   // "https://www.youtube.com/watch?v=XXXXXXXXXXX",
 ];

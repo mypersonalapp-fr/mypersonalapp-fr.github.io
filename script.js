@@ -1466,16 +1466,19 @@ function compute(){
   const restants = TOTAL_CHAPTERS - lus;
   const pagesRestantes = Math.round(1200*(1-taux));
 
-  document.getElementById('kpiTaux').textContent = (taux*100).toFixed(2)+"%";
-  document.getElementById('kpiRestants').textContent = restants;
-  document.getElementById('kpiPages').textContent = pagesRestantes;
+  const kT = document.getElementById('kpiTaux'), kR = document.getElementById('kpiRestants'), kP = document.getElementById('kpiPages');
+  if(kT) kT.textContent = (taux*100).toFixed(2)+"%";
+  if(kR) kR.textContent = restants;
+  if(kP) kP.textContent = pagesRestantes;
 
   const planStart = parseDate(state.dateDebut);
   const today = new Date(); today.setHours(0,0,0,0);
   const banner = document.getElementById('banner');
   const detail = document.getElementById('detail');
 
-  if(today < planStart){
+  if(!banner || !detail){
+    // carte Objectif retirée de l'accueil : rien à afficher
+  } else if(today < planStart){
     banner.className = "banner notstarted";
     banner.textContent = "🕊 PAS ENCORE DÉBUTÉ — début prévu le " + fmtDate(planStart);
     detail.textContent = "Ton parcours commence le " + fmtDate(planStart);

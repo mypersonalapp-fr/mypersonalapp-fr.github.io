@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=37">
+<link rel="stylesheet" href="style.css?v=38">
 </head>
 <body>
 
@@ -153,21 +153,15 @@
 </div>
 
 <div class="topbar no-print">
-  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">☰</button>
   <h1 id="topGreeting" class="top-greeting" style="flex:1; margin:0;">Bonjour</h1>
 </div>
 
-<nav id="sideMenu" class="side-menu no-print">
-  <div class="side-menu-title">Menu</div>
-  <button data-page="accueil" class="active" onclick="showPage('accueil')">🏠 Accueil</button>
-  <button data-page="journal-chapitres" onclick="showPage('journal-chapitres')">📘 Journal des chapitres</button>
-  <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')">📖 Mes notes</button>
-  <button data-page="prieres" onclick="showPage('prieres')">🙏 Mon journal</button>
-  <button data-page="plans" onclick="showPage('plans')">🕊️ Plans thématiques</button>
-  <button data-page="parametres" onclick="showPage('parametres')">⚙️ Paramètres</button>
-  <button data-page="admin" id="navAdminBtn" onclick="showPage('admin')" style="display:none;">🛠️ Espace admin</button>
+<nav id="bottomNav" class="bottom-nav no-print">
+  <button data-page="accueil" class="active" onclick="showPage('accueil')"><span class="bn-ico">🏠</span><span>Accueil</span></button>
+  <button data-page="bible" onclick="showPage('bible')"><span class="bn-ico">📖</span><span>Bible</span></button>
+  <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')"><span class="bn-ico">📝</span><span>Notes</span></button>
+  <button data-page="parametres" onclick="showPage('parametres')"><span class="bn-ico">⚙️</span><span>Paramètres</span></button>
 </nav>
-<div id="menuOverlay" class="menu-overlay no-print" onclick="toggleMenu()"></div>
 
 <!-- Proposé une seule fois, à la toute première ouverture (ou tant qu'on n'a
      pas répondu) : demande si on accepte les rappels de lecture. -->
@@ -270,6 +264,13 @@
 </section>
 
 <!-- PLANS THÉMATIQUES -->
+<section id="page-bible" class="page" hidden>
+  <div class="card">
+    <h2>📖 Bible</h2>
+    <div class="empty">Bientôt : choisis un livre, un chapitre et un verset pour l'étudier en 5 traductions, avec les mots en hébreu et en grec.</div>
+  </div>
+</section>
+
 <section id="page-plans" class="page" hidden>
   <div class="card">
     <h2>🕊️ Plans thématiques</h2>
@@ -515,6 +516,16 @@
   <div id="paramSubtab-general" class="param-subtab">
 
     <div class="card">
+      <h2>Plus</h2>
+      <div class="plus-links">
+        <button type="button" onclick="showPage('plans')">🕊️ Plans thématiques</button>
+        <button type="button" onclick="showPage('journal-chapitres')">📘 Journal des chapitres</button>
+        <button type="button" onclick="showPage('prieres')">🙏 Mon journal</button>
+        <button type="button" id="navAdminBtn" onclick="showPage('admin')" style="display:none;">🛠️ Espace admin</button>
+      </div>
+    </div>
+
+    <div class="card">
       <details>
         <summary>⚙️ Réglages</summary>
         <div style="margin-top:14px;">
@@ -668,7 +679,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=37"></script>
+<script src="script.js?v=38"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

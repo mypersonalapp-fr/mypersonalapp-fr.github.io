@@ -2277,7 +2277,7 @@ document.addEventListener('keydown', e=>{
 
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>{ p.hidden = (p.id !== 'page-'+id); });
-  document.querySelectorAll('.side-menu button').forEach(b=>{
+  document.querySelectorAll('#bottomNav button').forEach(b=>{
     b.classList.toggle('active', b.dataset.page === id);
   });
   if(id === 'journal-comprehension' || id === 'prieres') refreshVerseSelects();
@@ -2301,40 +2301,10 @@ function showParamSubtab(name){
     btn.classList.toggle('active', btn.dataset.subtab === name);
   });
 }
-function toggleMenu(){
-  document.getElementById('sideMenu').classList.toggle('open');
-  document.getElementById('menuOverlay').classList.toggle('show');
-}
-function closeMenu(){
-  document.getElementById('sideMenu').classList.remove('open');
-  document.getElementById('menuOverlay').classList.remove('show');
-}
+function toggleMenu(){}
+function closeMenu(){}
 
-/* Glisser du bord gauche de l'écran vers la droite, n'importe où dans
-   l'appli, pour ouvrir le menu — comme le geste "retour" de beaucoup
-   d'applis. Exclu volontairement sur les cartes de groupe, qui ont déjà
-   leur propre glissement (vers la gauche) pour les supprimer. */
-(function(){
-  const SEUIL_BORD = 24;
-  const SEUIL_DISTANCE = 60;
-  let depart = null;
-  document.addEventListener('touchstart', (e)=>{
-    if(e.target.closest('.groupe-carte-wrap')){ depart = null; return; }
-    const t = e.touches[0];
-    depart = (t.clientX <= SEUIL_BORD) ? { x: t.clientX, y: t.clientY } : null;
-  }, { passive:true });
-  document.addEventListener('touchend', (e)=>{
-    if(!depart) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - depart.x;
-    const dy = t.clientY - depart.y;
-    depart = null;
-    if(dx > SEUIL_DISTANCE && Math.abs(dy) < 60){
-      const menu = document.getElementById('sideMenu');
-      if(menu && !menu.classList.contains('open')) toggleMenu();
-    }
-  }, { passive:true });
-})();
+
 
 /* =========================================================================
    RAPPORT — un résumé lisible, affiché directement dans l'appli (pas

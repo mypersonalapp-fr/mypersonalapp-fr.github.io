@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=39">
+<link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
 
@@ -222,7 +222,6 @@
     <h2>✝️ Verset du jour</h2>
     <div class="verse-text" id="verseText">...</div>
     <div class="verse-ref" id="verseRef"></div>
-    <div class="verse-tabs" id="verseTabs"></div>
   </div>
 
 </section>
@@ -258,9 +257,18 @@
 
 <!-- PLANS THÉMATIQUES -->
 <section id="page-bible" class="page" hidden>
-  <div class="card">
-    <h2>📖 Bible</h2>
-    <div class="empty">Bientôt : choisis un livre, un chapitre et un verset pour l'étudier en 5 traductions, avec les mots en hébreu et en grec.</div>
+  <div class="card bible-card">
+    <h2>📖 Bible · Louis Segond 1910</h2>
+    <div class="bible-pick">
+      <select id="bibleLivre" onchange="bibleChangeLivre()" aria-label="Livre"></select>
+      <select id="bibleChap" onchange="bibleAfficher()" aria-label="Chapitre"></select>
+      <select id="bibleVerset" onchange="bibleAller()" aria-label="Verset"></select>
+    </div>
+    <div class="bible-nav">
+      <button type="button" onclick="bibleChapitre(-1)">‹ Précédent</button>
+      <button type="button" onclick="bibleChapitre(1)">Suivant ›</button>
+    </div>
+    <div id="bibleTexte" class="bible-texte"></div>
   </div>
 </section>
 
@@ -632,7 +640,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=39"></script>
+<script src="script.js?v=40"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

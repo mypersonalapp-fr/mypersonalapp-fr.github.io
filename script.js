@@ -1645,31 +1645,12 @@ function renderPrayers(){
    change automatiquement le lendemain (calculé à partir du jour de l'année,
    donc pas besoin de synchronisation pour que ce soit cohérent).
    ========================================================================= */
-const VERSET_FIXE = { ref:"Genèse 1:1", versions:[
-  { code:"LSG", label:"Segond 1910", text:"Au commencement, Dieu créa les cieux et la terre." },
-  { code:"DARBY", label:"Darby", text:"Au commencement Dieu créa les cieux et la terre." },
-  { code:"OST", label:"Ostervald", text:"Au commencement, Dieu créa les cieux et la terre." },
-  { code:"KJV", label:"King James", text:"In the beginning God created the heaven and the earth." },
-  { code:"WEB", label:"World English", text:"In the beginning, God created the heavens and the earth." }
-]};
-function versionChoisie(){
-  try{ return localStorage.getItem('versionVerset') || 'LSG'; }catch(e){ return 'LSG'; }
-}
-function choisirVersionVerset(code){
-  try{ localStorage.setItem('versionVerset', code); }catch(e){}
-  afficherVerset();
-}
+const VERSET_FIXE = { ref:"Genèse 1:1", text:"Au commencement, Dieu créa les cieux et la terre." };
 function afficherVerset(){
-  const code = versionChoisie();
-  const v = VERSET_FIXE.versions.find(x=>x.code===code) || VERSET_FIXE.versions[0];
   const vt = document.getElementById('verseText');
   const vr = document.getElementById('verseRef');
-  const tabs = document.getElementById('verseTabs');
-  if(vt) vt.textContent = "« " + v.text + " »";
+  if(vt) vt.textContent = "« " + VERSET_FIXE.text + " »";
   if(vr) vr.textContent = VERSET_FIXE.ref;
-  if(tabs) tabs.innerHTML = VERSET_FIXE.versions.map(x =>
-    '<button type="button" class="verse-tab'+(x.code===v.code?' actif':'')+'" onclick="choisirVersionVerset(\''+x.code+'\')">'+x.label+'</button>'
-  ).join('');
 }
 
 function renderVerseAndDate(){
@@ -2284,6 +2265,7 @@ function showPage(id){
   if(id === 'rapports') renderRapportPreview();
   if(id === 'plans') renderThematicPlans();
   if(id === 'parametres') updateNotifUI();
+  if(id === 'bible') bibleInit();
   if(id === 'en-groupe') afficherVueListeGroupes();
   if(id === 'admin'){ renderAvisAdmin(); renderUsersAdmin(); renderSuggestionsAdmin(); }
   if(id === 'vision-board') renderVisionBoard();
@@ -3509,3 +3491,74 @@ window.addEventListener('pageshow', ()=>{ applyAppearance(); updateNotifUI(); })
 document.addEventListener('visibilitychange', ()=>{
   if(document.visibilityState === 'visible'){ applyAppearance(); updateNotifUI(); }
 });
+
+
+/* =========================================================================
+   PAGE BIBLE — Louis Segond 1910 (domaine public), un fichier par livre
+   (bible/lsg/<numéro>.json) chargé seulement quand on ouvre le livre.
+   ========================================================================= */
+const BIBLE_LIVRES = Object.keys(chapters);
+const bibleCache = {};
+function bibleLoadLivre(i){
+  if(bibleCache[i]) return Promise.resolve(bibleCache[i]);
+  return fetch('bible/lsg/' + i + '.json').then(r=>{
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(d=>{ bibleCache[i] = d.c; return d.c; });
+}
+function bibleSauver(){
+  try{ localStorage.setItem('biblePos', JSON.stringify({
+    l: document.getElementById('bibleLivre').value,
+    c: document.getElementById('bibleChap').value })); }catch(e){}
+}
+function bibleInit(){
+  const sel = document.getElementById('bibleLivre');
+  if(!sel || sel.options.length) return;
+  BIBLE_LIVRES.forEach((n,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=n; sel.appendChild(o); });
+  let pos = null;
+  try{ pos = JSON.parse(localStorage.getItem('biblePos')); }catch(e){}
+  if(pos && BIBLE_LIVRES[pos.l] !== undefined){ sel.value = pos.l; }
+  bibleRemplirChap(pos && pos.c ? parseInt(pos.c,10) : 1);
+  bibleAfficher();
+}
+function bibleRemplirChap(chap){
+  const livre = parseInt(document.getElementById('bibleLivre').value,10);
+  const n = chapters[BIBLE_LIVRES[livre]];
+  const cs = document.getElementById('bibleChap');
+  cs.innerHTML = '';
+  for(let i=1;i<=n;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Chapitre '+i; cs.appendChild(o); }
+  cs.value = Math.min(Math.max(chap||1,1), n);
+}
+function bibleChangeLivre(){ bibleRemplirChap(1); bibleAfficher(); }
+function bibleChapitre(delta){
+  let livre = parseInt(document.getElementById('bibleLivre').value,10);
+  let chap = parseInt(document.getElementById('bibleChap').value,10) + delta;
+  if(chap < 1){ if(livre === 0) return; livre--; chap = chapters[BIBLE_LIVRES[livre]]; }
+  else if(chap > chapters[BIBLE_LIVRES[livre]]){ if(livre === BIBLE_LIVRES.length-1) return; livre++; chap = 1; }
+  document.getElementById('bibleLivre').value = livre;
+  bibleRemplirChap(chap);
+  bibleAfficher();
+}
+function bibleAfficher(){
+  const livre = parseInt(document.getElementById('bibleLivre').value,10);
+  const chap = parseInt(document.getElementById('bibleChap').value,10);
+  const box = document.getElementById('bibleTexte');
+  const vs = document.getElementById('bibleVerset');
+  box.textContent = 'Chargement…';
+  bibleSauver();
+  bibleLoadLivre(livre).then(c=>{
+    if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chap !== parseInt(document.getElementById('bibleChap').value,10)) return;
+    const versets = c[chap-1] || [];
+    box.innerHTML = versets.map((t,i)=>'<p class="bible-v" id="bv'+(i+1)+'"><b>'+(i+1)+'</b> '+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>').join('');
+    vs.innerHTML = '<option value="">Verset…</option>' + versets.map((_,i)=>'<option value="'+(i+1)+'">Verset '+(i+1)+'</option>').join('');
+    window.scrollTo(0,0);
+  }).catch(()=>{ box.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
+}
+function bibleAller(){
+  const v = document.getElementById('bibleVerset').value;
+  const el = v && document.getElementById('bv'+v);
+  if(!el) return;
+  document.querySelectorAll('.bible-v.sel').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+}

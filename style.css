@@ -1143,3 +1143,5 @@ details > summary{ color:var(--text-dark); }
 .bible-nav-fixed{ bottom:calc(92px + env(safe-area-inset-bottom)) !important; }
 body{ padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important; }
 #page-bible{ padding-bottom:170px; }
+
+.bottom-nav button{ font-family:"Manrope",sans-serif; font-size:.8rem !important; font-weight:700 !important; letter-spacing:0; }

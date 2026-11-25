@@ -85,8 +85,6 @@
     display:block; font-size:.62rem; letter-spacing:1px; font-weight:normal;
     margin-top:3px; text-transform:capitalize; opacity:.9;
   }
-  .verse-card .verse-versions{ margin-top:6px; font-size:.72rem; }
-  .verse-card .verse-versions a{ color:inherit; margin:0 6px; text-decoration:underline; }
   .today-date{
     text-align:center; font-size:.8rem; color:var(--khaki-med); font-style:italic;
     margin:-8px 0 14px; text-transform:capitalize;

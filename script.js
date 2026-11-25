@@ -1694,29 +1694,6 @@ function renderPrayers(){
    change automatiquement le lendemain (calculé à partir du jour de l'année,
    donc pas besoin de synchronisation pour que ce soit cohérent).
    ========================================================================= */
-const dailyVerses = [
-  { ref:"Jean 3:16", text:"Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle." },
-  { ref:"Philippiens 4:13", text:"Je puis tout par celui qui me fortifie." },
-  { ref:"Psaume 23:1", text:"L'Éternel est mon berger : je ne manquerai de rien." },
-  { ref:"Josué 1:9", text:"Ne t'ai-je pas donné cet ordre : Fortifie-toi et prends courage ? Ne t'effraie point et ne t'épouvante point, car l'Éternel, ton Dieu, est avec toi partout où tu iras." },
-  { ref:"Romains 8:28", text:"Nous savons, du reste, que toutes choses concourent au bien de ceux qui aiment Dieu, de ceux qui sont appelés selon son dessein." },
-  { ref:"Proverbes 3:5-6", text:"Confie-toi en l'Éternel de tout ton cœur, et ne t'appuie pas sur ta sagesse ; reconnais-le dans toutes tes voies, et il aplanira tes sentiers." },
-  { ref:"Ésaïe 41:10", text:"Ne crains rien, car je suis avec toi ; ne prends pas d'inquiétude, car je suis ton Dieu ; je te fortifie, je viens à ton secours, je te soutiens de ma droite triomphante." },
-  { ref:"Matthieu 6:33", text:"Cherchez premièrement le royaume et la justice de Dieu ; et toutes ces choses vous seront données par-dessus." },
-  { ref:"Psaume 118:24", text:"C'est ici la journée que l'Éternel a faite : qu'elle soit pour nous un sujet d'allégresse et de joie !" },
-  { ref:"Jérémie 29:11", text:"Car je connais les projets que j'ai formés sur vous, dit l'Éternel, projets de paix et non de malheur, afin de vous donner un avenir et de l'espérance." },
-  { ref:"Psaume 27:1", text:"L'Éternel est ma lumière et mon salut : de qui aurais-je crainte ? L'Éternel est le soutien de ma vie : de qui aurais-je peur ?" },
-  { ref:"Matthieu 11:28", text:"Venez à moi, vous tous qui êtes fatigués et chargés, et je vous donnerai du repos." },
-  { ref:"Psaume 46:1", text:"Dieu est pour nous un refuge et un appui, un secours qui ne manque jamais dans la détresse." },
-  { ref:"Deutéronome 31:6", text:"Fortifiez-vous et ayez du courage ! Ne craignez point et ne soyez point effrayés devant eux ; car l'Éternel, ton Dieu, marchera lui-même avec toi, il ne te délaissera point, il ne t'abandonnera point." },
-  { ref:"Psaume 34:8", text:"Sentez et voyez combien l'Éternel est bon ! Heureux l'homme qui cherche en lui son refuge !" },
-  { ref:"Éphésiens 2:8", text:"Car c'est par la grâce que vous êtes sauvés, par le moyen de la foi. Et cela ne vient pas de vous, c'est le don de Dieu." },
-  { ref:"Psaume 119:105", text:"Ta parole est une lampe à mes pieds, et une lumière sur mon sentier." },
-  { ref:"Nombres 6:24-26", text:"Que l'Éternel te bénisse, et qu'il te garde ! Que l'Éternel fasse luire sa face sur toi, et qu'il t'accorde sa grâce ! Que l'Éternel tourne sa face vers toi, et qu'il te donne la paix !" },
-  { ref:"Philippiens 4:6-7", text:"Ne vous inquiétez de rien ; mais en toute chose faites connaître vos besoins à Dieu par des prières et des supplications, avec des actions de grâces. Et la paix de Dieu, qui surpasse toute intelligence, gardera vos cœurs et vos pensées en Jésus-Christ." },
-  { ref:"Psaume 121:1-2", text:"Je lève mes yeux vers les montagnes... D'où me viendra le secours ? Le secours me vient de l'Éternel, qui a fait les cieux et la terre." }
-];
-
 const VERSET_FIXE = { ref:"Genèse 1:1", text:"Au commencement, Dieu créa les cieux et la terre." };
 
 function renderVerseAndDate(){
@@ -1732,13 +1709,6 @@ function renderVerseAndDate(){
   const vr = document.getElementById('verseRef');
   if(vt) vt.textContent = "« " + v.text + " »";
   if(vr) vr.textContent = v.ref;
-  // Segond 21 et Parole de Vie : protégées par des droits d'auteur, donc en liens.
-  const vv = document.getElementById('verseVersions');
-  if(vv){
-    vv.innerHTML = verseVersionLinks(v.ref)
-      .filter(l => l.label === 'Segond 21' || l.label === 'Parole de Vie')
-      .map(l => '<a href="'+l.url+'" target="_blank" rel="noopener">'+l.label+'</a>').join('');
-  }
   const verseCard = document.querySelector('.verse-card');
   if(verseCard) verseCard.className = 'card verse-card vc' + (dayOfYear % 7);
 }

@@ -85,6 +85,12 @@
     display:block; font-size:.62rem; letter-spacing:1px; font-weight:normal;
     margin-top:3px; text-transform:capitalize; opacity:.9;
   }
+  .verse-tabs{ display:flex; flex-wrap:wrap; justify-content:center; gap:5px; margin-top:8px; }
+  .verse-tab{
+    background:transparent; color:inherit; border:1px solid currentColor; border-radius:14px;
+    padding:3px 9px; font-size:.68rem; opacity:.6; cursor:pointer; font-family:inherit;
+  }
+  .verse-tab.actif{ opacity:1; font-weight:bold; background:rgba(255,255,255,.35); }
   .today-date{
     text-align:center; font-size:.8rem; color:var(--khaki-med); font-style:italic;
     margin:-8px 0 14px; text-transform:capitalize;

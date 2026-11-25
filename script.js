@@ -1694,7 +1694,32 @@ function renderPrayers(){
    change automatiquement le lendemain (calculé à partir du jour de l'année,
    donc pas besoin de synchronisation pour que ce soit cohérent).
    ========================================================================= */
-const VERSET_FIXE = { ref:"Genèse 1:1", text:"Au commencement, Dieu créa les cieux et la terre." };
+const VERSET_FIXE = { ref:"Genèse 1:1", versions:[
+  { code:"LSG", label:"Segond 1910", text:"Au commencement, Dieu créa les cieux et la terre." },
+  { code:"DARBY", label:"Darby", text:"Au commencement Dieu créa les cieux et la terre." },
+  { code:"OST", label:"Ostervald", text:"Au commencement, Dieu créa les cieux et la terre." },
+  { code:"KJV", label:"King James", text:"In the beginning God created the heaven and the earth." },
+  { code:"WEB", label:"World English", text:"In the beginning, God created the heavens and the earth." }
+]};
+function versionChoisie(){
+  try{ return localStorage.getItem('versionVerset') || 'LSG'; }catch(e){ return 'LSG'; }
+}
+function choisirVersionVerset(code){
+  try{ localStorage.setItem('versionVerset', code); }catch(e){}
+  afficherVerset();
+}
+function afficherVerset(){
+  const code = versionChoisie();
+  const v = VERSET_FIXE.versions.find(x=>x.code===code) || VERSET_FIXE.versions[0];
+  const vt = document.getElementById('verseText');
+  const vr = document.getElementById('verseRef');
+  const tabs = document.getElementById('verseTabs');
+  if(vt) vt.textContent = "« " + v.text + " »";
+  if(vr) vr.textContent = VERSET_FIXE.ref;
+  if(tabs) tabs.innerHTML = VERSET_FIXE.versions.map(x =>
+    '<button type="button" class="verse-tab'+(x.code===v.code?' actif':'')+'" onclick="choisirVersionVerset(\''+x.code+'\')">'+x.label+'</button>'
+  ).join('');
+}
 
 function renderVerseAndDate(){
   const d = new Date();
@@ -1704,11 +1729,7 @@ function renderVerseAndDate(){
   if(greetEl) greetEl.innerHTML = salut + '<small>' + txt + '</small>';
   const start = new Date(d.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((d - start) / (1000*60*60*24));
-  const v = VERSET_FIXE;
-  const vt = document.getElementById('verseText');
-  const vr = document.getElementById('verseRef');
-  if(vt) vt.textContent = "« " + v.text + " »";
-  if(vr) vr.textContent = v.ref;
+  afficherVerset();
   const verseCard = document.querySelector('.verse-card');
   if(verseCard) verseCard.className = 'card verse-card vc' + (dayOfYear % 7);
 }

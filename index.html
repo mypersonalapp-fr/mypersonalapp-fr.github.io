@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=46">
+<link rel="stylesheet" href="style.css?v=47">
 </head>
 <body>
 
@@ -153,14 +153,17 @@
 </div>
 
 <div class="topbar no-print">
-  <h1 id="topGreeting" class="top-greeting" style="flex:1; margin:0;">Bonjour</h1>
+  <div>
+    <div id="topDate" class="top-date"></div>
+    <h1 id="topGreeting" class="top-greeting">Bonjour</h1>
+  </div>
 </div>
 
 <nav id="bottomNav" class="bottom-nav no-print">
-  <button data-page="accueil" class="active" onclick="showPage('accueil')"><span class="bn-ico">🏠</span><span>Accueil</span></button>
-  <button data-page="bible" onclick="showPage('bible')"><span class="bn-ico">📖</span><span>Bible</span></button>
-  <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')"><span class="bn-ico">📝</span><span>Notes</span></button>
-  <button data-page="parametres" onclick="showPage('parametres')"><span class="bn-ico">⚙️</span><span>Paramètres</span></button>
+  <button data-page="accueil" class="active" onclick="showPage('accueil')" aria-label="Accueil"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></button>
+  <button data-page="bible" onclick="showPage('bible')" aria-label="Bible"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"/><path d="M12 6.5v13"/></svg></button>
+  <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')" aria-label="Notes"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4"/></svg></button>
+  <button data-page="parametres" onclick="showPage('parametres')" aria-label="Paramètres"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/></svg></button>
 </nav>
 
 <!-- Proposé une seule fois, à la toute première ouverture (ou tant qu'on n'a
@@ -219,10 +222,11 @@
 <section id="page-accueil" class="page">
 
   <div class="card verse-card">
-    <h2>✝️ Verset du jour</h2>
+    <h2>VERSET DU JOUR</h2>
     <div class="verse-text" id="verseText">...</div>
     <div class="verse-ref" id="verseRef"></div>
     <div class="heb-panel verse-heb"><div class="heb-mots" id="verseHebMots" dir="rtl"></div><div class="heb-detail"></div></div>
+    <div class="sens-box" id="verseSens" hidden></div>
   </div>
 
 </section>
@@ -526,12 +530,12 @@
 
     <div class="card">
       <details>
-        <summary>🎨 Apparence</summary>
+        <summary>Apparence</summary>
         <div style="margin-top:14px;">
           <label>Fond d'écran</label>
           <div class="bg-choice">
-            <button type="button" id="bgJourBtn" onclick="setBackground('jour')">☀️ Jour</button>
-            <button type="button" id="bgNuitBtn" onclick="setBackground('nuit')">🌙 Nuit</button>
+            <button type="button" id="bgJourBtn" onclick="setBackground('jour')">Jour</button>
+            <button type="button" id="bgNuitBtn" onclick="setBackground('nuit')">Nuit</button>
           </div>
         </div>
       </details>
@@ -646,7 +650,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=46"></script>
+<script src="script.js?v=47"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

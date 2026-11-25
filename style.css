@@ -1079,3 +1079,67 @@ body{ padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
 #page-bible .heb-mots{ gap:6px; }
 #page-bible .heb-mot{ padding:4px 8px; }
 #page-bible .hm-h{ font-size:1.25rem; }
+
+
+/* =========================================================================
+   STYLE ÉPURÉ — Jour : fond blanc, texte noir. Nuit : fond noir, texte blanc.
+   Cartes gris très clair / gris foncé, boutons noirs ou blancs, barre du bas
+   flottante avec icônes. (Remplace les anciennes ambiances.)
+   ========================================================================= */
+body[data-bg="jour"], body[data-bg="nuit"]{
+  background:var(--page) !important; color:var(--text-dark);
+  --khaki-med:var(--muted); --taupe:var(--muted);
+}
+body[data-bg="jour"]{
+  --page:#FFFFFF; --cream:#F2F2F7; --cream-alt:#F2F2F7; --khaki-dark:#000000; --muted:#6E6E73;
+  --gold:#D1D1D6; --gold-light:#E5E5EA; --olive:#000000; --text-dark:#000000; --text-light:#FFFFFF;
+  --nav-bg:#FFFFFF; --shadow:rgba(0,0,0,.12);
+}
+body[data-bg="nuit"]{
+  --page:#000000; --cream:#1C1C1E; --cream-alt:#1C1C1E; --khaki-dark:#FFFFFF; --muted:#98989D;
+  --gold:#3A3A3C; --gold-light:#2C2C2E; --olive:#FFFFFF; --text-dark:#FFFFFF; --text-light:#000000;
+  --nav-bg:#1C1C1E; --shadow:rgba(0,0,0,.6);
+}
+#appBgLayer{ display:none !important; }
+.card, .verse-card, .verse-card[class]{
+  background:var(--cream) !important; border:none !important; border-radius:22px; box-shadow:none; color:var(--text-dark);
+}
+.card h2, .verse-card h2, .verse-card .verse-ref, .verse-card .verse-text, .verse-card[class] h2, .verse-card[class] .verse-ref{ color:var(--text-dark) !important; }
+.card h2{ font-size:.8rem; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted) !important; }
+.card label, .subnote{ color:var(--muted); }
+h1{ background:none !important; border:none !important; box-shadow:none !important; color:var(--text-dark) !important; letter-spacing:0; }
+.topbar{ margin:6px 0 18px; }
+.top-date{ font-size:1rem; color:var(--muted); font-weight:500; text-transform:lowercase; }
+.top-greeting{ text-align:left !important; font-size:2rem; font-weight:800; margin:0; padding:0 !important; border:none; }
+.syncbadge{ background:none !important; text-align:left; margin:-10px 0 12px; padding:0; font-weight:600; color:var(--muted) !important; }
+.verse-card{ padding:20px 22px; text-align:left !important; }
+.verse-card h2{ margin-bottom:10px; }
+.verse-card .verse-text{ font-size:1.35rem; line-height:1.5; font-style:normal !important; }
+.verse-card .verse-ref{ font-weight:800; font-size:1rem; margin-bottom:6px; }
+.heb-panel, #page-bible .heb-panel{ background:var(--page) !important; border:1px solid var(--gold) !important; border-radius:18px; box-shadow:none; }
+.heb-mot, .heb-btn, .sens-btn, .bible-nav button, .bible-titre, .bible-picker, .bg-choice button, .plus-links button, .admin-link{ background:var(--cream); color:var(--text-dark); border-color:var(--gold); }
+.heb-mot.sel, .bg-choice button.actif{ background:var(--gold-light); border-color:var(--text-dark); }
+.heb-detail{ color:var(--text-dark) !important; }
+.sens-box{ background:var(--cream) !important; border-left:none !important; border-radius:18px; }
+.sens-box h4{ color:var(--muted); font-size:.8rem; letter-spacing:1.2px; text-transform:uppercase; }
+.verse-card .sens-box{ background:var(--page) !important; margin-top:12px; }
+.bible-vtext{ background:var(--cream) !important; border:none !important; box-shadow:none !important; border-radius:22px; }
+.bible-num{ background:var(--text-dark) !important; color:var(--page) !important; }
+.bible-titre{ box-shadow:none; }
+.bible-nav-fixed{ background:var(--nav-bg) !important; border:none !important; box-shadow:0 6px 24px var(--shadow) !important; }
+.bible-nav-fixed button{ background:var(--text-dark) !important; color:var(--page) !important; }
+.bible-nav-fixed span{ color:var(--muted); }
+select, input, textarea{ background:var(--cream); color:var(--text-dark); border:1px solid var(--gold); }
+button{ color:inherit; }
+details > summary{ color:var(--text-dark); }
+/* barre du bas flottante, icônes seules */
+.bottom-nav{
+  left:16px !important; right:16px !important; bottom:calc(14px + env(safe-area-inset-bottom)) !important;
+  background:var(--nav-bg) !important; border:none !important; border-radius:32px; padding:8px !important;
+  box-shadow:0 6px 28px var(--shadow) !important;
+}
+.bottom-nav button{ height:54px; justify-content:center; border-radius:24px !important; color:var(--muted) !important; opacity:1 !important; }
+.bottom-nav button.active{ background:var(--gold-light) !important; color:var(--text-dark) !important; }
+.bible-nav-fixed{ bottom:calc(92px + env(safe-area-inset-bottom)) !important; }
+body{ padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important; }
+#page-bible{ padding-bottom:170px; }

@@ -1652,7 +1652,13 @@ function afficherVerset(){
   if(vt) vt.textContent = "« " + VERSET_FIXE.text + " »";
   if(vr) vr.textContent = VERSET_FIXE.ref;
   const vh = document.getElementById('verseHebMots');
-  if(vh) setTimeout(()=>{ hebCharger(0).then(c=>{ vh.innerHTML = hebMotsHtml(0, 0, 0, c[0][0]); }).catch(()=>{}); }, 0);
+  if(vh) setTimeout(()=>{
+    hebCharger(0).then(c=>{ vh.innerHTML = hebMotsHtml(0, 0, 0, c[0][0]); }).catch(()=>{});
+    sensCharger(0).then(d=>{
+      const e = d['1'] && d['1']['1'], sb = document.getElementById('verseSens');
+      if(e && sb){ sb.hidden = false; sb.innerHTML = '<h4>Sens du verset</h4><p>'+e.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>'; }
+    });
+  }, 0);
 }
 
 function renderVerseAndDate(){
@@ -1660,7 +1666,9 @@ function renderVerseAndDate(){
   let txt = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const salut = d.getHours() >= 18 || d.getHours() < 4 ? 'Bonsoir' : 'Bonjour';
   const greetEl = document.getElementById('topGreeting');
-  if(greetEl) greetEl.innerHTML = salut + '<small>' + txt + '</small>';
+  const dEl = document.getElementById('topDate');
+  if(dEl) dEl.textContent = txt;
+  if(greetEl) greetEl.textContent = salut + ', Ashley';
   const start = new Date(d.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((d - start) / (1000*60*60*24));
   afficherVerset();
@@ -3624,7 +3632,7 @@ function bibleRendre(){
     const sens = r[1] && r[1][String(chap)] && r[1][String(chap)][String(vers)];
     const sb = document.getElementById('bibleSens');
     sb.hidden = !sens;
-    if(sens) sb.innerHTML = '<h4>💡 Sens du verset</h4><p>'+sens.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>';
+    if(sens) sb.innerHTML = '<h4>Sens du verset</h4><p>'+sens.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>';
     bibleSauver();
     window.scrollTo(0,0);
   }).catch(()=>{ txt.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });

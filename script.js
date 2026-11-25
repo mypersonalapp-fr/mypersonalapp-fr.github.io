@@ -1651,6 +1651,8 @@ function afficherVerset(){
   const vr = document.getElementById('verseRef');
   if(vt) vt.textContent = "« " + VERSET_FIXE.text + " »";
   if(vr) vr.textContent = VERSET_FIXE.ref;
+  const vh = document.getElementById('verseHebMots');
+  if(vh) setTimeout(()=>{ hebCharger(0).then(c=>{ vh.innerHTML = hebMotsHtml(0, 0, 0, c[0][0]); }).catch(()=>{}); }, 0);
 }
 
 function renderVerseAndDate(){
@@ -3584,13 +3586,19 @@ function hebCharger(livre){
   const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/heb/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
   return Promise.all([pLivre, pLex]).then(r=>r[0]);
 }
+const HEB_FR = { "0:0:0": ["au commencement","il créa","Dieu","(marque du complément)","les cieux","et","la terre"] };
+function hebMotsHtml(livre, chapIdx, vi, mots){
+  const fr = HEB_FR[livre+':'+chapIdx+':'+vi] || [];
+  return mots.map((m,i)=>
+    '<button type="button" class="heb-mot" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+vi+')"><span class="hm-h">'+m[0]+'</span>'
+    + (fr[i] ? '<span class="hm-f">'+fr[i]+'</span>' : '') + '</button>').join('');
+}
 function hebRemplir(livre, chapIdx){
   hebCharger(livre).then(c=>{
     if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chapIdx+1 !== parseInt(document.getElementById('bibleChap').value,10)) return;
     document.querySelectorAll('#bibleTexte .heb-panel').forEach((panel,vi)=>{
       const mots = (c[chapIdx] || [])[vi] || [];
-      panel.querySelector('.heb-mots').innerHTML = mots.map((m,i)=>
-        '<button type="button" class="heb-mot" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+vi+')">'+m[0]+'</button>').join('');
+      panel.querySelector('.heb-mots').innerHTML = hebMotsHtml(livre, chapIdx, vi, mots);
     });
   }).catch(()=>{});
 }

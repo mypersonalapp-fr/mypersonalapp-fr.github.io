@@ -1025,3 +1025,9 @@ body{ padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
 .sens-panel h4{ margin:6px 0 2px; font-size:.95rem; }
 .sens-panel p{ margin:0 0 8px; }
 .bible-vwrap{ margin-bottom:6px; }
+
+.heb-mot{ display:flex; flex-direction:column; align-items:center; gap:2px; }
+.hm-h{ font-family:"Times New Roman",serif; font-size:1.35rem; line-height:1.2; }
+.hm-f{ font-family:"Manrope",sans-serif; font-size:.68rem; font-weight:600; direction:ltr; opacity:.85; }
+.verse-heb{ text-align:left; margin-top:10px; }
+.verse-card .heb-detail{ font-style:normal; color:var(--text-dark); }

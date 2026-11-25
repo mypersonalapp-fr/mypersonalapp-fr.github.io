@@ -36,7 +36,7 @@
   }
   *{box-sizing:border-box;}
   body{
-    margin:0; font-family:"Avenir","Segoe UI",sans-serif; color:var(--text-dark);
+    margin:0; font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif; font-weight:500; color:var(--text-dark);
     padding:calc(env(safe-area-inset-top) + 16px) 16px 40px; max-width:640px; margin:0 auto;
     background:
       radial-gradient(circle at 15% -10%, rgba(183,151,90,.20), transparent 45%),
@@ -937,3 +937,43 @@
     #positionList{ max-height:none !important; overflow:visible !important; }
     .entry .del{ display:none !important; }
   }
+
+
+/* =========================================================================
+   POLICE (comme Mission Réussite : Baloo 2 pour les titres, Nunito pour le
+   texte), un peu plus grande — et fonds Jour / Nuit
+   ========================================================================= */
+html{ font-size:18px; }
+h1, h2, h3, summary, .topbar h1, .verse-tab, .bg-choice button, .side-menu button, .side-menu-title{
+  font-family:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+}
+button, input, select, textarea{ font-family:inherit; }
+
+body[data-bg="jour"]{
+  background:
+    radial-gradient(circle at 15% -10%, rgba(255,255,255,.9), transparent 45%),
+    linear-gradient(180deg, #FFFDF6 0%, #F7F0DC 60%, #F1E7C9 100%);
+  background-attachment:fixed;
+}
+/* Nuit : bleu profond mais pas noir, avec lune et étoiles qui brillent */
+body[data-bg="nuit"]{
+  background:
+    radial-gradient(120% 55% at 50% 0%, #4A5C9A 0%, rgba(74,92,154,0) 70%),
+    linear-gradient(180deg, #33437A 0%, #243063 55%, #1B2550 100%);
+  background-attachment:fixed;
+}
+body[data-bg="jour"] #appBgLayer{ display:none; }
+body[data-bg="nuit"] #appBgLayer{ display:block; }
+body[data-bg="nuit"] #appBgLayer .theme-b{ display:block; }
+#appBgLayer .moon{ top:5%; width:70px; height:70px; box-shadow:0 0 70px 24px rgba(255,240,200,.45); }
+#appBgLayer .star{
+  background:#FFF6D8; box-shadow:0 0 6px 2px rgba(255,246,216,.85), 0 0 14px 4px rgba(255,246,216,.4);
+}
+#appBgLayer .star.star-b{ width:3px; height:3px; }
+
+.bg-choice{ display:flex; gap:10px; margin-top:6px; }
+.bg-choice button{
+  flex:1; padding:12px 8px; font-size:1.05rem; border-radius:12px; cursor:pointer;
+  border:2px solid var(--gold); background:var(--cream); color:var(--text-dark); opacity:.7;
+}
+.bg-choice button.actif{ opacity:1; background:var(--gold-light); font-weight:800; }

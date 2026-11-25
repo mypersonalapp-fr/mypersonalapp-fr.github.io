@@ -308,24 +308,16 @@ function generateDailyBg(index){
   }
 }
 function applyAppearance(){
-  if(!state.settings) state.settings = { palette:'dore', bg:'dore' };
+  if(!state.settings) state.settings = { palette:'dore', bg:'jour' };
   document.documentElement.setAttribute('data-palette', state.settings.palette || 'dore');
-  const bg = state.settings.bg || 'dore';
-  if(bg === 'auto'){
-    document.body.removeAttribute('data-bg');
-    const start = new Date(new Date().getFullYear(), 0, 0);
-    const dayOfYear = Math.floor((new Date() - start) / 86400000);
-    document.body.style.background = generateDailyBg(dayOfYear % 60);
-    document.body.style.backgroundAttachment = 'fixed';
-  } else {
-    document.body.style.background = '';
-    document.body.style.backgroundAttachment = '';
-    document.body.setAttribute('data-bg', bg);
-  }
-  const palSel = document.getElementById('paletteSelect');
-  const bgSel = document.getElementById('bgSelect');
-  if(palSel) palSel.value = state.settings.palette || 'dore';
-  if(bgSel) bgSel.value = state.settings.bg || 'dore';
+  // Deux fonds seulement : jour ou nuit (toute ancienne valeur = jour).
+  const bg = state.settings.bg === 'nuit' ? 'nuit' : 'jour';
+  document.body.style.background = '';
+  document.body.style.backgroundAttachment = '';
+  document.body.setAttribute('data-bg', bg);
+  const bJ = document.getElementById('bgJourBtn'), bN = document.getElementById('bgNuitBtn');
+  if(bJ) bJ.classList.toggle('actif', bg === 'jour');
+  if(bN) bN.classList.toggle('actif', bg === 'nuit');
 
   const musicBar = document.getElementById('musicCard');
   if(musicBar){
@@ -356,56 +348,12 @@ function setBackground(v){
    TYPOGRAPHIE — police, gras/italique, taille du texte, choisis dans
    Apparence. Appliqués sur toute l'appli (body + taille de référence "rem").
    ========================================================================= */
-const POLICES = {
-  default: '"Avenir","Segoe UI",sans-serif',
-  opensans: '"Open Sans",sans-serif',
-  lato: '"Lato",sans-serif',
-  poppins: '"Poppins",sans-serif',
-  nunito: '"Nunito",sans-serif',
-  merriweather: '"Merriweather",serif',
-  playfair: '"Playfair Display",serif',
-  georgia: 'Georgia,"Times New Roman",serif',
-  times: '"Times New Roman",Times,serif',
-  verdana: 'Verdana,Geneva,sans-serif',
-  courier: '"Courier New",Courier,monospace',
-  comic: '"Comic Sans MS","Comic Sans",cursive',
-  arial: 'Arial,Helvetica,sans-serif',
-  gothique: '"UnifrakturMaguntia","Old English Text MT",serif'
-};
-const TAILLES_TEXTE = { petit:'14px', normal:'16px', grand:'18px', tresgrand:'21px' };
 function applyTypography(){
-  if(!state.settings) state.settings = { palette:'dore', bg:'dore' };
-  const fam = state.settings.fontFamily || 'default';
-  document.body.style.fontFamily = POLICES[fam] || POLICES.default;
-  const style = state.settings.fontStyle || 'normal';
-  document.body.style.fontWeight = (style === 'gras' || style === 'gras-italique') ? 'bold' : 'normal';
-  document.body.style.fontStyle = (style === 'italique' || style === 'gras-italique') ? 'italic' : 'normal';
-  const taille = state.settings.fontSize || 'normal';
-  document.documentElement.style.fontSize = TAILLES_TEXTE[taille] || TAILLES_TEXTE.normal;
-  const famSel = document.getElementById('fontSelect');
-  const styleSel = document.getElementById('fontStyleSelect');
-  const tailleSel = document.getElementById('fontSizeSelect');
-  if(famSel) famSel.value = fam;
-  if(styleSel) styleSel.value = style;
-  if(tailleSel) tailleSel.value = taille;
-}
-function setFontFamily(v){
-  if(!state.settings) state.settings = { palette:'dore', bg:'dore' };
-  state.settings.fontFamily = v;
-  applyTypography();
-  try{ persist(); }catch(e){ console.error('Erreur de sauvegarde (police) :', e); }
-}
-function setFontStyle(v){
-  if(!state.settings) state.settings = { palette:'dore', bg:'dore' };
-  state.settings.fontStyle = v;
-  applyTypography();
-  try{ persist(); }catch(e){ console.error('Erreur de sauvegarde (style) :', e); }
-}
-function setFontSize(v){
-  if(!state.settings) state.settings = { palette:'dore', bg:'dore' };
-  state.settings.fontSize = v;
-  applyTypography();
-  try{ persist(); }catch(e){ console.error('Erreur de sauvegarde (taille) :', e); }
+  // Police et taille fixes (Baloo 2 + Nunito, plus grand) : gérées par style.css.
+  document.body.style.fontFamily = '';
+  document.body.style.fontWeight = '';
+  document.body.style.fontStyle = '';
+  document.documentElement.style.fontSize = '';
 }
 
 /* =========================================================================

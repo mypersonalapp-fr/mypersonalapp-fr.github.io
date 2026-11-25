@@ -36,7 +36,7 @@
   }
   *{box-sizing:border-box;}
   body{
-    margin:0; font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif; font-weight:500; color:var(--text-dark);
+    margin:0; font-family:"Manrope","Avenir Next","Segoe UI",system-ui,sans-serif; font-weight:500; color:var(--text-dark);
     padding:calc(env(safe-area-inset-top) + 16px) 16px 40px; max-width:640px; margin:0 auto;
     background:
       radial-gradient(circle at 15% -10%, rgba(183,151,90,.20), transparent 45%),
@@ -945,7 +945,7 @@
    ========================================================================= */
 html{ font-size:18px; }
 h1, h2, h3, summary, .topbar h1, .verse-tab, .bg-choice button, .side-menu button, .side-menu-title{
-  font-family:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  font-family:"Manrope","Avenir Next","Segoe UI",system-ui,sans-serif; font-weight:700;
 }
 button, input, select, textarea{ font-family:inherit; }
 

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=48">
+<link rel="stylesheet" href="style.css?v=49">
 </head>
 <body>
 
@@ -312,20 +312,15 @@
 
 <!-- 3a. JOURNAL DE COMPRÉHENSION -->
 <section id="page-journal-comprehension" class="page" hidden>
-  <div class="card">
-    <h2>📖 Mes notes</h2>
-    <div class="subnote">Choisis le livre, le chapitre, et le verset si tu veux préciser.</div>
-    <label>Livre</label>
-    <select id="compLivre" onchange="onCompLivreChange()"></select>
-    <label>Chapitre</label>
-    <select id="compChapitre" onchange="onCompChapitreChange()"></select>
-    <label>Verset (optionnel)</label>
-    <select id="compVerset"></select>
-    <label>Ce que j'ai compris</label>
-    <textarea id="compNote" placeholder="Écris ce que tu retiens..."></textarea>
-    <button onclick="addComp()">Ajouter au journal</button>
-    <div id="compList" style="margin-top:12px;"></div>
+  <div class="notes-head">
+    <h2 class="notes-titre">Notes</h2>
+    <button type="button" class="notes-new" onclick="noteNouvelle()">+ Nouvelle note</button>
   </div>
+  <div id="notesListe"></div>
+  <details id="anciennesNotes" class="notes-anciennes" hidden>
+    <summary>Anciennes notes</summary>
+    <div id="compList"></div>
+  </details>
 </section>
 
 <!-- 3b. PRIÈRES -->
@@ -650,7 +645,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=48"></script>
+<script src="script.js?v=49"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

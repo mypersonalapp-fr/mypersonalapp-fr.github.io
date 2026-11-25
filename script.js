@@ -1606,6 +1606,7 @@ function delComp(i){
   state.compLog.splice(i,1); persist(); renderComp();
 }
 function renderComp(){
+  if(!document.getElementById('compList')) return;
   const el = document.getElementById('compList');
   if(!state.compLog.length){ el.innerHTML = '<div class="empty">Aucune entrée pour le moment.</div>'; return; }
   el.innerHTML = state.compLog.map((e,i)=>
@@ -2272,6 +2273,7 @@ function showPage(id){
     b.classList.toggle('active', b.dataset.page === id);
   });
   if(id === 'journal-comprehension' || id === 'prieres') refreshVerseSelects();
+  if(id === 'journal-comprehension') notesRendre();
   if(id === 'rapports') renderRapportPreview();
   if(id === 'plans') renderThematicPlans();
   if(id === 'parametres') updateNotifUI();
@@ -3636,4 +3638,58 @@ function bibleRendre(){
     bibleSauver();
     window.scrollTo(0,0);
   }).catch(()=>{ txt.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
+}
+
+
+/* =========================================================================
+   NOTES — bloc-notes vierge : une date + un espace pour écrire. Sauvegarde
+   automatique (state.notes, synchronisé comme le reste). Les anciennes notes
+   (journal de compréhension) restent consultables en bas de page.
+   ========================================================================= */
+let notesTimer = null;
+function noteDateTxt(iso){
+  const d = new Date(iso + 'T12:00:00');
+  const t = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+function noteNouvelle(){
+  if(!state.notes) state.notes = [];
+  state.notes.unshift({ id: Date.now(), date: todayStr(), text: '' });
+  notesRendre();
+  const ta = document.querySelector('#notesListe textarea');
+  if(ta) ta.focus();
+}
+function noteSaisie(id, el){
+  el.style.height = 'auto'; el.style.height = Math.max(el.scrollHeight, 160) + 'px';
+  clearTimeout(notesTimer);
+  notesTimer = setTimeout(()=>{
+    const n = (state.notes || []).find(x=>x.id === id);
+    if(!n) return;
+    n.text = el.value;
+    persist();
+  }, 500);
+}
+function noteSupprimer(id){
+  if(!confirm('Supprimer cette note ?')) return;
+  state.notes = (state.notes || []).filter(x=>x.id !== id);
+  persist(); notesRendre();
+}
+function notesRendre(){
+  const box = document.getElementById('notesListe');
+  if(!box) return;
+  if(!state.notes) state.notes = [];
+  // Toujours une note vierge datée d'aujourd'hui en haut si aucune n'existe.
+  if(!state.notes.length || state.notes[0].date !== todayStr()){
+    state.notes.unshift({ id: Date.now(), date: todayStr(), text: '' });
+  }
+  const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  box.innerHTML = state.notes.map(n =>
+    '<div class="note-page">'
+    + '<div class="note-date">'+noteDateTxt(n.date)+'</div>'
+    + '<textarea placeholder="Écris ici…" oninput="noteSaisie('+n.id+', this)">'+esc(n.text)+'</textarea>'
+    + '<button type="button" class="note-suppr" onclick="noteSupprimer('+n.id+')">Supprimer</button>'
+    + '</div>').join('');
+  box.querySelectorAll('textarea').forEach(t=>{ t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, 160) + 'px'; });
+  const anc = document.getElementById('anciennesNotes');
+  if(anc){ anc.hidden = !(state.compLog && state.compLog.length); renderComp(); }
 }

@@ -1145,3 +1145,13 @@ body{ padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important; }
 #page-bible{ padding-bottom:170px; }
 
 .bottom-nav button{ font-family:"Manrope",sans-serif; font-size:.8rem !important; font-weight:700 !important; letter-spacing:0; }
+
+.notes-head{ display:flex; align-items:center; justify-content:space-between; margin:6px 0 14px; }
+.notes-titre{ font-size:2rem; font-weight:800; margin:0; background:none !important; color:var(--text-dark) !important; text-align:left; padding:0; }
+.notes-new{ background:var(--text-dark); color:var(--page); border:none; border-radius:20px; padding:9px 16px; font-weight:700; font-size:.9rem; cursor:pointer; }
+.note-page{ background:var(--cream); border-radius:22px; padding:18px; margin-bottom:14px; }
+.note-date{ font-size:.85rem; font-weight:700; color:var(--muted); margin-bottom:10px; }
+.note-page textarea{ width:100%; min-height:160px; border:none !important; background:transparent !important; color:var(--text-dark); font-family:"Manrope",sans-serif; font-size:1.05rem; line-height:1.6; resize:none; outline:none; padding:0; }
+.note-suppr{ background:none; border:none; color:var(--muted); font-size:.8rem; cursor:pointer; padding:6px 0 0; }
+.notes-anciennes{ margin:10px 0; color:var(--text-dark); }
+.note-page textarea{ font-family:"Manrope",sans-serif !important; }

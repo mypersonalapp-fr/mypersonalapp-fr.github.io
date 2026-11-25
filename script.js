@@ -3552,8 +3552,11 @@ function bibleAfficher(){
     const esc = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
     const hebOk = HEB_DISPO.indexOf(livre) >= 0;
     box.innerHTML = versets.map((t,i)=>'<div class="bible-vwrap"><p class="bible-v" id="bv'+(i+1)+'"><b>'+(i+1)+'</b> '+esc(t)+'</p>'
-      + (hebOk ? '<button type="button" class="heb-btn" onclick="hebToggle('+livre+','+(chap-1)+','+i+',this)">א Hébreu</button><div class="heb-panel" hidden></div>' : '')
+      + (hebOk ? '<div class="heb-panel"><div class="heb-mots" dir="rtl"></div><div class="heb-detail"></div></div>' : '')
+      + '<button type="button" class="sens-btn" hidden onclick="sensToggle(this)">💡 Sens du verset</button><div class="sens-panel" hidden></div>'
       + '</div>').join('');
+    if(hebOk) hebRemplir(livre, chap-1);
+    sensRemplir(livre, chap);
     vs.innerHTML = '<option value="">Verset…</option>' + versets.map((_,i)=>'<option value="'+(i+1)+'">Verset '+(i+1)+'</option>').join('');
     window.scrollTo(0,0);
   }).catch(()=>{ box.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
@@ -3581,18 +3584,15 @@ function hebCharger(livre){
   const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/heb/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
   return Promise.all([pLivre, pLex]).then(r=>r[0]);
 }
-function hebToggle(livre, chapIdx, versIdx, btn){
-  const panel = btn.nextElementSibling;
-  if(!panel.hidden){ panel.hidden = true; return; }
-  panel.hidden = false;
-  if(panel.dataset.ok){ return; }
-  panel.textContent = 'Chargement…';
+function hebRemplir(livre, chapIdx){
   hebCharger(livre).then(c=>{
-    const mots = (c[chapIdx] || [])[versIdx] || [];
-    panel.innerHTML = '<div class="heb-mots" dir="rtl">' + mots.map((m,i)=>
-      '<button type="button" class="heb-mot" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+versIdx+')">'+m[0]+'</button>').join('') + '</div><div class="heb-detail"></div>';
-    panel.dataset.ok = '1';
-  }).catch(()=>{ panel.textContent = "Impossible de charger l'hébreu."; });
+    if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chapIdx+1 !== parseInt(document.getElementById('bibleChap').value,10)) return;
+    document.querySelectorAll('#bibleTexte .heb-panel').forEach((panel,vi)=>{
+      const mots = (c[chapIdx] || [])[vi] || [];
+      panel.querySelector('.heb-mots').innerHTML = mots.map((m,i)=>
+        '<button type="button" class="heb-mot" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+vi+')">'+m[0]+'</button>').join('');
+    });
+  }).catch(()=>{});
 }
 function hebMot(btn, i, livre, chapIdx, versIdx){
   const m = hebCache[livre][chapIdx][versIdx][i];
@@ -3610,3 +3610,29 @@ function hebMot(btn, i, livre, chapIdx, versIdx){
     + (lx[1] ? '<div><b>Sens (anglais) :</b> '+esc(lx[1])+'</div>' : '')
     + (lx[2] ? '<div class="heb-usage"><b>Rendu dans la KJV :</b> '+esc(lx[2])+'</div>' : '');
 }
+
+
+/* =========================================================================
+   SENS DU VERSET — courte explication (rédigée pour l'appli) : ce que le
+   verset enseigne pour un chrétien et pour un lecteur non chrétien.
+   Fichiers bible/sens/<livre>.json, ajoutés au fur et à mesure.
+   ========================================================================= */
+const sensCache = {};
+function sensCharger(livre){
+  if(sensCache[livre]) return Promise.resolve(sensCache[livre]);
+  return fetch('bible/sens/'+livre+'.json').then(r=>{ if(!r.ok) throw 0; return r.json(); })
+    .catch(()=>({})).then(d=>(sensCache[livre]=d));
+}
+function sensRemplir(livre, chap){
+  sensCharger(livre).then(d=>{
+    const ch = d[String(chap)]; if(!ch) return;
+    if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chap !== parseInt(document.getElementById('bibleChap').value,10)) return;
+    document.querySelectorAll('#bibleTexte .bible-vwrap').forEach((w,i)=>{
+      const e = ch[String(i+1)]; if(!e) return;
+      const esc = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      w.querySelector('.sens-panel').innerHTML = '<h4>✝️ Pour un chrétien</h4><p>'+esc(e.c)+'</p><h4>🌍 Pour un lecteur non chrétien</h4><p>'+esc(e.t)+'</p>';
+      w.querySelector('.sens-btn').hidden = false;
+    });
+  });
+}
+function sensToggle(btn){ const p = btn.nextElementSibling; p.hidden = !p.hidden; }

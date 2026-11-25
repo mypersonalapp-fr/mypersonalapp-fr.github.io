@@ -1032,7 +1032,7 @@ function initCloudIfConfigured(){
             }
             state = Object.assign({dateDebut: todayStr(), chapterLog:[], compLog:[], prayers:[], settings:{palette:'dore',bg:'dore'}}, data);
             if(!state.settings) state.settings = {palette:'dore', bg:'dore'};
-            document.getElementById('dateDebut').value = state.dateDebut;
+            { const dd = document.getElementById('dateDebut'); if(dd) dd.value = state.dateDebut; }
             renderLog(); renderComp(); renderPrayers(); compute(); refreshVerseSelects();
             applyAppearance(); updateNotifUI(); renderVideoOfDay(); renderMusicOfDay(); renderBookOfDay(); renderThematicPlans();
             renderSecurityCard(user);
@@ -1055,7 +1055,7 @@ function initCloudIfConfigured(){
                 );
                 if(aDuContenu){
                   state = Object.assign({}, state, localState);
-                  document.getElementById('dateDebut').value = state.dateDebut;
+                  { const dd = document.getElementById('dateDebut'); if(dd) dd.value = state.dateDebut; }
                   renderLog(); renderComp(); renderPrayers(); compute(); refreshVerseSelects();
                   applyAppearance();
                 }
@@ -1266,7 +1266,7 @@ async function loadState(){
       if(raw) state = JSON.parse(raw);
       if(!state.settings) state.settings = {palette:'dore', bg:'dore'};
     }catch(e){}
-    document.getElementById('dateDebut').value = state.dateDebut;
+    { const dd = document.getElementById('dateDebut'); if(dd) dd.value = state.dateDebut; }
     document.getElementById('logDate').value = todayStr();
     renderLog(); renderComp(); renderPrayers(); compute(); refreshVerseSelects();
     applyAppearance(); updateNotifUI(); renderVideoOfDay(); renderMusicOfDay(); renderBookOfDay(); renderThematicPlans();
@@ -1319,7 +1319,7 @@ function applyCachedAppearanceIfAny(){
   }catch(e){}
 }
 function saveSettings(){
-  state.dateDebut = document.getElementById('dateDebut').value;
+  { const dd = document.getElementById('dateDebut'); if(dd) state.dateDebut = dd.value; }
   persist(); compute();
 }
 

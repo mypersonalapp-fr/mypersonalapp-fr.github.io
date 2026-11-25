@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=38">
+<link rel="stylesheet" href="style.css?v=39">
 </head>
 <body>
 
@@ -213,13 +213,6 @@
      et continuer à jouer même en changeant de page, puisque c'est une
      appli "une seule page" (les onglets ne font qu'afficher/masquer des
      blocs, rien n'est jamais rechargé). -->
-<div id="musicCard" class="music-bar no-print" style="display:none;">
-  <button class="music-bar-toggle" onclick="toggleMusicBar()">🙏 Louange &amp; adoration <span id="musicBarArrow">▾</span></button>
-  <div id="musicBarBody" class="music-bar-body">
-    <div id="musicOfDay"></div>
-  </div>
-</div>
-
 <div id="appRoot">
 
 <!-- 1. ACCUEIL — le graphique et la position, priorité à "où j'en suis" -->
@@ -515,47 +508,7 @@
 
   <div id="paramSubtab-general" class="param-subtab">
 
-    <div class="card">
-      <h2>Plus</h2>
-      <div class="plus-links">
-        <button type="button" onclick="showPage('plans')">🕊️ Plans thématiques</button>
-        <button type="button" onclick="showPage('journal-chapitres')">📘 Journal des chapitres</button>
-        <button type="button" onclick="showPage('prieres')">🙏 Mon journal</button>
-        <button type="button" id="navAdminBtn" onclick="showPage('admin')" style="display:none;">🛠️ Espace admin</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <details>
-        <summary>⚙️ Réglages</summary>
-        <div style="margin-top:14px;">
-          <label>Date de début du plan</label>
-          <input type="date" id="dateDebut">
-          <button onclick="saveSettings()">Enregistrer</button>
-        </div>
-      </details>
-    </div>
-
-    <div class="card">
-      <details>
-        <summary>💾 Mes données</summary>
-        <div style="margin-top:14px;">
-          <p class="subnote" style="margin-top:0;">Tes lectures sont déjà en sécurité dans le cloud (si tu es connectée). Ce bouton te permet en plus de garder une copie personnelle sur ton appareil, par exemple avant de changer de téléphone.</p>
-          <button onclick="telechargerMesDonnees()">📥 Télécharger mes données (fichier de sauvegarde)</button>
-        </div>
-      </details>
-    </div>
-
-    <div class="card">
-      <details>
-        <summary>📤 Partager l'appli</summary>
-        <div style="margin-top:14px;">
-          <p class="subnote" style="margin-top:0;">Fais découvrir l'appli à tes proches — ce lien les amène directement dessus, pas besoin d'installer quoi que ce soit pour l'essayer.</p>
-          <button onclick="partagerAppli()">📤 Partager avec des amis</button>
-          <p id="partageCopieMsg" class="security-message" hidden style="margin-top:10px;"></p>
-        </div>
-      </details>
-    </div>
+    <button type="button" id="navAdminBtn" class="admin-link" onclick="showPage('admin')" style="display:none;">🛠️ Espace admin</button>
 
     <div class="card">
       <details>
@@ -679,7 +632,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=38"></script>
+<script src="script.js?v=39"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

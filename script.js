@@ -1717,23 +1717,28 @@ const dailyVerses = [
   { ref:"Psaume 121:1-2", text:"Je lève mes yeux vers les montagnes... D'où me viendra le secours ? Le secours me vient de l'Éternel, qui a fait les cieux et la terre." }
 ];
 
+const VERSET_FIXE = { ref:"Genèse 1:1", text:"Au commencement, Dieu créa les cieux et la terre." };
+
 function renderVerseAndDate(){
-  const dateEl = document.getElementById('todayDate');
-  if(dateEl){
-    const d = new Date();
-    let txt = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    dateEl.textContent = txt.charAt(0).toUpperCase() + txt.slice(1);
-  }
-  const start = new Date(new Date().getFullYear(), 0, 0);
-  const diff = new Date() - start;
-  const dayOfYear = Math.floor(diff / (1000*60*60*24));
-  const v = dailyVerses[dayOfYear % dailyVerses.length];
+  const d = new Date();
+  let txt = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const salut = d.getHours() >= 18 || d.getHours() < 4 ? 'Bonsoir' : 'Bonjour';
+  const greetEl = document.getElementById('topGreeting');
+  if(greetEl) greetEl.innerHTML = salut + '<small>' + txt + '</small>';
+  const start = new Date(d.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((d - start) / (1000*60*60*24));
+  const v = VERSET_FIXE;
   const vt = document.getElementById('verseText');
   const vr = document.getElementById('verseRef');
   if(vt) vt.textContent = "« " + v.text + " »";
   if(vr) vr.textContent = v.ref;
-  // La couleur de la carte tourne toute seule chaque jour (7 tons fixes),
-  // toujours indépendante de la palette choisie dans Paramètres.
+  // Segond 21 et Parole de Vie : protégées par des droits d'auteur, donc en liens.
+  const vv = document.getElementById('verseVersions');
+  if(vv){
+    vv.innerHTML = verseVersionLinks(v.ref)
+      .filter(l => l.label === 'Segond 21' || l.label === 'Parole de Vie')
+      .map(l => '<a href="'+l.url+'" target="_blank" rel="noopener">'+l.label+'</a>').join('');
+  }
   const verseCard = document.querySelector('.verse-card');
   if(verseCard) verseCard.className = 'card verse-card vc' + (dayOfYear % 7);
 }

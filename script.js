@@ -3549,7 +3549,11 @@ function bibleAfficher(){
   bibleLoadLivre(livre).then(c=>{
     if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chap !== parseInt(document.getElementById('bibleChap').value,10)) return;
     const versets = c[chap-1] || [];
-    box.innerHTML = versets.map((t,i)=>'<p class="bible-v" id="bv'+(i+1)+'"><b>'+(i+1)+'</b> '+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>').join('');
+    const esc = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const hebOk = HEB_DISPO.indexOf(livre) >= 0;
+    box.innerHTML = versets.map((t,i)=>'<div class="bible-vwrap"><p class="bible-v" id="bv'+(i+1)+'"><b>'+(i+1)+'</b> '+esc(t)+'</p>'
+      + (hebOk ? '<button type="button" class="heb-btn" onclick="hebToggle('+livre+','+(chap-1)+','+i+',this)">א Hébreu</button><div class="heb-panel" hidden></div>' : '')
+      + '</div>').join('');
     vs.innerHTML = '<option value="">Verset…</option>' + versets.map((_,i)=>'<option value="'+(i+1)+'">Verset '+(i+1)+'</option>').join('');
     window.scrollTo(0,0);
   }).catch(()=>{ box.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
@@ -3561,4 +3565,48 @@ function bibleAller(){
   document.querySelectorAll('.bible-v.sel').forEach(e=>e.classList.remove('sel'));
   el.classList.add('sel');
   el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+
+/* =========================================================================
+   HÉBREU MOT À MOT — Ancien Testament : texte hébreu OSHB (Open Scriptures
+   Hebrew Bible) + lexique de Strong (domaine public / libre). Pour l'instant
+   la Genèse (livre 0) ; les autres livres seront ajoutés au fur et à mesure.
+   ========================================================================= */
+const HEB_DISPO = [0];
+const HEB_PREFIXES = { b:"dans / en", c:"et", d:"le / la / les", k:"comme", l:"à / pour", m:"de / depuis", s:"que / qui", i:"(question)" };
+const hebCache = {}; let hebLex = null;
+function hebCharger(livre){
+  const pLex = hebLex ? Promise.resolve(hebLex) : fetch('bible/heb/lex.json').then(r=>r.json()).then(x=>(hebLex=x));
+  const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/heb/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
+  return Promise.all([pLivre, pLex]).then(r=>r[0]);
+}
+function hebToggle(livre, chapIdx, versIdx, btn){
+  const panel = btn.nextElementSibling;
+  if(!panel.hidden){ panel.hidden = true; return; }
+  panel.hidden = false;
+  if(panel.dataset.ok){ return; }
+  panel.textContent = 'Chargement…';
+  hebCharger(livre).then(c=>{
+    const mots = (c[chapIdx] || [])[versIdx] || [];
+    panel.innerHTML = '<div class="heb-mots" dir="rtl">' + mots.map((m,i)=>
+      '<button type="button" class="heb-mot" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+versIdx+')">'+m[0]+'</button>').join('') + '</div><div class="heb-detail"></div>';
+    panel.dataset.ok = '1';
+  }).catch(()=>{ panel.textContent = "Impossible de charger l'hébreu."; });
+}
+function hebMot(btn, i, livre, chapIdx, versIdx){
+  const m = hebCache[livre][chapIdx][versIdx][i];
+  const lx = (hebLex && hebLex[m[1]]) || ['','',''];
+  const panel = btn.closest('.heb-panel');
+  panel.querySelectorAll('.heb-mot.sel').forEach(e=>e.classList.remove('sel'));
+  btn.classList.add('sel');
+  const pref = (m[2]||'').split('').map(ch=>HEB_PREFIXES[ch]).filter(Boolean).join(' + ');
+  const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  panel.querySelector('.heb-detail').innerHTML =
+    '<div class="heb-big" dir="rtl">'+m[0]+'</div>'
+    + (lx[0] ? '<div><b>Transcription :</b> '+esc(lx[0])+'</div>' : '')
+    + (m[1] ? '<div><b>Strong :</b> H'+m[1]+'</div>' : '')
+    + (pref ? '<div><b>Préfixe :</b> '+esc(pref)+'</div>' : '')
+    + (lx[1] ? '<div><b>Sens (anglais) :</b> '+esc(lx[1])+'</div>' : '')
+    + (lx[2] ? '<div class="heb-usage"><b>Rendu dans la KJV :</b> '+esc(lx[2])+'</div>' : '');
 }

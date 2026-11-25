@@ -1006,3 +1006,13 @@ body{ padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
 .bible-v{ margin:0 0 10px; padding:4px 6px; border-radius:8px; }
 .bible-v b{ color:var(--olive); font-size:.8em; margin-right:4px; vertical-align:super; }
 .bible-v.sel{ background:var(--gold-light); }
+
+.heb-btn{ margin:0 0 8px 6px; padding:4px 12px; border-radius:14px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); font-size:.8rem; cursor:pointer; }
+.heb-panel{ background:var(--cream-alt); border:1px solid var(--gold); border-radius:12px; padding:10px; margin:0 0 12px; }
+.heb-panel[hidden]{ display:none; }
+.heb-mots{ display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start; }
+.heb-mot{ font-size:1.5rem; padding:6px 10px; border-radius:10px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); cursor:pointer; font-family:"Times New Roman",serif; }
+.heb-mot.sel{ background:var(--gold-light); border-width:2px; }
+.heb-detail{ margin-top:10px; font-size:.92rem; line-height:1.5; }
+.heb-big{ font-size:2rem; font-family:"Times New Roman",serif; margin-bottom:4px; }
+.heb-usage{ opacity:.8; font-size:.85rem; }

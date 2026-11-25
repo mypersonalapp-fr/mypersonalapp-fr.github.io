@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=43">
+<link rel="stylesheet" href="style.css?v=46">
 </head>
 <body>
 
@@ -258,18 +258,23 @@
 
 <!-- PLANS THÉMATIQUES -->
 <section id="page-bible" class="page" hidden>
-  <div class="card bible-card">
-    <h2>📖 Bible · Louis Segond 1910</h2>
-    <div class="bible-pick">
-      <select id="bibleLivre" onchange="bibleChangeLivre()" aria-label="Livre"></select>
-      <select id="bibleChap" onchange="bibleAfficher()" aria-label="Chapitre"></select>
-      <select id="bibleVerset" onchange="bibleAller()" aria-label="Verset"></select>
+  <button type="button" id="bibleTitre" class="bible-titre" onclick="biblePickerToggle()">Genèse 1 : 1 ▾</button>
+  <div id="biblePicker" class="bible-picker" hidden>
+    <select id="bibleLivre" onchange="bibleChoixLivre()" aria-label="Livre"></select>
+    <div class="bible-picker-row">
+      <select id="bibleChap" onchange="bibleChoixChap()" aria-label="Chapitre"></select>
+      <select id="bibleVerset" onchange="bibleChoixVerset()" aria-label="Verset"></select>
     </div>
-    <div class="bible-nav">
-      <button type="button" onclick="bibleChapitre(-1)">‹ Précédent</button>
-      <button type="button" onclick="bibleChapitre(1)">Suivant ›</button>
-    </div>
-    <div id="bibleTexte" class="bible-texte"></div>
+  </div>
+  <div class="bible-page">
+    <div class="bible-vtext"><span id="bibleNum" class="bible-num">1</span><span id="bibleTexte"></span></div>
+    <div class="heb-panel" id="bibleHebPanel"><div class="heb-mots" id="bibleHebMots" dir="rtl"></div><div class="heb-detail"></div></div>
+    <div class="sens-box" id="bibleSens" hidden></div>
+  </div>
+  <div class="bible-nav-fixed no-print">
+    <button type="button" onclick="bibleVerset(-1)">‹ Précédent</button>
+    <span id="bibleCompteur">1 / 31</span>
+    <button type="button" onclick="bibleVerset(1)">Suivant ›</button>
   </div>
 </section>
 
@@ -641,7 +646,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=43"></script>
+<script src="script.js?v=46"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

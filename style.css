@@ -1031,3 +1031,51 @@ body{ padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
 .hm-f{ font-family:"Manrope",sans-serif; font-size:.68rem; font-weight:600; direction:ltr; opacity:.85; }
 .verse-heb{ text-align:left; margin-top:10px; }
 .verse-card .heb-detail{ font-style:normal; color:var(--text-dark); }
+
+
+/* =========================================================================
+   PAGE BIBLE — un verset par page
+   ========================================================================= */
+#page-bible{ display:flex; flex-direction:column; gap:14px; padding-bottom:84px; }
+#page-bible[hidden]{ display:none; }
+.bible-titre{
+  align-self:center; background:var(--cream); border:1px solid var(--gold); color:var(--khaki-dark);
+  font-family:"Manrope",sans-serif; font-weight:800; font-size:1.05rem; letter-spacing:.5px;
+  padding:9px 22px; border-radius:24px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.bible-picker{ background:var(--cream); border:1px solid var(--gold); border-radius:16px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+.bible-picker[hidden]{ display:none; }
+.bible-picker-row{ display:flex; gap:8px; }
+.bible-picker select{ flex:1; width:100%; padding:10px; font-size:1rem; border-radius:10px; }
+.bible-page{ display:flex; flex-direction:column; gap:14px; }
+.bible-vtext{
+  background:var(--cream); border:1px solid var(--gold-light); border-radius:20px; padding:20px 18px;
+  font-size:1.3rem; line-height:1.6; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+.bible-num{
+  display:block; width:34px; height:34px; line-height:34px; margin:0 auto 10px; border-radius:50%;
+  background:var(--gold); color:var(--cream); font-weight:800; font-size:.95rem;
+}
+#page-bible .heb-panel{ background:var(--cream-alt); border:1px solid var(--gold-light); border-radius:20px; padding:14px 12px; margin:0; box-shadow:0 4px 16px rgba(0,0,0,.06); }
+#page-bible .heb-panel[hidden]{ display:none; }
+#page-bible .heb-mots{ justify-content:center; }
+.sens-box{ background:var(--gold-light); border-left:5px solid var(--gold); border-radius:16px; padding:12px 16px; font-size:.95rem; line-height:1.55; }
+.sens-box[hidden]{ display:none; }
+.sens-box h4{ margin:0 0 4px; font-size:1rem; color:var(--khaki-dark); }
+.sens-box p{ margin:0; }
+.bible-nav-fixed{
+  position:fixed; left:12px; right:12px; bottom:calc(78px + env(safe-area-inset-bottom)); z-index:90;
+  display:flex; align-items:center; gap:10px; background:var(--cream); border:1px solid var(--gold);
+  border-radius:28px; padding:8px; box-shadow:0 4px 18px rgba(0,0,0,.18);
+}
+.bible-nav-fixed button{ flex:1; padding:12px 8px; border-radius:22px; border:none; background:var(--khaki-dark); color:var(--text-light); font-weight:800; font-size:1rem; cursor:pointer; }
+.bible-nav-fixed span{ font-weight:700; font-size:.85rem; color:var(--khaki-med); min-width:56px; text-align:center; }
+
+.sur-bible .topbar, .sur-bible #syncBadge{ display:none; }
+#page-bible{ padding-bottom:150px; gap:10px; }
+.bible-vtext{ padding:14px 16px; font-size:1.2rem; }
+.bible-num{ width:28px; height:28px; line-height:28px; margin-bottom:6px; font-size:.85rem; }
+#page-bible .heb-panel{ padding:10px 8px; }
+#page-bible .heb-mots{ gap:6px; }
+#page-bible .heb-mot{ padding:4px 8px; }
+#page-bible .hm-h{ font-size:1.25rem; }

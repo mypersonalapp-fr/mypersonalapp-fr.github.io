@@ -2267,6 +2267,7 @@ function showPage(id){
   if(id === 'rapports') renderRapportPreview();
   if(id === 'plans') renderThematicPlans();
   if(id === 'parametres') updateNotifUI();
+  document.body.classList.toggle('sur-bible', id === 'bible');
   if(id === 'bible') bibleInit();
   if(id === 'en-groupe') afficherVueListeGroupes();
   if(id === 'admin'){ renderAvisAdmin(); renderUsersAdmin(); renderSuggestionsAdmin(); }
@@ -3499,80 +3500,6 @@ document.addEventListener('visibilitychange', ()=>{
    PAGE BIBLE — Louis Segond 1910 (domaine public), un fichier par livre
    (bible/lsg/<numéro>.json) chargé seulement quand on ouvre le livre.
    ========================================================================= */
-const BIBLE_LIVRES = Object.keys(chapters);
-const bibleCache = {};
-function bibleLoadLivre(i){
-  if(bibleCache[i]) return Promise.resolve(bibleCache[i]);
-  return fetch('bible/lsg/' + i + '.json').then(r=>{
-    if(!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
-  }).then(d=>{ bibleCache[i] = d.c; return d.c; });
-}
-function bibleSauver(){
-  try{ localStorage.setItem('biblePos', JSON.stringify({
-    l: document.getElementById('bibleLivre').value,
-    c: document.getElementById('bibleChap').value })); }catch(e){}
-}
-function bibleInit(){
-  const sel = document.getElementById('bibleLivre');
-  if(!sel || sel.options.length) return;
-  BIBLE_LIVRES.forEach((n,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=n; sel.appendChild(o); });
-  let pos = null;
-  try{ pos = JSON.parse(localStorage.getItem('biblePos')); }catch(e){}
-  if(pos && BIBLE_LIVRES[pos.l] !== undefined){ sel.value = pos.l; }
-  bibleRemplirChap(pos && pos.c ? parseInt(pos.c,10) : 1);
-  bibleAfficher();
-}
-function bibleRemplirChap(chap){
-  const livre = parseInt(document.getElementById('bibleLivre').value,10);
-  const n = chapters[BIBLE_LIVRES[livre]];
-  const cs = document.getElementById('bibleChap');
-  cs.innerHTML = '';
-  for(let i=1;i<=n;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Chapitre '+i; cs.appendChild(o); }
-  cs.value = Math.min(Math.max(chap||1,1), n);
-}
-function bibleChangeLivre(){ bibleRemplirChap(1); bibleAfficher(); }
-function bibleChapitre(delta){
-  let livre = parseInt(document.getElementById('bibleLivre').value,10);
-  let chap = parseInt(document.getElementById('bibleChap').value,10) + delta;
-  if(chap < 1){ if(livre === 0) return; livre--; chap = chapters[BIBLE_LIVRES[livre]]; }
-  else if(chap > chapters[BIBLE_LIVRES[livre]]){ if(livre === BIBLE_LIVRES.length-1) return; livre++; chap = 1; }
-  document.getElementById('bibleLivre').value = livre;
-  bibleRemplirChap(chap);
-  bibleAfficher();
-}
-function bibleAfficher(){
-  const livre = parseInt(document.getElementById('bibleLivre').value,10);
-  const chap = parseInt(document.getElementById('bibleChap').value,10);
-  const box = document.getElementById('bibleTexte');
-  const vs = document.getElementById('bibleVerset');
-  box.textContent = 'Chargement…';
-  bibleSauver();
-  bibleLoadLivre(livre).then(c=>{
-    if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chap !== parseInt(document.getElementById('bibleChap').value,10)) return;
-    const versets = c[chap-1] || [];
-    const esc = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-    const hebOk = HEB_DISPO.indexOf(livre) >= 0;
-    box.innerHTML = versets.map((t,i)=>'<div class="bible-vwrap"><p class="bible-v" id="bv'+(i+1)+'"><b>'+(i+1)+'</b> '+esc(t)+'</p>'
-      + (hebOk ? '<div class="heb-panel"><div class="heb-mots" dir="rtl"></div><div class="heb-detail"></div></div>' : '')
-      + '<button type="button" class="sens-btn" hidden onclick="sensToggle(this)">💡 Sens du verset</button><div class="sens-panel" hidden></div>'
-      + '</div>').join('');
-    if(hebOk) hebRemplir(livre, chap-1);
-    sensRemplir(livre, chap);
-    vs.innerHTML = '<option value="">Verset…</option>' + versets.map((_,i)=>'<option value="'+(i+1)+'">Verset '+(i+1)+'</option>').join('');
-    window.scrollTo(0,0);
-  }).catch(()=>{ box.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
-}
-function bibleAller(){
-  const v = document.getElementById('bibleVerset').value;
-  const el = v && document.getElementById('bv'+v);
-  if(!el) return;
-  document.querySelectorAll('.bible-v.sel').forEach(e=>e.classList.remove('sel'));
-  el.classList.add('sel');
-  el.scrollIntoView({behavior:'smooth', block:'center'});
-}
-
-
 /* =========================================================================
    HÉBREU MOT À MOT — Ancien Testament : texte hébreu OSHB (Open Scriptures
    Hebrew Bible) + lexique de Strong (domaine public / libre). Pour l'instant
@@ -3584,23 +3511,15 @@ const hebCache = {}; let hebLex = null;
 function hebCharger(livre){
   const pLex = hebLex ? Promise.resolve(hebLex) : fetch('bible/heb/lex.json').then(r=>r.json()).then(x=>(hebLex=x));
   const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/heb/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
-  return Promise.all([pLivre, pLex]).then(r=>r[0]);
+  const pFr = hebFrCache[livre] ? Promise.resolve(1) : fetch('bible/heb/fr-'+livre+'.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{ hebFrCache[livre]=x; });
+  return Promise.all([pLivre, pLex, pFr]).then(r=>r[0]);
 }
-const HEB_FR = { "0:0:0": ["au commencement","il créa","Dieu","(marque du complément)","les cieux","et","la terre"] };
+const hebFrCache = {};
 function hebMotsHtml(livre, chapIdx, vi, mots){
-  const fr = HEB_FR[livre+':'+chapIdx+':'+vi] || [];
+  const fr = ((hebFrCache[livre] || {})[chapIdx+':'+vi]) || [];
   return mots.map((m,i)=>
     '<button type="button" class="heb-mot" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+vi+')"><span class="hm-h">'+m[0]+'</span>'
     + (fr[i] ? '<span class="hm-f">'+fr[i]+'</span>' : '') + '</button>').join('');
-}
-function hebRemplir(livre, chapIdx){
-  hebCharger(livre).then(c=>{
-    if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chapIdx+1 !== parseInt(document.getElementById('bibleChap').value,10)) return;
-    document.querySelectorAll('#bibleTexte .heb-panel').forEach((panel,vi)=>{
-      const mots = (c[chapIdx] || [])[vi] || [];
-      panel.querySelector('.heb-mots').innerHTML = hebMotsHtml(livre, chapIdx, vi, mots);
-    });
-  }).catch(()=>{});
 }
 function hebMot(btn, i, livre, chapIdx, versIdx){
   const m = hebCache[livre][chapIdx][versIdx][i];
@@ -3620,27 +3539,93 @@ function hebMot(btn, i, livre, chapIdx, versIdx){
 }
 
 
+
 /* =========================================================================
-   SENS DU VERSET — courte explication (rédigée pour l'appli) : ce que le
-   verset enseigne pour un chrétien et pour un lecteur non chrétien.
-   Fichiers bible/sens/<livre>.json, ajoutés au fur et à mesure.
+   PAGE BIBLE — un verset par page (Louis Segond 1910), avec l'hébreu mot à
+   mot en dessous et le sens du verset. Boutons Précédent / Suivant.
    ========================================================================= */
-const sensCache = {};
+const BIBLE_LIVRES = Object.keys(chapters);
+const bibleCache = {}, sensCache = {};
+let bibleL = 0, bibleC = 1, bibleV = 1, bibleOk = false;
+function bibleLoadLivre(i){
+  if(bibleCache[i]) return Promise.resolve(bibleCache[i]);
+  return fetch('bible/lsg/' + i + '.json').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(d=>(bibleCache[i] = d.c));
+}
 function sensCharger(livre){
   if(sensCache[livre]) return Promise.resolve(sensCache[livre]);
   return fetch('bible/sens/'+livre+'.json').then(r=>{ if(!r.ok) throw 0; return r.json(); })
     .catch(()=>({})).then(d=>(sensCache[livre]=d));
 }
-function sensRemplir(livre, chap){
-  sensCharger(livre).then(d=>{
-    const ch = d[String(chap)]; if(!ch) return;
-    if(livre !== parseInt(document.getElementById('bibleLivre').value,10) || chap !== parseInt(document.getElementById('bibleChap').value,10)) return;
-    document.querySelectorAll('#bibleTexte .bible-vwrap').forEach((w,i)=>{
-      const e = ch[String(i+1)]; if(!e) return;
-      const esc = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-      w.querySelector('.sens-panel').innerHTML = '<h4>✝️ Pour un chrétien</h4><p>'+esc(e.c)+'</p><h4>🌍 Pour un lecteur non chrétien</h4><p>'+esc(e.t)+'</p>';
-      w.querySelector('.sens-btn').hidden = false;
-    });
+function bibleSauver(){
+  try{ localStorage.setItem('biblePos', JSON.stringify({l:bibleL,c:bibleC,v:bibleV})); }catch(e){}
+}
+function bibleInit(){
+  if(bibleOk){ bibleRendre(); return; }
+  bibleOk = true;
+  const sel = document.getElementById('bibleLivre');
+  BIBLE_LIVRES.forEach((n,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=n; sel.appendChild(o); });
+  let pos = null;
+  try{ pos = JSON.parse(localStorage.getItem('biblePos')); }catch(e){}
+  if(pos && BIBLE_LIVRES[pos.l] !== undefined){
+    bibleL = pos.l; bibleC = Math.min(Math.max(pos.c||1,1), chapters[BIBLE_LIVRES[bibleL]]); bibleV = pos.v||1;
+  }
+  bibleRendre();
+}
+function biblePickerToggle(){ const p = document.getElementById('biblePicker'); p.hidden = !p.hidden; }
+function bibleRemplirChap(){
+  const n = chapters[BIBLE_LIVRES[bibleL]], cs = document.getElementById('bibleChap');
+  cs.innerHTML = '';
+  for(let i=1;i<=n;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Chapitre '+i; cs.appendChild(o); }
+  cs.value = bibleC;
+}
+function bibleChoixLivre(){ bibleL = parseInt(document.getElementById('bibleLivre').value,10); bibleC = 1; bibleV = 1; bibleRendre(); }
+function bibleChoixChap(){ bibleC = parseInt(document.getElementById('bibleChap').value,10); bibleV = 1; bibleRendre(); }
+function bibleChoixVerset(){ bibleV = parseInt(document.getElementById('bibleVerset').value,10); document.getElementById('biblePicker').hidden = true; bibleRendre(); }
+function bibleVerset(delta){
+  bibleLoadLivre(bibleL).then(c=>{
+    let v = bibleV + delta;
+    if(v < 1){
+      if(bibleC > 1){ bibleC--; }
+      else if(bibleL > 0){ bibleL--; bibleC = chapters[BIBLE_LIVRES[bibleL]]; }
+      else return;
+      bibleLoadLivre(bibleL).then(c2=>{ bibleV = c2[bibleC-1].length; bibleRendre(); });
+      return;
+    }
+    if(v > c[bibleC-1].length){
+      if(bibleC < chapters[BIBLE_LIVRES[bibleL]]){ bibleC++; }
+      else if(bibleL < BIBLE_LIVRES.length-1){ bibleL++; bibleC = 1; }
+      else return;
+      bibleV = 1; bibleRendre(); return;
+    }
+    bibleV = v; bibleRendre();
   });
 }
-function sensToggle(btn){ const p = btn.nextElementSibling; p.hidden = !p.hidden; }
+function bibleRendre(){
+  const livre = bibleL, chap = bibleC, vers = bibleV;
+  document.getElementById('bibleLivre').value = livre;
+  bibleRemplirChap();
+  document.getElementById('bibleTitre').textContent = BIBLE_LIVRES[livre] + ' ' + chap + ' : ' + vers + ' ▾';
+  const txt = document.getElementById('bibleTexte');
+  Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null)]).then(r=>{
+    if(livre !== bibleL || chap !== bibleC || vers !== bibleV) return;
+    const versets = r[0][chap-1] || [];
+    txt.textContent = versets[vers-1] || '';
+    document.getElementById('bibleNum').textContent = vers;
+    document.getElementById('bibleCompteur').textContent = vers + ' / ' + versets.length;
+    const vs = document.getElementById('bibleVerset');
+    vs.innerHTML = versets.map((_,i)=>'<option value="'+(i+1)+'">Verset '+(i+1)+'</option>').join('');
+    vs.value = vers;
+    const hp = document.getElementById('bibleHebPanel');
+    const mots = r[2] && r[2][chap-1] && r[2][chap-1][vers-1];
+    hp.hidden = !mots;
+    hp.querySelector('.heb-detail').innerHTML = '';
+    document.getElementById('bibleHebMots').innerHTML = mots ? hebMotsHtml(livre, chap-1, vers-1, mots) : '';
+    const sens = r[1] && r[1][String(chap)] && r[1][String(chap)][String(vers)];
+    const sb = document.getElementById('bibleSens');
+    sb.hidden = !sens;
+    if(sens) sb.innerHTML = '<h4>💡 Sens du verset</h4><p>'+sens.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>';
+    bibleSauver();
+    window.scrollTo(0,0);
+  }).catch(()=>{ txt.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
+}

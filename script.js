@@ -1683,7 +1683,7 @@ function lecturePosition(idx){
   });
 }
 function sensHtml(e){
-  const x = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const x = t => lierRefs(t.replace(/&/g,'&amp;').replace(/</g,'&lt;'));
   return '<p>'+x(e.c)+'</p>'
     + (e.ch ? '<p><b>Pour les chrétiens :</b> '+x(e.ch)+'</p>' : '')
     + (e.auj ? '<p><b>Pour nous aujourd\'hui :</b> '+x(e.auj)+'</p>' : '');
@@ -3886,7 +3886,7 @@ function bibleRendre(){
     const sb = document.getElementById('bibleSens');
     sb.hidden = !sens; document.getElementById('dcbSens').hidden = !sens;
     if(sens){
-      const e = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      const e = x => lierRefs(x.replace(/&/g,'&amp;').replace(/</g,'&lt;'));
       sb.innerHTML = '<p>'+e(sens.c)+'</p>'
         + (sens.ch ? '<p><b>Pour les chrétiens :</b> '+e(sens.ch)+'</p>' : '')
         + (sens.auj ? '<p><b>Pour nous aujourd\'hui :</b> '+e(sens.auj)+'</p>' : '');
@@ -4008,7 +4008,7 @@ function objRendreTexte(){
 function objRendre(){
   const w = objSemaine(), v = objDeLaSemaine(), a = objAppris();
   document.getElementById('objRef').textContent = v.ref;
-  document.getElementById('objSens').textContent = v.sens;
+  document.getElementById('objSens').innerHTML = lierRefs(lexEsc(v.sens));
   const resteJours = 6 - (lectureJourIndex() % 7);
   document.getElementById('objDate').textContent = 'SEMAINE ' + (w+1) + ' · ' + (resteJours ? 'NOUVEAU VERSET DANS ' + resteJours + ' JOUR' + (resteJours > 1 ? 'S' : '') : 'DERNIER JOUR');
   Promise.all([lecturePosition(w*7), lecturePosition(w*7+6)]).then(r=>{
@@ -4061,10 +4061,10 @@ function readerEtude(ref){
   sensBox.innerHTML = '';
   if(e && e.sens){
     const phrases = e.sens.match(/[^.!?]+[.!?]+(?:\s*[»)]+)?(?:\s*\([^)]*\)\.?)?/g) || [e.sens];
-    for(let k = 0; k < phrases.length; k += 3){ const pEl = document.createElement('p'); pEl.textContent = phrases.slice(k, k+3).join(' ').trim(); sensBox.appendChild(pEl); }
+    for(let k = 0; k < phrases.length; k += 3){ const pEl = document.createElement('p'); pEl.innerHTML = lierRefs(lexEsc(phrases.slice(k, k+3).join(' ').trim())); sensBox.appendChild(pEl); }
   }
   document.getElementById('readerTitreEns').textContent = e && e.titre || '';
-  document.getElementById('readerExemple').textContent = e && e.exemple || '';
+  document.getElementById('readerExemple').innerHTML = lierRefs(lexEsc(e && e.exemple || ''));
   const mb = document.getElementById('readerMotsBloc'), box = document.getElementById('readerMots');
   mb.hidden = true; box.innerHTML = ''; mb.querySelector('.heb-detail').innerHTML = '';
   const r = refAnalyse(ref); if(!r) return;
@@ -4134,7 +4134,7 @@ function origRemplir(ou, livre, mots, texteFr, c, v){
   const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   box.innerHTML = notes.map(n=>'<div class="orig-l">'
     + (n.heb ? '<div class="orig-t">« '+esc(n.fr)+' » = <span class="orig-w"'+(lg==='heb'?' dir="rtl"':'')+'>'+esc(n.heb)+'</span>'+(n.tr ? ' <span class="orig-b">('+esc(n.tr)+')</span>' : '')+'</div>' : '')
-    + '<div class="orig-n">'+esc(n.note)+'</div></div>').join('');
+    + '<div class="orig-n">'+lierRefs(esc(n.note))+'</div></div>').join('');
   carte.hidden = false;
 }
 
@@ -4323,4 +4323,30 @@ function lexAllerVerset(l, c, v){
   lexPageRetour = 'lexique';
   showPage('bible');
   bibleL = l; bibleC = c; bibleV = v; bibleRendre();
+}
+
+
+/* =========================================================================
+   RÉFÉRENCES CLIQUABLES — dans les textes (sens, notes, enseignements),
+   « Jean 1:1 », « Hébreux 11:3 », « Psaume 33:9 »… deviennent des liens qui
+   ouvrent la page Bible sur le passage.
+   ========================================================================= */
+let refsRegex = null;
+function lierRefs(html){
+  if(!html) return html;
+  if(!refsRegex){
+    const noms = BIBLE_LIVRES.concat(['Psaume']).sort((a,b)=>b.length-a.length).map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+    refsRegex = new RegExp('(^|[^A-Za-zÀ-ÿ])(' + noms.join('|') + ')\\s+(\\d+)[:.](\\d+)((?:-\\d+)?)', 'g');
+  }
+  return html.replace(refsRegex, (m, avant, livre, c, v, fin)=>{
+    const l = BIBLE_LIVRES.indexOf(livre === 'Psaume' ? 'Psaumes' : livre);
+    if(l < 0) return m;
+    return avant + '<a href="#" class="ref-lien" onclick="allerVerset('+l+','+c+','+v+');return false;">'+livre+' '+c+':'+v+fin+'</a>';
+  });
+}
+function allerVerset(l, c, v){
+  const lecteur = document.getElementById('planReader');
+  if(lecteur && lecteur.classList.contains('open')) closePlanReader();
+  showPage('bible');
+  bibleL = l; bibleC = parseInt(c,10); bibleV = parseInt(v,10); bibleRendre();
 }

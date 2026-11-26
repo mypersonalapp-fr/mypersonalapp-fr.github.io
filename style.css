@@ -1403,3 +1403,6 @@ body[data-bg="nuit"] .bible-fleches button{ background:var(--accent); color:#000
 body[data-bg="nuit"] .lex-compte{ background:#121212; border:1px solid #2B2B2B; }
 body[data-bg="nuit"] .lex-refs-btn, body[data-bg="nuit"] .lex-refs-plus{ background:#1D1D1D; border:1px solid #2B2B2B; }
 body[data-bg="nuit"] .lex-refs a{ color:var(--accent); }
+/* Références bibliques cliquables dans les textes */
+.ref-lien{ color:inherit; text-decoration:underline dotted; text-underline-offset:3px; font-weight:600; }
+body[data-bg="nuit"] .ref-lien{ color:var(--accent); }

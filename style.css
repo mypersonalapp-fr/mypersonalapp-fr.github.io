@@ -1362,3 +1362,14 @@ body[data-bg="nuit"] .bible-versions2 button.sel{ background:var(--accent); colo
 body[data-bg="nuit"] .lex-carte{ background:#121212; border:1px solid #2B2B2B; }
 body[data-bg="nuit"] .lex-lg{ color:var(--accent); }
 .orig-b{ font-weight:600; color:var(--muted); font-size:13px; }
+/* Mot à mot déplacé dans le Lexique : mots marqués d'un astérisque dans le verset */
+#dcbMots, #dcMots{ display:none !important; }
+.lx{ cursor:pointer; border-bottom:1px dotted currentColor; }
+.lx sup{ font-size:.6em; color:var(--gold); margin-left:1px; }
+body[data-bg="nuit"] .lx sup{ color:var(--accent); }
+.lex-ctx{ margin-bottom:8px; }
+.lex-ctx-ref{ font:800 11px "Manrope",sans-serif; letter-spacing:.08em; color:var(--muted); margin-bottom:6px; text-transform:uppercase; }
+.lex-mot-v{ font-family:"Times New Roman",serif; font-size:1.6rem; }
+.lex-sep{ font:800 10px "Manrope",sans-serif; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin:12px 0 6px; padding-top:10px; border-top:1px solid var(--page); }
+.lex-sous{ font-size:13px; color:var(--muted); margin:4px 0 8px; }
+#lexContexte .notes-retour{ margin-bottom:8px; }

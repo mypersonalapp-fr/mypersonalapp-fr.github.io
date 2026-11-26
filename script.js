@@ -1707,6 +1707,7 @@ function afficherVerset(){
       vh.dir = origLangue(pos.l) === 'heb' ? 'rtl' : 'ltr';
       document.getElementById('accMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(pos.l) === 'heb' ? 'HÉBREU' : 'GREC');
       vh.innerHTML = mots ? hebMotsHtml(pos.l, pos.c, pos.v, mots, pos.texte) : '';
+      if(vt && mots) vt.innerHTML = '« ' + versetEtoile(pos.l, pos.c, pos.v, mots, pos.texte) + ' »';
       origRemplir('acc', pos.l, mots, pos.texte, pos.c, pos.v);
     }).catch(()=>{});
     sensCharger(pos.l).then(d=>{
@@ -2343,6 +2344,7 @@ function showPage(id){
   if(id !== 'journal-comprehension' && typeof noteFlush === 'function') noteFlush();
   if(id === 'bible') bibleInit();
   if(id === 'objectif') objRendre();
+  if(id !== 'lexique') lexContexte = null;
   if(id === 'lexique') lexInit();
   document.body.classList.toggle('sur-objectif', id === 'objectif' || id === 'plans' || id === 'lexique');
   if(id === 'en-groupe') afficherVueListeGroupes();
@@ -3839,6 +3841,7 @@ function bibleRendre(){
     const hp = document.getElementById('bibleHebPanel');
     const mots = r[2] && r[2][chap-1] && r[2][chap-1][vers-1];
     document.getElementById('dcbMots').hidden = !mots;
+    if(version === 'lsg' && mots) txt.innerHTML = versetEtoile(livre, chap-1, vers-1, mots, versets[vers-1] || '');
     hp.querySelector('.heb-detail').innerHTML = '';
     document.getElementById('bibleHebMots').dir = origLangue(livre) === 'heb' ? 'rtl' : 'ltr';
     document.getElementById('bibleMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(livre) === 'heb' ? 'HÉBREU' : 'GREC');
@@ -4115,11 +4118,14 @@ function origRemplir(ou, livre, mots, texteFr, c, v){
    ========================================================================= */
 let lexIndex = null, lexTimer = null;
 function lexInit(){
+  const ctx = document.getElementById('lexContexte');
+  if(lexContexte){ Promise.all([hebCharger(lexContexte.livre), bibleLoadLivre(lexContexte.livre)]).then(lexAfficherContexte); }
+  else if(ctx) ctx.hidden = true;
   if(!lexIndex) Promise.all([
     fetch('bible/lexique/fr.json').then(r=>r.json()).then(x=>(lexIndex=x)),
     hebCharger(0), hebCharger(39)
   ]).then(()=>lexChercher()).catch(()=>{ document.getElementById('lexResultats').innerHTML = '<div class="empty">Impossible de charger le lexique. Vérifie ta connexion.</div>'; });
-  setTimeout(()=>{ const i = document.getElementById('lexRecherche'); if(i) i.focus(); }, 100);
+  if(!lexContexte) setTimeout(()=>{ const i = document.getElementById('lexRecherche'); if(i) i.focus(); }, 100);
 }
 function lexNormal(s){ return (s||'').toLowerCase().trim().replace(/’/g,"'").replace(/^(l|d|qu|n|s|j|m|t)'/,''); }
 function lexChercher(){
@@ -4142,17 +4148,87 @@ function lexAfficher(){
   racines.forEach(r=>FINS.forEach(f=>{ const t = r + f; if(t !== q && lexIndex[t]) ajouter(t, 0.9); }));
   const liste = Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0, 8);
   if(!liste.length){ box.innerHTML = '<div class="empty">Aucun mot trouvé. Essaie une autre forme (ex. « aimer » ou « amour »).</div>'; return; }
-  const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  box.innerHTML = liste.map(([s])=>{
+  box.innerHTML = '<div class="lex-sous">Mots hébreux et grecs traduits par « '+lexEsc(q)+' »</div>' + liste.map(([s])=>lexCarteHtml(s)).join('');
+}
+function lexEsc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function lexCarteHtml(s, avant){
+  const esc = lexEsc;
+  {
     const lg = s[0] === 'H' ? 'heb' : 'grc', n = s.slice(1), lx = (origLex[lg] || {})[n];
     if(!lx) return '';
     const defFr = lg === 'heb' && hebLexFr && hebLexFr[n];
-    return '<div class="lex-carte">'
+    return '<div class="lex-carte">' + (avant || '')
       + '<div class="lex-tete"><span class="lex-mot"'+(lg==='heb'?' dir="rtl"':'')+'>'+esc(lx[3] || '')+'</span><span class="lex-lg">'+(lg==='heb'?'HÉBREU':'GREC')+' · '+s+'</span></div>'
       + '<div class="lex-pron">'+esc(lx[0])+'</div>'
       + (lx[4] && lx[4].length ? '<div><b>Traduit dans Segond par :</b> '+esc(lx[4].join(', '))+'</div>' : '')
       + (defFr ? '<div><b>Signification :</b> '+esc(defFr)+'</div>' : (lx[1] ? '<div><b>Signification (Strong, anglais) :</b> '+esc(lx[1])+'</div>' : ''))
       + (lx[5] ? '<div class="lex-occ">Employé '+lx[5]+' fois dans '+(lg==='heb'?"l'Ancien":'le Nouveau')+' Testament</div>' : '')
       + '</div>';
-  }).join('');
+  }
 }
+
+
+/* =========================================================================
+   VERSET AVEC ASTÉRISQUES — dans le texte Segond, les mots importants
+   (verbes, noms, adjectifs) reliés au mot hébreu/grec portent un * ; en les
+   touchant, le Lexique s'ouvre sur ce mot, avec sa forme dans ce verset.
+   ========================================================================= */
+let lexContexte = null, lexPageRetour = 'bible';
+function motImportant(m, lg){
+  const c = m[3] || '';
+  if(lg === 'heb') return /(^|\/)(V|Nc|A)/.test(c.slice(1));
+  return /^(V-|N-(?!PRI)|A-)/.test(c) && !/-P$|-T$/.test(c);
+}
+function versetEtoile(livre, c, v, mots, texte){
+  const esc = lexEsc;
+  if(!mots || !mots.length || !texte) return esc(texte || '');
+  const lg = origLangue(livre);
+  const fr = alignerVerset(livre, c, v, mots, texte);
+  // pour chaque mot français aligné : l'indice du mot d'origine
+  const cibles = [];
+  const VIDES = new Set(['le','la','les','un','une','des','de','du','et','il','elle','ils','au','aux','à','en','que','qui','son','sa','ses','ce','cette']);
+  fr.forEach((t,i)=>{
+    if(!t || !motImportant(mots[i], lg)) return;
+    const parts = t.toLowerCase().replace(/[()]/g,'').split(/[\s']+/).filter(w=>w && !VIDES.has(w));
+    if(parts.length) cibles.push([parts.sort((a,b)=>b.length-a.length)[0], i]);
+  });
+  const re = /[A-Za-zÀ-ÿœæŒÆ]+/g;
+  let out = '', last = 0, mm;
+  const utilises = {};
+  while((mm = re.exec(texte))){
+    const mot = mm[0], low = mot.toLowerCase();
+    const k = cibles.findIndex((x,idx)=>!utilises[idx] && x[0] === low);
+    out += esc(texte.slice(last, mm.index));
+    if(k >= 0){ utilises[k] = 1; out += '<span class="lx" onclick="lexDepuisVerset('+livre+','+c+','+v+','+cibles[k][1]+')">'+esc(mot)+'<sup>*</sup></span>'; }
+    else out += esc(mot);
+    last = mm.index + mot.length;
+  }
+  return out + esc(texte.slice(last));
+}
+function lexDepuisVerset(livre, c, v, i){
+  const pageActuelle = document.querySelector('.page:not([hidden])');
+  lexPageRetour = pageActuelle ? pageActuelle.id.replace('page-','') : 'bible';
+  lexContexte = { livre, c, v, i };
+  showPage('lexique');
+}
+function lexAfficherContexte(){
+  const box = document.getElementById('lexContexte');
+  if(!lexContexte){ box.hidden = true; return; }
+  const { livre, c, v, i } = lexContexte;
+  const lg = origLangue(livre), m = hebCache[livre] && hebCache[livre][c] && hebCache[livre][c][v] && hebCache[livre][c][v][i];
+  if(!m){ box.hidden = true; return; }
+  const esc = lexEsc, texte = texteSegond(livre, c, v);
+  const fr = alignerVerset(livre, c, v, hebCache[livre][c][v], texte)[i];
+  const mf = morphFr(m[3], lg);
+  const ref = BIBLE_LIVRES[livre] + ' ' + (c+1) + ':' + (v+1);
+  const avant = '<div class="lex-ctx">'
+    + '<div class="lex-ctx-ref">'+esc(ref)+(fr ? ' · « '+esc(fr)+' »' : '')+'</div>'
+    + '<div class="lex-ctx-forme"><span class="lex-mot-v"'+(lg==='heb'?' dir="rtl"':'')+'>'+m[0]+'</span> : forme employée dans ce verset</div>'
+    + (mf.txt ? '<div><b>Forme :</b> '+esc(mf.txt)+'</div>' : '')
+    + (mf.temps ? '<div><b>Temps :</b> '+esc(mf.temps)+(TEMPS_AIDE[mf.temps] ? ' — '+esc(TEMPS_AIDE[mf.temps]) : '')+'</div>' : '')
+    + '</div><div class="lex-sep">Le mot dans toute la Bible</div>';
+  box.innerHTML = '<button type="button" class="notes-retour" onclick="lexRetour()">‹ Retour au verset</button>'
+    + (lexCarteHtml((lg==='heb'?'H':'G') + m[1], avant) || '<div class="lex-carte">'+avant+'</div>');
+  box.hidden = false;
+}
+function lexRetour(){ lexContexte = null; showPage(lexPageRetour || 'bible'); }

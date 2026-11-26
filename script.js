@@ -1653,20 +1653,50 @@ function renderPrayers(){
    change automatiquement le lendemain (calculé à partir du jour de l'année,
    donc pas besoin de synchronisation pour que ce soit cohérent).
    ========================================================================= */
-const VERSET_FIXE = { ref:"Genèse 1:1", text:"Au commencement, Dieu créa les cieux et la terre." };
+/* VERSET DU JOUR — la Genèse lue dans l'ordre, un verset par jour depuis
+   LECTURE_DEBUT (objectif-data.js) : jour 1 = Genèse 1:1, jour 2 = 1:2…
+   Avec l'hébreu mot à mot et le sens du verset quand ils existent. */
+function lectureJourIndex(d){
+  d = d || new Date();
+  const p = LECTURE_DEBUT.split('-').map(Number);
+  const n = Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(p[0], p[1]-1, p[2])) / 86400000);
+  return Math.max(0, n);
+}
+function lecturePosition(chapitres, idx){
+  const total = chapitres.reduce((a,c)=>a+c.length, 0);
+  let k = idx % total;
+  for(let c=0; c<chapitres.length; c++){ if(k < chapitres[c].length) return { c, v:k }; k -= chapitres[c].length; }
+  return { c:0, v:0 };
+}
+function sensHtml(e){
+  const x = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  return '<p>'+x(e.c)+'</p>'
+    + (e.ch ? '<p><b>Pour les chrétiens :</b> '+x(e.ch)+'</p>' : '')
+    + (e.auj ? '<p><b>Pour nous aujourd\'hui :</b> '+x(e.auj)+'</p>' : '');
+}
+let versetDuJour = null;
 function afficherVerset(){
   const vt = document.getElementById('verseText');
   const vr = document.getElementById('verseRef');
-  if(vt) vt.textContent = "« " + VERSET_FIXE.text + " »";
-  if(vr) vr.textContent = VERSET_FIXE.ref;
-  const vh = document.getElementById('verseHebMots');
-  if(vh) setTimeout(()=>{
-    hebCharger(0).then(c=>{ vh.innerHTML = hebMotsHtml(0, 0, 0, c[0][0]); }).catch(()=>{});
+  // différé : bibleLoadLivre / hebCharger sont déclarés plus bas dans le fichier
+  setTimeout(()=>bibleLoadLivre(0).then(gen=>{
+    const idx = lectureJourIndex(), pos = lecturePosition(gen, idx);
+    const ref = 'Genèse ' + (pos.c+1) + ':' + (pos.v+1);
+    versetDuJour = { ref, text: gen[pos.c][pos.v] };
+    if(vt) vt.textContent = '« ' + versetDuJour.text + ' »';
+    if(vr) vr.textContent = ref + ' · Jour ' + (idx+1);
+    const vh = document.getElementById('verseHebMots');
+    if(vh) hebCharger(0).then(c=>{
+      const mots = c[pos.c] && c[pos.c][pos.v];
+      document.getElementById('dcMots').hidden = !mots;
+      vh.innerHTML = mots ? hebMotsHtml(0, pos.c, pos.v, mots) : '';
+    }).catch(()=>{});
     sensCharger(0).then(d=>{
-      const e = d['1'] && d['1']['1'], sb = document.getElementById('verseSens');
-      if(e && sb){ sb.hidden = false; sb.innerHTML = '<p>'+e.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>'; }
+      const e = d[String(pos.c+1)] && d[String(pos.c+1)][String(pos.v+1)], sb = document.getElementById('verseSens');
+      document.getElementById('dcSens').hidden = !e;
+      if(sb){ sb.hidden = !e; sb.innerHTML = e ? sensHtml(e) : ''; }
     });
-  }, 0);
+  }).catch(()=>{ if(vt) vt.textContent = 'Impossible de charger le verset du jour. Vérifie ta connexion.'; }), 0);
 }
 
 function renderVerseAndDate(){
@@ -3750,28 +3780,24 @@ function notesRendre(){
 
 
 /* =========================================================================
-   OBJECTIF — un verset à apprendre chaque jour, tiré de la concordance du
-   verset du jour (objectif-data.js). Le même verset toute la journée ; on
-   s'entraîne en cachant des mots, puis on valide. Les versets appris sont
-   enregistrés dans state.objectif (synchronisé comme le reste).
+   OBJECTIF — un verset à apprendre par semaine (objectif-data.js), choisi
+   dans la concordance des 7 versets du jour de la semaine. On s'entraîne
+   en cachant des mots, puis on valide. Suivi dans state.objectif.semaines
+   (synchronisé comme le reste).
    ========================================================================= */
 let objNiv = 0;
-function objJourStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function objDuJour(){
-  const d = new Date();
-  const n = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
-  return OBJECTIF_VERSETS[n % OBJECTIF_VERSETS.length];
-}
-function objAppris(){ if(!state.objectif) state.objectif = { appris:{} }; if(!state.objectif.appris) state.objectif.appris = {}; return state.objectif.appris; }
+function objSemaine(){ return Math.floor(lectureJourIndex() / 7); }
+function objDeLaSemaine(){ return OBJECTIF_SEMAINES[objSemaine() % OBJECTIF_SEMAINES.length]; }
+function objAppris(){ if(!state.objectif) state.objectif = {}; if(!state.objectif.semaines) state.objectif.semaines = {}; return state.objectif.semaines; }
 function objSerie(){
-  const a = objAppris(); const d = new Date(); let n = 0;
-  if(!a[objJourStr(d)]) d.setDate(d.getDate()-1);
-  while(a[objJourStr(d)]){ n++; d.setDate(d.getDate()-1); }
+  const a = objAppris(); let w = objSemaine(), n = 0;
+  if(!a[w]) w--;
+  while(w >= 0 && a[w]){ n++; w--; }
   return n;
 }
 function objNiveau(n){ objNiv = n; objRendreTexte(); }
 function objRendreTexte(){
-  const v = objDuJour(), box = document.getElementById('objTexte');
+  const v = objDeLaSemaine(), box = document.getElementById('objTexte');
   const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   box.innerHTML = v.texte.split(' ').map((m,i)=>{
     const cache = objNiv === 3 || (objNiv === 2 && i % 3 !== 0) || (objNiv === 1 && i % 3 === 2);
@@ -3783,25 +3809,29 @@ function objRendreTexte(){
   document.getElementById('objAide').hidden = objNiv === 0;
 }
 function objRendre(){
-  const v = objDuJour(), a = objAppris(), auj = objJourStr(new Date());
-  document.getElementById('objSource').textContent = OBJECTIF_SOURCE;
+  const w = objSemaine(), v = objDeLaSemaine(), a = objAppris();
   document.getElementById('objRef').textContent = v.ref;
   document.getElementById('objSens').textContent = v.sens;
+  const resteJours = 6 - (lectureJourIndex() % 7);
+  document.getElementById('objDate').textContent = 'SEMAINE ' + (w+1) + ' · ' + (resteJours ? 'NOUVEAU VERSET DANS ' + resteJours + ' JOUR' + (resteJours > 1 ? 'S' : '') : 'DERNIER JOUR');
+  bibleLoadLivre(0).then(gen=>{
+    const d = lecturePosition(gen, w*7), f = lecturePosition(gen, w*7+6);
+    document.getElementById('objSource').textContent = 'Genèse ' + (d.c+1) + ':' + (d.v+1) + ' → ' + (f.c+1) + ':' + (f.v+1);
+  }).catch(()=>{});
   objRendreTexte();
-  const fait = a[auj] === v.ref;
+  const fait = !!a[w];
   const btn = document.getElementById('objValider');
-  btn.textContent = fait ? 'Appris aujourd\'hui ✓' : 'Je le connais par cœur ✓';
+  btn.textContent = fait ? 'Appris cette semaine ✓' : 'Je le connais par cœur ✓';
   btn.classList.toggle('fait', fait);
-  const refs = {}; Object.values(a).forEach(r=>{ refs[r] = 1; });
-  document.getElementById('objNb').textContent = Object.keys(refs).length;
+  const semaines = Object.keys(a).map(Number).sort((x,y)=>y-x);
+  document.getElementById('objNb').textContent = semaines.length;
   document.getElementById('objSerie').textContent = objSerie();
-  const jours = Object.keys(a).sort().reverse();
-  document.getElementById('objHist').innerHTML = jours.length
-    ? jours.map(j=>'<div class="obj-hist-row"><span>'+noteDateTxt(j, true)+'</span><b>'+a[j]+'</b></div>').join('')
+  document.getElementById('objHist').innerHTML = semaines.length
+    ? semaines.map(k=>'<div class="obj-hist-row"><span>Semaine '+(k+1)+'</span><b>'+a[k]+'</b></div>').join('')
     : '<div class="empty">Aucun verset appris pour l\'instant.</div>';
 }
 function objValider(){
-  const a = objAppris(), auj = objJourStr(new Date()), v = objDuJour();
-  if(a[auj] === v.ref) delete a[auj]; else a[auj] = v.ref;
+  const a = objAppris(), w = objSemaine();
+  if(a[w]) delete a[w]; else a[w] = objDeLaSemaine().ref;
   persist(); objRendre();
 }

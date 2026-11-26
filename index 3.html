@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ma Bible">
+<meta name="theme-color" content="#534B32">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Suivi de lecture biblique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,400;0,700;1,400;1,700&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:ital,wght@0,400;0,700;1,400;1,700&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=30">
+</head>
+<body>
+
+<!-- Écran de connexion : visible uniquement si Firebase est configuré et
+     que la personne n'est pas encore connectée. Sans Firebase configuré,
+     l'appli s'ouvre directement (mode local, comme avant), sans aucun
+     écran de connexion. -->
+<div id="loginScreen" class="lock-screen no-print" style="display:none;">
+  <div class="login-bg">
+    <!-- Thème A — Aube dorée -->
+    <div class="theme-layer theme-a">
+      <div class="sunwrap"><div class="rays"></div><div class="sun"></div></div>
+      <div class="mote" style="left:18%; width:5px; height:5px; --drift:14px; animation-duration:9s; animation-delay:0s;"></div>
+      <div class="mote" style="left:32%; width:3px; height:3px; --drift:-10px; animation-duration:12s; animation-delay:2s;"></div>
+      <div class="mote" style="left:55%; width:6px; height:6px; --drift:18px; animation-duration:10s; animation-delay:4s;"></div>
+      <div class="mote" style="left:70%; width:4px; height:4px; --drift:-16px; animation-duration:8s; animation-delay:1.2s;"></div>
+      <div class="mote" style="left:82%; width:3px; height:3px; --drift:10px; animation-duration:11s; animation-delay:3.4s;"></div>
+      <div class="mote" style="left:45%; width:4px; height:4px; --drift:-8px; animation-duration:13s; animation-delay:5.5s;"></div>
+    </div>
+    <!-- Thème B — Ciel nocturne -->
+    <div class="theme-layer theme-b">
+      <div class="moon"></div>
+      <div class="star" style="left:12%; top:12%; width:2px; height:2px; animation-duration:3.2s; animation-delay:.2s;"></div>
+      <div class="star" style="left:22%; top:20%; width:3px; height:3px; animation-duration:4s; animation-delay:1.1s;"></div>
+      <div class="star" style="left:78%; top:14%; width:2px; height:2px; animation-duration:3.6s; animation-delay:.6s;"></div>
+      <div class="star" style="left:85%; top:26%; width:3px; height:3px; animation-duration:2.8s; animation-delay:1.8s;"></div>
+      <div class="star" style="left:8%; top:33%; width:2px; height:2px; animation-duration:4.4s; animation-delay:.9s;"></div>
+      <div class="star" style="left:65%; top:8%; width:2px; height:2px; animation-duration:3.1s; animation-delay:2.2s;"></div>
+      <div class="star" style="left:35%; top:11%; width:2px; height:2px; animation-duration:3.8s; animation-delay:1.5s;"></div>
+      <div class="star" style="left:92%; top:40%; width:2px; height:2px; animation-duration:3.3s; animation-delay:.3s;"></div>
+      <div class="star" style="left:48%; top:30%; width:2px; height:2px; animation-duration:4.1s; animation-delay:2.6s;"></div>
+      <div class="star" style="left:15%; top:44%; width:2px; height:2px; animation-duration:3.5s; animation-delay:1.9s;"></div>
+    </div>
+    <!-- Thème C — Lumière vivante -->
+    <div class="theme-layer theme-c">
+      <div class="bokeh" style="left:10%; top:10%; width:30px; height:30px; --dx:18px; animation-duration:7s; animation-delay:0s;"></div>
+      <div class="bokeh" style="left:70%; top:15%; width:20px; height:20px; --dx:-14px; animation-duration:6s; animation-delay:1.4s;"></div>
+      <div class="bokeh" style="left:85%; top:7%; width:14px; height:14px; --dx:10px; animation-duration:5s; animation-delay:.6s;"></div>
+      <div class="bokeh" style="left:25%; top:26%; width:16px; height:16px; --dx:-12px; animation-duration:8s; animation-delay:2.2s;"></div>
+      <div class="bokeh" style="left:55%; top:5%; width:22px; height:22px; --dx:16px; animation-duration:6.6s; animation-delay:1s;"></div>
+      <div class="bokeh" style="left:40%; top:21%; width:12px; height:12px; --dx:-8px; animation-duration:5.6s; animation-delay:3s;"></div>
+    </div>
+    <!-- Thème D — Vagues abstraites -->
+    <div class="theme-layer theme-d">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+    </div>
+  </div>
+
+  <div class="lock-box">
+    <div class="lock-icon">🔐</div>
+    <h1 class="lock-title">Suivi de lecture</h1>
+    <p class="lock-sub">Connecte-toi pour accéder à tes lectures</p>
+
+    <div class="lock-error" id="loginError" hidden></div>
+
+    <label>Adresse e-mail</label>
+    <input type="email" id="loginEmail" placeholder="ton@email.com" autocomplete="email">
+    <label>Mot de passe</label>
+    <input type="password" id="loginPasswordField" placeholder="Mot de passe" autocomplete="current-password" onkeydown="if(event.key==='Enter') emailSignIn()">
+    <button type="button" onclick="forgotPassword()" class="lock-forgot">Mot de passe oublié ?</button>
+    <p class="lock-hint">Nouvelle ici ? Invente un mot de passe (6 caractères minimum) ci-dessus, puis clique sur « Créer un compte ».</p>
+
+    <button onclick="emailSignIn()">Se connecter</button>
+    <button onclick="emailSignUp()" class="lock-secondary">Créer un compte</button>
+
+    <div class="lock-divider"><span>ou</span></div>
+
+    <button onclick="loginGoogle()" class="lock-google">Se connecter avec Google</button>
+  </div>
+</div>
+
+<div id="appShell" style="display:none;">
+
+<div id="appBgLayer" class="no-print" aria-hidden="true">
+  <div class="theme-layer theme-a">
+    <div class="sunwrap"><div class="rays"></div><div class="sun"></div></div>
+    <div class="mote" style="left:18%; width:5px; height:5px; --drift:14px; animation-duration:9s; animation-delay:0s;"></div>
+    <div class="mote" style="left:32%; width:3px; height:3px; --drift:-10px; animation-duration:12s; animation-delay:2s;"></div>
+    <div class="mote" style="left:55%; width:6px; height:6px; --drift:18px; animation-duration:10s; animation-delay:4s;"></div>
+    <div class="mote" style="left:70%; width:4px; height:4px; --drift:-16px; animation-duration:8s; animation-delay:1.2s;"></div>
+    <div class="mote" style="left:82%; width:3px; height:3px; --drift:10px; animation-duration:11s; animation-delay:3.4s;"></div>
+    <div class="mote" style="left:45%; width:4px; height:4px; --drift:-8px; animation-duration:13s; animation-delay:5.5s;"></div>
+  </div>
+  <div class="theme-layer theme-b">
+    <div class="moon"></div>
+    <div class="star" style="left:12%; top:8%; width:2px; height:2px; animation-duration:3.2s; animation-delay:.2s;"></div>
+    <div class="star" style="left:22%; top:15%; width:3px; height:3px; animation-duration:4s; animation-delay:1.1s;"></div>
+    <div class="star" style="left:78%; top:10%; width:2px; height:2px; animation-duration:3.6s; animation-delay:.6s;"></div>
+    <div class="star" style="left:85%; top:20%; width:3px; height:3px; animation-duration:2.8s; animation-delay:1.8s;"></div>
+    <div class="star" style="left:8%; top:26%; width:2px; height:2px; animation-duration:4.4s; animation-delay:.9s;"></div>
+    <div class="star" style="left:65%; top:5%; width:2px; height:2px; animation-duration:3.1s; animation-delay:2.2s;"></div>
+    <div class="star" style="left:35%; top:9%; width:2px; height:2px; animation-duration:3.8s; animation-delay:1.5s;"></div>
+    <div class="star" style="left:92%; top:32%; width:2px; height:2px; animation-duration:3.3s; animation-delay:.3s;"></div>
+    <div class="star" style="left:48%; top:22%; width:2px; height:2px; animation-duration:4.1s; animation-delay:2.6s;"></div>
+    <div class="star" style="left:15%; top:35%; width:2px; height:2px; animation-duration:3.5s; animation-delay:1.9s;"></div>
+  </div>
+  <div class="theme-layer theme-c">
+    <div class="bokeh" style="left:10%; top:8%; width:30px; height:30px; --dx:18px; animation-duration:7s; animation-delay:0s;"></div>
+    <div class="bokeh" style="left:70%; top:12%; width:20px; height:20px; --dx:-14px; animation-duration:6s; animation-delay:1.4s;"></div>
+    <div class="bokeh" style="left:85%; top:6%; width:14px; height:14px; --dx:10px; animation-duration:5s; animation-delay:.6s;"></div>
+    <div class="bokeh" style="left:25%; top:20%; width:16px; height:16px; --dx:-12px; animation-duration:8s; animation-delay:2.2s;"></div>
+    <div class="bokeh" style="left:55%; top:4%; width:22px; height:22px; --dx:16px; animation-duration:6.6s; animation-delay:1s;"></div>
+    <div class="bokeh" style="left:40%; top:16%; width:12px; height:12px; --dx:-8px; animation-duration:5.6s; animation-delay:3s;"></div>
+  </div>
+  <div class="theme-layer theme-d">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+</div>
+
+<div class="topbar no-print">
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">☰</button>
+  <h1 style="flex:1; margin:0;">SUIVI DE LECTURE</h1>
+</div>
+
+<nav id="sideMenu" class="side-menu no-print">
+  <div class="side-menu-title">Menu</div>
+  <button data-page="accueil" class="active" onclick="showPage('accueil')">🏠 Accueil</button>
+  <button data-page="vision-board" onclick="showPage('vision-board')">🌟 Vision Board</button>
+  <button data-page="journal-chapitres" onclick="showPage('journal-chapitres')">📘 Journal des chapitres</button>
+  <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')">📖 Mes notes</button>
+  <button data-page="prieres" onclick="showPage('prieres')">🙏 Mon journal</button>
+  <button data-page="plans" onclick="showPage('plans')">🕊️ Plans thématiques</button>
+  <button data-page="en-groupe" onclick="showPage('en-groupe')">🧑‍🤝‍🧑 En groupe</button>
+  <button data-page="rapports" onclick="showPage('rapports')">📄 Rapports</button>
+  <button data-page="parametres" onclick="showPage('parametres')">⚙️ Paramètres</button>
+  <button data-page="admin" id="navAdminBtn" onclick="showPage('admin')" style="display:none;">🛠️ Espace admin</button>
+</nav>
+<div id="menuOverlay" class="menu-overlay no-print" onclick="toggleMenu()"></div>
+
+<!-- Proposé une seule fois, à la toute première ouverture (ou tant qu'on n'a
+     pas répondu) : demande si on accepte les rappels de lecture. -->
+<div id="notifPromptOverlay" class="notif-prompt-overlay no-print" hidden>
+  <div class="notif-prompt-box">
+    <div class="notif-prompt-icon">🔔</div>
+    <h2>Activer les rappels de lecture ?</h2>
+    <p class="subnote">Reçois une petite notification si tu n'as pas enregistré de lecture depuis quelques jours. Tu pourras changer d'avis à tout moment dans Paramètres → Rappels.</p>
+    <button onclick="repondrePromptNotif(true)">🔔 Activer les rappels</button>
+    <button onclick="repondrePromptNotif(false)" style="background:none; color:var(--khaki-med);">Plus tard</button>
+  </div>
+</div>
+
+<!-- Demande d'avis 5 étoiles — affichée une fois à 7 jours, 1 mois et 3 mois
+     après la création du compte (une seule fois par palier). -->
+<div id="avisPromptOverlay" class="notif-prompt-overlay no-print" hidden>
+  <div class="notif-prompt-box">
+    <div class="notif-prompt-icon">⭐</div>
+    <h2>Ton avis nous aide !</h2>
+    <p class="subnote" id="avisPromptSousTitre">Comment trouves-tu l'application pour l'instant ?</p>
+    <div class="avis-etoiles" id="avisEtoiles">
+      <span class="avis-etoile" data-valeur="1" onclick="choisirEtoile(1)">★</span>
+      <span class="avis-etoile" data-valeur="2" onclick="choisirEtoile(2)">★</span>
+      <span class="avis-etoile" data-valeur="3" onclick="choisirEtoile(3)">★</span>
+      <span class="avis-etoile" data-valeur="4" onclick="choisirEtoile(4)">★</span>
+      <span class="avis-etoile" data-valeur="5" onclick="choisirEtoile(5)">★</span>
+    </div>
+    <textarea id="avisCommentaire" placeholder="Un commentaire ? (facultatif)" rows="3"></textarea>
+    <button onclick="envoyerAvis()">Envoyer mon avis</button>
+    <button onclick="reporterAvis()" style="background:none; color:var(--khaki-med);">Plus tard</button>
+  </div>
+</div>
+
+<!-- Suggestion mensuelle de sujet — une fois par mois calendaire. -->
+<div id="suggestionPromptOverlay" class="notif-prompt-overlay no-print" hidden>
+  <div class="notif-prompt-box">
+    <div class="notif-prompt-icon">🗣️</div>
+    <h2>Quel sujet ce mois-ci ?</h2>
+    <p class="subnote">Quel sujet aimerais-tu étudier ou approfondir ce mois-ci ?</p>
+    <textarea id="suggestionTexte" placeholder="Ex : le pardon, la prière, l'espérance..." rows="3"></textarea>
+    <button onclick="envoyerSuggestion()">Envoyer ma suggestion</button>
+    <button onclick="reporterSuggestion()" style="background:none; color:var(--khaki-med);">Plus tard</button>
+  </div>
+</div>
+
+<div id="syncBadge" class="syncbadge local no-print">⚪ Mode local (non synchronisé)</div>
+
+<!-- Musique de fond — en dehors des pages (#appRoot) pour rester à l'écran
+     et continuer à jouer même en changeant de page, puisque c'est une
+     appli "une seule page" (les onglets ne font qu'afficher/masquer des
+     blocs, rien n'est jamais rechargé). -->
+<div id="musicCard" class="music-bar no-print" style="display:none;">
+  <button class="music-bar-toggle" onclick="toggleMusicBar()">🙏 Louange &amp; adoration <span id="musicBarArrow">▾</span></button>
+  <div id="musicBarBody" class="music-bar-body">
+    <div id="musicOfDay"></div>
+  </div>
+</div>
+
+<div id="appRoot">
+
+<!-- 1. ACCUEIL — le graphique et la position, priorité à "où j'en suis" -->
+<section id="page-accueil" class="page">
+
+  <div id="todayDate" class="today-date"></div>
+
+  <div class="card verse-card">
+    <h2>✝️ Verset du jour</h2>
+    <div class="verse-text" id="verseText">...</div>
+    <div class="verse-ref" id="verseRef"></div>
+    <div class="verse-source">Louis Segond, 1910 (domaine public)</div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi taux"><div class="label">Taux</div><div class="value" id="kpiTaux">0%</div></div>
+    <div class="kpi rest"><div class="label">Ch. restants</div><div class="value" id="kpiRestants">-</div></div>
+    <div class="kpi pages"><div class="label">Pages rest.</div><div class="value" id="kpiPages">-</div></div>
+  </div>
+
+  <div class="card-row-2col">
+    <div class="card compact" id="objectifCard">
+      <h2>🎯 Objectif du jour</h2>
+      <div class="banner banner-compact" id="banner">...</div>
+      <details class="compact-details">
+        <summary>Voir le détail</summary>
+        <div class="detail" id="detail"></div>
+        <div class="reminder" id="reminder" style="display:none;"></div>
+      </details>
+    </div>
+
+    <div class="card compact" id="booksCard" style="display:none;">
+      <h2>📚 Lecture chrétienne</h2>
+      <div id="bookOfDay"></div>
+    </div>
+  </div>
+
+  <div class="card compact" id="videoCard" style="display:none;">
+    <h2>🎥 Message du jour</h2>
+    <div id="videoOfDay"></div>
+  </div>
+
+  <div class="card compact" id="visionBoardPreviewCard">
+    <h2>🌟 Vision Board</h2>
+    <div id="visionBoardPreview"></div>
+  </div>
+
+</section>
+
+<!-- VISION BOARD -->
+<section id="page-vision-board" class="page" hidden>
+
+  <div id="visionBoardSansCloud" class="card">
+    <h2>🌟 Vision Board</h2>
+    <div class="empty">Connecte-toi à ton compte (onglet Paramètres → Sécurité) pour utiliser le Vision Board : tes images sont gardées en ligne pour ne jamais les perdre.</div>
+  </div>
+
+  <div id="visionBoardContenu" hidden>
+    <div class="card">
+      <h2>🌟 Ajouter à mon Vision Board</h2>
+      <div class="subnote">Une image, un titre, le verset qui l'accompagne, et la date à laquelle tu attends que ça se réalise — pour le voir et le confesser chaque jour.</div>
+      <label>Image (photo, PNG, JPEG ou PDF)</label>
+      <input type="file" id="vbImageInput" accept="image/*,.pdf">
+      <label>Titre</label>
+      <input type="text" id="vbTitreInput" placeholder="Ex. Ma maison">
+      <label>Verset lié</label>
+      <textarea id="vbVerseInput" placeholder="Ex. Marc 11:24 — Tout ce que vous demanderez..."></textarea>
+      <label>Date attendue</label>
+      <input type="date" id="vbDateInput">
+      <button onclick="ajouterVisionBoard()" id="vbAjouterBtn">➕ Ajouter à mon Vision Board</button>
+      <div id="vbMsg" class="security-message" hidden></div>
+    </div>
+
+    <div id="visionBoardListe"></div>
+  </div>
+
+</section>
+
+<!-- PLANS THÉMATIQUES -->
+<section id="page-plans" class="page" hidden>
+  <div class="card">
+    <h2>🕊️ Plans thématiques</h2>
+    <div class="subnote">7 jours par plan, uniquement des versets bibliques + une prière. Touche une tuile pour t'y plonger en plein écran.</div>
+  </div>
+  <div id="plansGrid" class="plans-grid"></div>
+</section>
+
+<!-- 2. JOURNAL DES CHAPITRES -->
+<section id="page-journal-chapitres" class="page" hidden>
+  <div class="card">
+    <h2>📘 Journal des chapitres</h2>
+    <div class="subnote">Une ligne par lecture. Pour rattraper plusieurs chapitres, mets "de" et "à" différents (ex: 1 à 5). Pour un seul chapitre, mets le même chiffre des deux côtés.</div>
+    <label>Livre</label>
+    <select id="logLivre" onchange="onLogLivreChange()"></select>
+    <div class="row2">
+      <div><label>Chapitre de</label><select id="logDe"></select></div>
+      <div><label>Chapitre à</label><select id="logA"></select></div>
+    </div>
+    <label>Date</label>
+    <input type="date" id="logDate">
+    <button id="logSubmitBtn" onclick="addLog()">Ajouter au journal</button>
+    <button id="logAnnulerBtn" onclick="annulerModifLog()" style="background:none; color:var(--khaki-med); display:none;">Annuler la modification</button>
+    <p style="font-size:.78rem; font-style:italic; opacity:.7; margin:10px 0 0;">💡 N'oublie pas de prendre des notes dans « Mes notes ».</p>
+    <div id="logList" style="margin-top:12px;"></div>
+  </div>
+</section>
+
+<!-- 3a. JOURNAL DE COMPRÉHENSION -->
+<section id="page-journal-comprehension" class="page" hidden>
+  <div class="card">
+    <h2>📖 Mes notes</h2>
+    <div class="subnote">Choisis le livre, le chapitre, et le verset si tu veux préciser.</div>
+    <label>Livre</label>
+    <select id="compLivre" onchange="onCompLivreChange()"></select>
+    <label>Chapitre</label>
+    <select id="compChapitre" onchange="onCompChapitreChange()"></select>
+    <label>Verset (optionnel)</label>
+    <select id="compVerset"></select>
+    <label>Ce que j'ai compris</label>
+    <textarea id="compNote" placeholder="Écris ce que tu retiens..."></textarea>
+    <button onclick="addComp()">Ajouter au journal</button>
+    <div id="compList" style="margin-top:12px;"></div>
+  </div>
+</section>
+
+<!-- 3b. PRIÈRES -->
+<section id="page-prieres" class="page" hidden>
+  <div class="card">
+    <h2>🙏 Mon journal</h2>
+    <label>Livre</label>
+    <select id="prayerLivre" onchange="onPrayerLivreChange()"></select>
+    <label>Chapitre</label>
+    <select id="prayerChapitre" onchange="onPrayerChapitreChange()"></select>
+    <label>Verset (optionnel)</label>
+    <select id="prayerVerse"></select>
+    <label>Ma prière</label>
+    <textarea id="prayerText" placeholder="Écris ta prière..."></textarea>
+    <button onclick="addPrayer()">Ajouter ma prière</button>
+    <div id="prayerList" style="margin-top:12px;"></div>
+  </div>
+</section>
+
+<!-- 4. RAPPORTS -->
+<!-- 4b. EN GROUPE -->
+<section id="page-en-groupe" class="page" hidden>
+
+  <div id="groupeSansCloud" class="card">
+    <h2>🧑‍🤝‍🧑 En groupe</h2>
+    <div class="empty">Connecte-toi à ton compte (onglet Paramètres → Sécurité) pour utiliser les groupes : ils ont besoin d'internet pour que tout le monde voie les mêmes informations en même temps.</div>
+  </div>
+
+  <div id="groupeContenu" hidden>
+
+    <!-- Vue 1 : liste des groupes -->
+    <div id="groupeVueListe" class="groupe-vue">
+      <div class="card">
+        <h2>🧑‍🤝‍🧑 En groupe</h2>
+        <div class="subnote">Retrouve-toi avec d'autres personnes pour prier ou lire un livre ensemble.</div>
+        <label>Ton nom affiché dans les groupes</label>
+        <input type="text" id="groupeMonNomInput" placeholder="Ex. Ashley" onchange="setMonNomGroupe(this.value)">
+      </div>
+
+      <div class="card">
+        <button onclick="ouvrirCreationGroupe()">➕ Créer un groupe</button>
+        <button onclick="ouvrirRejoindreGroupe()" style="background:var(--khaki-med);">🔗 Rejoindre avec un lien ou un code</button>
+
+        <div id="groupeCreationBox" hidden style="margin-top:12px;">
+          <label>Nom du groupe</label>
+          <input type="text" id="groupeNouveauNom" placeholder="Ex. Groupe de prière du mardi">
+          <button onclick="creerGroupe()">Créer et inviter</button>
+        </div>
+
+        <div id="groupeRejoindreBox" hidden style="margin-top:12px;">
+          <label>Colle ici le code ou le lien reçu</label>
+          <input type="text" id="groupeCodeInput" placeholder="Code ou lien d'invitation">
+          <button onclick="rejoindreParSaisie()">Rejoindre</button>
+          <div id="groupeRejoindreMsg" class="security-message" hidden></div>
+        </div>
+      </div>
+
+      <div id="groupesListe"></div>
+    </div>
+
+    <!-- Vue 2 : détail d'un groupe -->
+    <div id="groupeVueDetail" class="groupe-vue" hidden>
+      <div class="card">
+        <button onclick="afficherVueListeGroupes()" style="background:none; color:var(--khaki-med); padding:4px 0;">← Retour à mes groupes</button>
+        <h2 id="groupeDetailNom">Groupe</h2>
+        <div id="groupeMembresListe" class="groupe-membres"></div>
+        <button onclick="ouvrirInviter()">➕ Inviter des personnes</button>
+        <div id="groupeInviterBox" hidden style="margin-top:12px;">
+          <div class="subnote">Envoie ce lien par SMS, WhatsApp ou mail : la personne clique dessus, se connecte à l'appli, et rejoint automatiquement le groupe.</div>
+          <input type="text" id="groupeLienInvitation" readonly onclick="this.select()">
+          <button onclick="partagerLienInvitation()">📤 Partager le lien</button>
+          <button onclick="copierLienInvitation()" style="background:var(--khaki-med);">Copier le lien</button>
+          <div id="groupeCopieMsg" class="security-message" hidden></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Nouvelle rencontre</h2>
+        <label>Que voulez-vous faire ?</label>
+        <select id="groupeTypeSelect" onchange="onGroupeTypeChange()">
+          <option value="">— Choisir —</option>
+          <option value="priere">🙏 Sujet de prière</option>
+          <option value="lecture">📖 Lecture</option>
+        </select>
+        <button id="groupeDemarrerBtn" onclick="demarrerNouvelleRencontre()" hidden>Démarrer</button>
+      </div>
+
+      <div class="card">
+        <h2>Historique des rencontres</h2>
+        <div id="groupeHistorique"><div class="empty">Aucune rencontre pour l'instant.</div></div>
+        <button onclick="afficherRapportGroupe()">📄 Voir le rapport du groupe</button>
+      </div>
+
+      <div id="groupeRapportBox" hidden></div>
+    </div>
+
+    <!-- Vue 3 : une rencontre (prière ou lecture) -->
+    <div id="groupeVueSession" class="groupe-vue" hidden>
+      <div class="card">
+        <button onclick="retourAuGroupe()" style="background:none; color:var(--khaki-med); padding:4px 0;">← Retour au groupe</button>
+        <h2 id="groupeSessionTitre">Rencontre</h2>
+        <div id="groupeSessionClotureeMsg" class="subnote" hidden>Cette rencontre est terminée (lecture seule).</div>
+      </div>
+
+      <div id="sessionPriereChamps" class="card" hidden>
+        <label>Pour qui est cette prière ?</label>
+        <input type="text" id="sessionQuiInput" oninput="majSessionChamp('qui', this.value)">
+        <label>Sujet</label>
+        <textarea id="sessionSujetInput" placeholder="Écris le sujet de prière..." oninput="majSessionChamp('sujet', this.value)"></textarea>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; margin-top:12px;">
+          <input type="checkbox" id="sessionPriereFaiteCheckbox" style="width:auto;" onchange="majSessionChamp('priereFaite', this.checked)"> Prière faite
+        </label>
+      </div>
+
+      <div id="sessionLectureChamps" class="card" hidden>
+        <label>Date</label>
+        <input type="date" id="sessionDateInput" onchange="majSessionChamp('date', this.value)">
+        <label>Titre du livre</label>
+        <input type="text" id="sessionLivreInput" placeholder="Titre du livre" oninput="onSessionLivreInput(this)">
+        <div id="sessionLivreRecherche" class="subnote" hidden>Recherche du livre...</div>
+        <div id="sessionLivreTrouve" class="stats-grid" style="grid-template-columns:1fr;" hidden>
+          <div class="stat-tile">
+            <div class="stat-tile-value" id="sessionLivrePagesValeur">—</div>
+            <div class="stat-tile-label">pages (trouvé automatiquement)</div>
+          </div>
+        </div>
+        <div id="sessionPagesManuelBox" hidden>
+          <label>Livre non reconnu — indique le nombre de pages</label>
+          <input type="number" id="sessionPagesManuelInput" min="1" onchange="enregistrerPagesManuelles(this)">
+        </div>
+
+        <label style="margin-top:14px;">Page actuelle du groupe</label>
+        <input type="number" id="sessionPageActuelleInput" min="0" onchange="majSessionPageActuelle(this.value)">
+        <div class="chapbar-row" style="margin-top:6px;">
+          <div class="chapbar-track"><div id="sessionJaugeFill" class="chapbar-fill" style="width:0%"></div></div>
+          <div id="sessionJaugeTexte" class="chapbar-value">0%</div>
+        </div>
+      </div>
+
+      <div id="sessionEchangesCard" class="card" hidden>
+        <h2>Les échanges</h2>
+        <div id="sessionEchangesListe" class="groupe-echanges"><div class="empty">Aucun message pour l'instant.</div></div>
+        <textarea id="sessionEchangeInput" placeholder="Écris ton message..."></textarea>
+        <button onclick="envoyerEchange()">Ajouter mon message</button>
+      </div>
+
+      <div class="card">
+        <h2>Présence</h2>
+        <div id="sessionPresenceListe" class="groupe-membres"></div>
+      </div>
+
+      <button id="groupeClotureBtn" onclick="cloturerRencontre()">✅ Clôturer cette rencontre</button>
+      <button id="groupeContinuerBtn" onclick="continuerLecture(sessionActuelle.id)" hidden>🔄 Continuer cette lecture (nouvelle rencontre)</button>
+    </div>
+
+  </div>
+</section>
+
+<section id="page-rapports" class="page" hidden>
+  <div class="card no-print">
+    <h2>📄 Mon rapport</h2>
+    <div class="subnote">Ce que tu vois ci-dessous est ton rapport complet. Le bouton l'enregistre en PDF ou l'imprime.</div>
+    <button onclick="printReport()">Exporter / Imprimer mon rapport</button>
+  </div>
+  <div id="rapportPreview"></div>
+</section>
+
+<!-- ESPACE ADMIN — visible uniquement pour le compte gérant l'application
+     (vérifié côté script.js ET côté règles Firestore : même sans ce bouton,
+     personne d'autre ne peut lire cette collection). -->
+<section id="page-admin" class="page" hidden>
+  <div class="card">
+    <h2>🛠️ Espace admin</h2>
+    <div class="subnote">Visible uniquement sur ton compte.</div>
+    <button onclick="window.print()" class="no-print">Imprimer / exporter tout en PDF</button>
+  </div>
+  <div class="card">
+    <h2>👥 Comptes inscrits</h2>
+    <div id="usersAdminListe" style="margin-top:12px;"></div>
+  </div>
+  <div class="card">
+    <h2>⭐ Avis reçus</h2>
+    <div id="avisAdminListe" style="margin-top:12px;"></div>
+  </div>
+  <div class="card">
+    <h2>🗣️ Suggestions de sujets</h2>
+    <div id="suggestionsAdminListe" style="margin-top:12px;"></div>
+  </div>
+</section>
+
+<!-- 5. PARAMÈTRES -->
+<section id="page-parametres" class="page" hidden>
+
+  <div class="subtabs no-print">
+    <button type="button" class="subtab-btn active" data-subtab="general" onclick="showParamSubtab('general')">Réglage général</button>
+    <button type="button" class="subtab-btn" id="securiteTabBtn" data-subtab="securite" onclick="showParamSubtab('securite')" style="display:none;">🔒 Sécurité</button>
+  </div>
+
+  <div id="paramSubtab-general" class="param-subtab">
+
+    <div class="card">
+      <details>
+        <summary>⚙️ Réglages</summary>
+        <div style="margin-top:14px;">
+          <label>Date de début du plan</label>
+          <input type="date" id="dateDebut">
+          <button onclick="saveSettings()">Enregistrer</button>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>💾 Mes données</summary>
+        <div style="margin-top:14px;">
+          <p class="subnote" style="margin-top:0;">Tes lectures sont déjà en sécurité dans le cloud (si tu es connectée). Ce bouton te permet en plus de garder une copie personnelle sur ton appareil, par exemple avant de changer de téléphone.</p>
+          <button onclick="telechargerMesDonnees()">📥 Télécharger mes données (fichier de sauvegarde)</button>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>📤 Partager l'appli</summary>
+        <div style="margin-top:14px;">
+          <p class="subnote" style="margin-top:0;">Fais découvrir l'appli à tes proches — ce lien les amène directement dessus, pas besoin d'installer quoi que ce soit pour l'essayer.</p>
+          <button onclick="partagerAppli()">📤 Partager avec des amis</button>
+          <p id="partageCopieMsg" class="security-message" hidden style="margin-top:10px;"></p>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>🎨 Apparence</summary>
+        <div style="margin-top:14px;">
+          <label>Palette de couleurs</label>
+          <select id="paletteSelect" onchange="setPalette(this.value)">
+            <option value="dore">Doré (classique)</option>
+            <option value="bleu">Bleu nuit</option>
+            <option value="rose">Rosé</option>
+            <option value="vert">Vert forêt</option>
+            <option value="violet">Violette</option>
+            <option value="corail">Corail</option>
+            <option value="turquoise">Turquoise</option>
+            <option value="bordeaux">Bordeaux</option>
+            <option value="anthracite">Anthracite</option>
+            <option value="menthe">Menthe</option>
+            <option value="noir">Noir</option>
+            <option value="gris">Gris</option>
+            <option value="blanc">Blanc</option>
+          </select>
+          <label style="margin-top:16px;">Fond d'écran</label>
+          <select id="bgSelect" onchange="setBackground(this.value)">
+            <option value="sombre">🌙 Sombre</option>
+            <option value="clair">☀️ Clair (blanc)</option>
+            <option value="auto">🔄 Personnalisé — change chaque jour (60 ambiances)</option>
+            <option value="dore">Doré (classique)</option>
+            <option value="mer">Mer</option>
+            <option value="plage">Plage</option>
+            <option value="nuages">Nuages</option>
+            <option value="ciel">Ciel</option>
+            <option value="aurore">Aurore boréale</option>
+            <option value="noir">⚫ Noir</option>
+            <option value="gris">⬜ Gris</option>
+            <option value="aube">🌅 Aube dorée (animé)</option>
+            <option value="nuit">🌙 Ciel nocturne (animé)</option>
+            <option value="lumiere">✨ Lumière vivante (animé)</option>
+            <option value="vagues">🌊 Vagues abstraites (animé)</option>
+          </select>
+
+          <label style="margin-top:16px;">Police de caractères</label>
+          <select id="fontSelect" onchange="setFontFamily(this.value)">
+            <option value="default">Avenir (par défaut)</option>
+            <option value="opensans">Open Sans</option>
+            <option value="lato">Lato</option>
+            <option value="poppins">Poppins</option>
+            <option value="nunito">Nunito</option>
+            <option value="merriweather">Merriweather</option>
+            <option value="playfair">Playfair Display</option>
+            <option value="georgia">Georgia</option>
+            <option value="times">Times New Roman</option>
+            <option value="verdana">Verdana</option>
+            <option value="courier">Courier New</option>
+            <option value="comic">Comic Sans MS</option>
+            <option value="arial">Arial</option>
+            <option value="gothique">Gothique</option>
+          </select>
+          <label style="margin-top:16px;">Style du texte</label>
+          <select id="fontStyleSelect" onchange="setFontStyle(this.value)">
+            <option value="normal">Normal</option>
+            <option value="gras">Gras</option>
+            <option value="italique">Italique</option>
+            <option value="gras-italique">Gras italique</option>
+          </select>
+          <label style="margin-top:16px;">Taille du texte</label>
+          <select id="fontSizeSelect" onchange="setFontSize(this.value)">
+            <option value="petit">Petit</option>
+            <option value="normal">Normal</option>
+            <option value="grand">Grand</option>
+            <option value="tresgrand">Très grand</option>
+          </select>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>🔔 Rappels</summary>
+        <div style="margin-top:14px;">
+          <div class="detail" id="notifStatus" style="margin:4px 0 8px;">🔕 Rappels désactivés</div>
+          <label>Me rappeler si je n'ai rien lu depuis…</label>
+          <select id="notifRythmeSelect" onchange="setNotifRythme(this.value)">
+            <option value="1">Tous les jours (quotidien)</option>
+            <option value="2">Tous les 2 jours</option>
+            <option value="3">Tous les 3 jours</option>
+            <option value="7">Toutes les semaines</option>
+          </select>
+          <button id="notifBtn" onclick="toggleNotifs()">Activer les rappels</button>
+        </div>
+      </details>
+    </div>
+
+  </div>
+
+  <div id="paramSubtab-securite" class="param-subtab" hidden>
+    <div class="card" id="securityCard">
+      <h2>🔒 Sécurité et compte</h2>
+
+      <label>Adresse e-mail</label>
+      <div class="security-row">
+        <div class="security-value" id="secEmailValue"></div>
+        <button type="button" class="security-edit-btn" onclick="toggleEditEmail()">Modifier</button>
+      </div>
+      <div id="secEmailDate" class="security-date"></div>
+      <div id="secEmailEdit" class="security-edit" hidden>
+        <input type="email" id="secEmailInput" placeholder="Nouvelle adresse e-mail">
+        <div class="security-edit-actions">
+          <button type="button" onclick="saveNewEmail()">Enregistrer</button>
+          <button type="button" class="security-cancel" onclick="toggleEditEmail(true)">Annuler</button>
+        </div>
+      </div>
+
+      <label style="margin-top:18px;">Mot de passe</label>
+      <div class="security-row">
+        <div class="security-value">••••••••</div>
+        <button type="button" class="security-edit-btn" onclick="toggleEditPassword()">Modifier</button>
+      </div>
+      <div id="secPasswordDate" class="security-date"></div>
+      <div id="secPasswordEdit" class="security-edit" hidden>
+        <input type="password" id="secPasswordInput" placeholder="Nouveau mot de passe (6 caractères min.)">
+        <div class="security-edit-actions">
+          <button type="button" onclick="saveNewPassword()">Enregistrer</button>
+          <button type="button" class="security-cancel" onclick="toggleEditPassword(true)">Annuler</button>
+        </div>
+      </div>
+
+      <div id="secMessage" class="security-message" hidden></div>
+
+      <button onclick="logout()" style="background:var(--khaki-med); margin-top:18px;">Se déconnecter</button>
+    </div>
+  </div>
+</section>
+
+</div><!-- /appRoot -->
+
+<!-- Lecteur plein écran d'un plan thématique : un verset + une prière par
+     écran, on avance/recule en glissant à gauche/à droite. -->
+<div id="planReader" class="plan-reader no-print">
+  <div class="plan-reader-top">
+    <button class="plan-reader-close" onclick="closePlanReader()" aria-label="Fermer">✕</button>
+    <div class="plan-reader-title" id="readerTitle"></div>
+    <div style="width:38px;"></div>
+  </div>
+  <div class="plan-reader-progress">
+    <div class="plan-reader-progress-bar"><div id="readerProgressFill" class="plan-reader-progress-fill"></div></div>
+    <div class="plan-reader-progress-label" id="readerProgressLabel"></div>
+  </div>
+  <div class="plan-reader-body" id="readerBody">
+    <div class="plan-reader-day" id="readerDay"></div>
+    <div class="plan-reader-ref" id="readerRef"></div>
+    <div class="plan-reader-text" id="readerText"></div>
+    <div class="plan-reader-explication" id="readerExplication"></div>
+    <div class="plan-reader-prayer" id="readerPrayer"></div>
+    <div class="plan-reader-versions" id="readerVersions"></div>
+    <div class="reader-locked" id="readerLocked" hidden>
+      <div class="reader-locked-star">⭐</div>
+      <div class="reader-locked-msg">Rendez-vous demain pour la suite !</div>
+      <div class="reader-locked-sub">Tu as déjà lu aujourd'hui — reviens demain pour continuer ce plan.</div>
+    </div>
+  </div>
+  <div class="plan-reader-nav">
+    <button class="plan-reader-arrow" id="readerPrevBtn" onclick="readerPrev()" aria-label="Jour précédent">‹</button>
+    <button class="plan-reader-done" id="readerDoneBtn" onclick="readerToggleDone()">Marquer ce jour comme fait</button>
+    <button class="plan-reader-arrow" id="readerNextBtn" onclick="readerNext()" aria-label="Jour suivant">›</button>
+  </div>
+
+  <div class="reader-day-banner" id="readerDayBanner" hidden>
+    <div class="reader-day-banner-stars">⭐⭐⭐</div>
+    <div class="reader-day-banner-title" id="readerDayBannerTitle">Félicitations, jour 1 terminé !</div>
+    <div class="reader-day-banner-msg">Rendez-vous demain pour la suite 🙏</div>
+  </div>
+</div>
+
+</div><!-- /#appShell -->
+
+<!-- Firebase (chargé seulement pour permettre la synchronisation ; sans configuration valide, l'appli reste en mode local) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="video-config.js"></script>
+<script src="music-config.js"></script>
+<script src="livres-config.js"></script>
+<script src="script.js?v=30"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>

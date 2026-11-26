@@ -1,125 +1,1291 @@
-/* =========================================================================
-   ÉTUDE BIBLIQUE — feuille de style épurée (refonte du 25/11/2026)
-   ========================================================================= */
+/* --- Menu latéral et pages --- */
+.topbar{ display:flex; align-items:center; gap:10px; margin:0 0 16px; }
+.hamburger{
+  background:var(--khaki-dark); color:var(--text-light); border:none; width:42px; height:42px;
+  min-width:42px; border-radius:9px; font-size:1.25rem; cursor:pointer; margin-top:0; padding:0;
+}
+.side-menu{
+  position:fixed; top:0; left:-280px; width:260px; height:100%; background:var(--cream-alt);
+  box-shadow:2px 0 16px rgba(0,0,0,.18); padding:22px 14px; transition:left .25s ease; z-index:100;
+  display:flex; flex-direction:column; gap:4px; overflow-y:auto;
+}
+.side-menu.open{ left:0; }
+.side-menu-title{
+  font-size:.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--khaki-med);
+  font-weight:bold; margin-bottom:10px; padding:0 10px;
+}
+.side-menu button{
+  background:none; color:var(--text-dark); text-align:left; padding:13px 10px; border-radius:8px;
+  font-weight:normal; margin-top:0; font-size:.92rem;
+}
+.side-menu button.active{ background:var(--gold-light); font-weight:bold; color:var(--khaki-dark); }
+.menu-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:99; }
+.menu-overlay.show{ display:block; }
+.page[hidden]{ display:none; }
+
 :root{
-  --cream:#FBF7EF; --cream-alt:#F0E9D8; --khaki-dark:#534B32; --khaki-med:#8A8060;
-  --gold:#B7975A; --gold-light:#EBDFC2; --taupe:#A79C7E;
-  --text-dark:#3A3524; --red:#B3261E; --green:#2E5E3A; --border:#e5dcc0;
+    --cream:#FBF7EF; --cream-alt:#F0E9D8; --khaki-dark:#534B32; --khaki-med:#8A8060;
+    --gold:#B7975A; --gold-light:#EBDFC2; --taupe:#A79C7E; --olive:#6B6440;
+    --text-dark:#3A3524; --text-light:#FBF7EF; --red:#B3261E; --green:#2E5E3A;
+    /* Couleurs utilisées uniquement comme légende du graphique "Chapitres
+       terminés / en cours / non commencés" dans Rapports. Les 3 tuiles
+       Taux / Ch. restants / Pages rest. de l'Accueil sont maintenant fond
+       blanc + texte noir en dur (voir .kpi ci-dessous), fixe quelle que
+       soit la palette choisie. */
+    --kpi-taux:#2E6B5E; --kpi-rest:#4A5D7A; --kpi-pages:#A9812F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Manrope","Avenir Next","Segoe UI",system-ui,sans-serif; font-weight:500; color:var(--text-dark);
+    padding:calc(env(safe-area-inset-top) + 16px) 16px 40px; max-width:640px; margin:0 auto;
+    background:
+      radial-gradient(circle at 15% -10%, rgba(183,151,90,.20), transparent 45%),
+      radial-gradient(circle at 105% 15%, rgba(107,100,64,.16), transparent 42%),
+      radial-gradient(circle at 50% 120%, rgba(183,151,90,.14), transparent 50%),
+      var(--cream);
+    background-attachment:fixed;
+    min-height:100vh;
+    transition:background .4s ease;
+  }
+
+  /* --- Écrans larges (iPad / ordinateur) : mise en page étendue + décor plus riche --- */
+  @media (min-width:700px){
+    body{
+      max-width:820px; padding-left:32px; padding-right:32px;
+      background:
+        radial-gradient(circle at 10% -15%, rgba(183,151,90,.26), transparent 40%),
+        radial-gradient(circle at 100% 5%, rgba(107,100,64,.22), transparent 38%),
+        radial-gradient(circle at 95% 92%, rgba(183,151,90,.20), transparent 42%),
+        radial-gradient(circle at 2% 90%, rgba(107,100,64,.18), transparent 42%),
+        radial-gradient(circle at 50% 45%, rgba(183,151,90,.08), transparent 60%),
+        var(--cream);
+    }
+    h1{ font-size:1.3rem; padding:20px 10px; }
+    .card{ padding:20px 26px; }
+    /* Une seule colonne partout, y compris sur Accueil — plus simple et plus
+       fiable qu'une mise en page à 2 colonnes (qui pouvait faire apparaître
+       une carte à côté d'une autre au lieu d'en dessous, selon l'appareil
+       et l'orientation). La largeur et le fond plus riches suffisent à
+       remplir l'écran sur iPad. */
+    #page-journal-chapitres .card, #page-journal-comprehension .card,
+    #page-prieres .card, #page-parametres .card, #page-accueil .card{ max-width:640px; margin-left:auto; margin-right:auto; }
+  }
+  @media (min-width:1000px){
+    body{ max-width:1040px; }
+  }
+  h1{
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px),
+      var(--khaki-dark);
+    color:var(--text-light); text-align:center;
+    padding:16px 8px; border-radius:10px; font-size:1.05rem; letter-spacing:2px;
+    margin:0 0 16px; border:1px solid rgba(183,151,90,.5);
+  }
+  .top-greeting small{
+    display:block; font-size:.62rem; letter-spacing:1px; font-weight:normal;
+    margin-top:3px; text-transform:capitalize; opacity:.9;
+  }
+    .today-date{
+    text-align:center; font-size:.8rem; color:var(--khaki-med); font-style:italic;
+    margin:-8px 0 14px; text-transform:capitalize;
+  }
+  /* Le verset du jour ne suit JAMAIS la palette choisie dans Paramètres —
+     c'est la carte "signature" de l'appli. Par contre, sa couleur change
+     chaque jour toute seule (7 tons fixes qui tournent avec le verset),
+     jamais orange / rouge / violet / rose. */
+  .verse-card{
+    background:linear-gradient(160deg, #F6EFD8, #EEE2BF);
+    border:1px solid #C9A85C; position:relative; text-align:center;
+    padding:11px 16px;
+  }
+  .verse-card h2{ color:#5B4A22; margin-bottom:6px; }
+  .verse-card .verse-text{
+    font-size:1rem; font-style:italic; color:#3A3524; line-height:1.4; margin:4px 0 6px;
+  }
+  .verse-card .verse-ref{ font-weight:bold; color:#5B4A22; font-size:.85rem; }
+  .verse-card .verse-source{ font-size:.68rem; color:#8A7C55; margin-top:4px; font-style:italic; }
+
+  .verse-card.vc1{ background:linear-gradient(160deg,#DCEAF5,#C3DCED); border-color:#5B87A8; }
+  .verse-card.vc1 h2, .verse-card.vc1 .verse-ref{ color:#2C4F66; }
+  .verse-card.vc1 .verse-text{ color:#1F3A4D; }
+  .verse-card.vc1 .verse-source{ color:#5B7B93; }
+
+  .verse-card.vc2{ background:linear-gradient(160deg,#DFEFDD,#C7E2C2); border-color:#5E9159; }
+  .verse-card.vc2 h2, .verse-card.vc2 .verse-ref{ color:#33532E; }
+  .verse-card.vc2 .verse-text{ color:#233A20; }
+  .verse-card.vc2 .verse-source{ color:#6A8A63; }
+
+  .verse-card.vc3{ background:linear-gradient(160deg,#1E2A44,#16203A); border-color:#3E5478; }
+  .verse-card.vc3 h2, .verse-card.vc3 .verse-ref{ color:#B9CCE3; }
+  .verse-card.vc3 .verse-text{ color:#E8EEF6; }
+  .verse-card.vc3 .verse-source{ color:#8CA1BE; }
+
+  .verse-card.vc4{ background:linear-gradient(160deg,#E7E3DA,#D6D0C2); border-color:#8A8060; }
+  .verse-card.vc4 h2, .verse-card.vc4 .verse-ref{ color:#5A5340; }
+  .verse-card.vc4 .verse-text{ color:#3A3524; }
+  .verse-card.vc4 .verse-source{ color:#8A8060; }
+
+  .verse-card.vc5{ background:linear-gradient(160deg,#E9D9C4,#D8BE9C); border-color:#A9784A; }
+  .verse-card.vc5 h2, .verse-card.vc5 .verse-ref{ color:#6B4423; }
+  .verse-card.vc5 .verse-text{ color:#4A2F17; }
+  .verse-card.vc5 .verse-source{ color:#9A7B54; }
+
+  .verse-card.vc6{ background:linear-gradient(160deg,#D7EEEA,#B9DED6); border-color:#3E8C7E; }
+  .verse-card.vc6 h2, .verse-card.vc6 .verse-ref{ color:#2C6459; }
+  .verse-card.vc6 .verse-text{ color:#1E4038; }
+  .verse-card.vc6 .verse-source{ color:#5E958A; }
+  .card{background:var(--cream-alt); border-radius:12px; padding:14px 16px; margin-bottom:14px; border:1px solid #e0d8c0;}
+  .card h2{margin:0 0 10px; font-size:.9rem; text-transform:uppercase; letter-spacing:1px; color:var(--khaki-dark);}
+  .subnote{font-size:.75rem; color:var(--taupe); font-style:italic; margin:-4px 0 10px;}
+  label{display:block; font-size:.78rem; margin:8px 0 3px; color:var(--khaki-med); font-weight:bold;}
+  input, select, textarea{
+    width:100%; padding:9px 10px; border-radius:7px; border:1px solid #d8cca3;
+    background:var(--gold-light); font-family:inherit; font-size:.92rem; color:var(--text-dark);
+  }
+  select{
+    -webkit-appearance:none; appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23534B32'><path d='M5.5 7.5l4.5 5 4.5-5z'/></svg>");
+    background-repeat:no-repeat; background-position:right 10px center; background-size:16px;
+    padding-right:32px; border-width:1.5px;
+  }
+  select:active, select:focus{ border-color:var(--khaki-dark); outline:none; }
+  textarea{resize:vertical; min-height:55px;}
+  .row2{display:flex; gap:8px;}
+  .row2 > div{flex:1;}
+  button{
+    background:var(--gold); color:var(--text-light); border:none; padding:10px 16px;
+    border-radius:8px; font-weight:bold; font-size:.88rem; margin-top:10px; cursor:pointer;
+  }
+  button:active{opacity:.85;}
+  .kpis{display:flex; gap:8px; margin-bottom:14px;}
+  .kpi{flex:1; border-radius:10px; padding:12px 6px; text-align:center; color:#000; background:#fff; border:1px solid #e0d8c0;}
+  .kpi .label{font-size:.62rem; text-transform:uppercase; letter-spacing:.5px; opacity:.75;}
+  .kpi .value{font-size:1.4rem; font-weight:bold; margin-top:4px;}
+  .kpi.taux{background:#fff;}
+  .kpi.rest{background:#fff;}
+  .kpi.pages{background:#fff;}
+  .banner{border-radius:10px; padding:9px 12px; text-align:center; font-weight:bold; font-size:.78rem; line-height:1.35;}
+  .banner.late{background:var(--gold-light); color:var(--red);}
+  .banner.ok{background:var(--gold-light); color:var(--green);}
+  .banner.ahead{background:var(--gold-light); color:var(--green);}
+  .banner.notstarted{background:var(--gold-light); color:var(--khaki-med);}
+  .detail{text-align:center; font-size:.74rem; color:var(--taupe); margin-top:6px; font-style:italic;}
+  .reminder{
+    margin-top:8px; background:var(--gold-light); color:#8A6D3D; font-weight:bold;
+    font-size:.74rem; text-align:center; border-radius:8px; padding:8px; line-height:1.3;
+  }
+  .reminder.warn{ background:#F5E3DE; color:var(--red); }
+  .reminder.great{ background:#E1EFE3; color:var(--green); }
+  .reminder.good{ background:var(--gold-light); color:var(--olive); }
+  .donut-wrap{display:flex; justify-content:center; margin:10px 0;}
+  .position-row{display:flex; align-items:center; gap:12px;}
+  .donut-wrap-small{margin:0; flex:0 0 auto;}
+  .position-row .detail{margin-top:0; flex:1;}
+  .entry{
+    background:var(--cream); border:1px solid #e5dcc0; border-radius:8px; padding:10px;
+    margin-bottom:8px; font-size:.85rem;
+  }
+  .entry .meta{color:var(--khaki-med); font-weight:bold; font-size:.75rem; margin-bottom:4px;}
+  .entry .del{float:right; color:var(--red); cursor:pointer; font-size:.75rem;}
+  .empty{color:var(--taupe); font-style:italic; font-size:.85rem;}
+
+  /* --- Ajouts : graphiques du rapport --- */
+  .stats-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:6px; }
+  .stat-tile{
+    background:var(--cream-alt); border-radius:12px; padding:12px 6px; text-align:center;
+  }
+  .stat-tile-value{ font-size:1.35rem; font-weight:bold; color:var(--khaki-dark); line-height:1.1; }
+  .stat-tile-label{ font-size:.66rem; color:var(--taupe); margin-top:4px; line-height:1.25; }
+  .chapbar-list{ display:flex; flex-direction:column; gap:8px; }
+  .chapbar-row{ display:flex; align-items:center; gap:8px; }
+  .chapbar-label{
+    width:88px; flex-shrink:0; font-size:.72rem; color:var(--khaki-dark); font-weight:bold;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .chapbar-track{ flex:1; height:10px; background:#e5dcc0; border-radius:5px; overflow:hidden; }
+  .chapbar-fill{ height:100%; background:var(--gold); border-radius:5px; }
+  .chapbar-value{ width:48px; flex-shrink:0; text-align:right; font-size:.7rem; color:var(--taupe); }
+  .plans-donut-wrap{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .plans-donut-legend{ display:flex; flex-direction:column; gap:6px; font-size:.8rem; color:var(--khaki-dark); }
+  .plans-donut-legend .dot{
+    display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px;
+  }
+  .plans-repeats{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .plan-repeat-badge{
+    font-size:.7rem; font-weight:bold; color:var(--khaki-dark); background:var(--gold-light);
+    padding:5px 10px; border-radius:8px;
+  }
+
+  /* --- Ajouts : vidéo du jour --- */
+  .video-wrap{ position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:10px; background:#000; }
+  .video-wrap iframe{ position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+  .audio-player{ display:flex; align-items:center; gap:12px; padding:4px 0 14px; }
+  .audio-play-btn{
+    width:44px; height:44px; min-width:44px; border-radius:50%; background:var(--khaki-dark);
+    color:var(--text-light); border:none; font-size:1.05rem; cursor:pointer; margin-top:0;
+    display:flex; align-items:center; justify-content:center; padding:0;
+  }
+  .audio-info{ font-size:.85rem; font-weight:bold; color:var(--khaki-dark); }
+  .card-row{ display:flex; flex-wrap:wrap; gap:14px; }
+  .card-row > .card{ flex:1 1 260px; margin-bottom:14px; }
+
+  /* --- Ajouts : accueil compact (2 colonnes garanties) + Vision Board --- */
+  .card-row-2col{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .card-row-2col > .card{ margin-bottom:0; min-width:0; }
+  .card.compact{ padding:12px 10px; }
+  .card.compact h2{ font-size:.85rem; margin-bottom:6px; line-height:1.25; }
+  .donut-wrap-tiny{ margin:4px 0; }
+  .donut-wrap-tiny svg{ width:52px; height:52px; }
+  .banner-compact{ font-size:.72rem; padding:8px; line-height:1.3; }
+  .compact-details summary{
+    font-size:.72rem; color:var(--khaki-dark); font-weight:bold; cursor:pointer; margin-top:6px;
+    list-style:none;
+  }
+  .compact-details summary::-webkit-details-marker{ display:none; }
+  .compact-details summary::before{ content:"▸ "; }
+  .compact-details[open] summary::before{ content:"▾ "; }
+  .compact-details .detail{ font-size:.78rem; }
+  #booksCard .book-suggestion, #videoCard .video-wrap{ font-size:.8rem; }
+
+  .vb-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:10px; }
+  .vb-entry{
+    background:var(--cream); border:1px solid #e5dcc0; border-radius:10px; overflow:hidden;
+    position:relative; display:flex; flex-direction:column;
+  }
+  .vb-entry-img{
+    width:100%; aspect-ratio:1/1; object-fit:cover; background:var(--cream-alt); display:block;
+  }
+  .vb-entry-body{ padding:8px 9px 10px; }
+  .vb-entry-titre{ font-weight:bold; font-size:.82rem; color:var(--khaki-dark); margin-bottom:2px; }
+  .vb-entry-verset{ font-size:.72rem; color:var(--taupe); font-style:italic; margin-bottom:4px; line-height:1.3; }
+  .vb-entry-date{ font-size:.68rem; color:var(--olive); font-weight:bold; }
+  .vb-entry-date.passee{ color:var(--red); }
+  .vb-entry .del{
+    position:absolute; top:6px; right:8px; background:rgba(255,255,255,.85); color:var(--red);
+    border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
+    font-size:.8rem; cursor:pointer; float:none;
+  }
+  .vb-preview-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
+  .vb-preview-item{ flex:0 0 auto; width:64px; text-align:center; }
+  .vb-preview-item img{
+    width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid #e5dcc0; display:block;
+  }
+  .vb-preview-item .vb-preview-date{ font-size:.62rem; color:var(--taupe); margin-top:2px; }
+  .vb-preview-item .vb-preview-date.passee{ color:var(--red); }
+
+  @media (max-width:360px){
+    .card-row-2col{ grid-template-columns:1fr; }
+    .vb-grid{ grid-template-columns:1fr; }
+  }
+  .book-suggestion{ padding:8px 0; border-bottom:1px solid #e0d8c0; display:flex; align-items:center; gap:10px; }
+  .book-suggestion:last-child{ border-bottom:none; }
+  #bookOfDay .book-suggestion{ border-bottom:none; padding:0; }
+  .book-cover-wrap{ position:relative; width:46px; height:66px; flex-shrink:0; }
+  .book-cover, .book-cover-ph{
+    position:absolute; top:0; left:0; width:46px; height:66px; border-radius:5px;
+  }
+  .book-cover{ object-fit:cover; box-shadow:0 2px 6px rgba(0,0,0,.2); }
+  .book-cover-ph{
+    background:var(--gold-light); display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; box-shadow:0 1px 3px rgba(0,0,0,.1);
+  }
+  .book-info{ min-width:0; }
+  .book-title{ font-weight:bold; color:var(--khaki-dark); font-size:.92rem; }
+  .book-author{ font-size:.78rem; color:var(--taupe); margin-top:2px; }
+  .spotify-wrap{ border-radius:12px; overflow:hidden; }
+  .spotify-wrap iframe{ display:block; width:100%; height:152px; border:0; }
+
+  /* --- Ajouts : barre "Louange & adoration" persistante (musique de fond) ---
+     En dehors des pages, donc toujours affichée et jamais interrompue en
+     changeant d'onglet. Repliable : on la rétrécit avec max-height plutôt
+     que display:none pour ne jamais couper le son en cours de lecture. */
+  .music-bar{
+    background:var(--cream-alt); border-radius:12px; margin-bottom:14px; border:1px solid #e0d8c0;
+    overflow:hidden;
+  }
+  .music-bar-toggle{
+    width:100%; background:none; border:none; text-align:left; padding:12px 16px;
+    font-size:.9rem; text-transform:uppercase; letter-spacing:1px; color:var(--khaki-dark);
+    font-weight:bold; cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    margin-top:0;
+  }
+  .music-bar-body{ max-height:250px; overflow:hidden; transition:max-height .3s ease; padding:0 16px; }
+  .music-bar-body > div{ padding-bottom:14px; }
+  .music-bar.collapsed .music-bar-body{ max-height:0; }
+
+  /* --- Ajouts : plans thématiques — grille d'icônes + jauge --- */
+  .plans-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
+  .plan-tile{
+    position:relative; background:var(--cream-alt); border:1px solid #e0d8c0; border-radius:14px;
+    padding:16px 10px 12px; text-align:center; cursor:pointer; transition:transform .12s ease;
+  }
+  .plan-tile:active{ transform:scale(.97); }
+  .plan-tile-done{ border-color:var(--green); }
+  .plan-tile-badge{
+    position:absolute; top:6px; right:8px; font-size:.6rem; font-weight:bold;
+    color:var(--green); background:#E1EFE3; padding:2px 6px; border-radius:6px;
+  }
+  .plan-tile-icon{ font-size:2rem; line-height:1; margin-bottom:8px; }
+  .plan-tile-title{
+    font-size:.78rem; font-weight:bold; color:var(--khaki-dark); min-height:2.3em;
+    line-height:1.25; margin-bottom:8px;
+  }
+  .plan-tile-bar{ height:6px; background:#e5dcc0; border-radius:3px; overflow:hidden; }
+  .plan-tile-bar-fill{ height:100%; background:var(--olive); border-radius:3px; }
+  .plan-tile-restart-row{ display:flex; gap:6px; margin-top:8px; }
+  .plan-tile-restart{
+    flex:1; background:var(--gold-light); color:var(--khaki-dark);
+    border:none; border-radius:8px; padding:7px 4px; font-size:.66rem; font-weight:bold; cursor:pointer;
+  }
+  .plan-tile-pct{ font-size:.68rem; color:var(--taupe); margin-top:6px; }
+
+  /* --- Lecteur plein écran d'un plan (verset + prière, un par écran) --- */
+  .plan-reader{
+    display:none; position:fixed; inset:0; z-index:200; background:var(--cream);
+    flex-direction:column; padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 16px);
+  }
+  .plan-reader.open{ display:flex; }
+  .plan-reader-top{ display:flex; align-items:center; gap:10px; }
+  .plan-reader-close{
+    background:var(--khaki-dark); color:var(--text-light); border:none; width:36px; height:36px;
+    border-radius:9px; font-size:1rem; margin-top:0; padding:0; cursor:pointer;
+  }
+  .plan-reader-title{
+    flex:1; text-align:center; font-weight:bold; font-size:.9rem; color:var(--khaki-dark);
+    text-transform:uppercase; letter-spacing:.5px;
+  }
+  .plan-reader-progress{ margin-top:14px; }
+  .plan-reader-progress-bar{ height:6px; background:#e5dcc0; border-radius:3px; overflow:hidden; }
+  .plan-reader-progress-fill{ height:100%; background:var(--gold); border-radius:3px; transition:width .2s ease; }
+  .plan-reader-progress-label{ text-align:center; font-size:.68rem; color:var(--taupe); margin-top:4px; }
+  .plan-reader-body{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:16px; padding:20px 6px; touch-action:pan-y;
+  }
+  .plan-reader-day{ font-size:.72rem; letter-spacing:1px; text-transform:uppercase; color:var(--taupe); font-weight:bold; }
+  .plan-reader-ref{ font-size:1.05rem; font-weight:bold; color:var(--khaki-dark); }
+  .plan-reader-text{ font-size:1.15rem; font-style:italic; line-height:1.6; color:var(--text-dark); max-width:520px; }
+  .plan-reader-explication{ font-size:.85rem; color:var(--taupe); max-width:500px; line-height:1.5; font-style:normal; }
+  .plan-reader-prayer{ font-size:.95rem; color:var(--olive); max-width:480px; line-height:1.5; }
+  .plan-reader-versions{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; max-width:500px; }
+  .plan-reader-versions a{
+    font-size:.66rem; font-weight:bold; color:var(--khaki-dark); background:var(--gold-light);
+    padding:5px 9px; border-radius:8px; text-decoration:none;
+  }
+  .plan-reader-nav{ display:flex; align-items:center; gap:10px; }
+  .plan-reader-arrow{
+    background:var(--gold-light); color:var(--khaki-dark); border:none; width:46px; height:46px;
+    border-radius:50%; font-size:1.4rem; margin-top:0; padding:0; cursor:pointer; flex-shrink:0;
+  }
+  .plan-reader-arrow:disabled{ opacity:.35; }
+  .plan-reader-done{
+    flex:1; background:var(--gold); color:var(--text-light); border:none; border-radius:10px;
+    padding:12px; font-weight:bold; font-size:.85rem; margin-top:0; cursor:pointer;
+  }
+  .plan-reader-done.done{ background:var(--green); }
+  .plan-reader-done:disabled{ opacity:.55; cursor:default; }
+  .reader-locked{
+    display:flex; flex-direction:column; align-items:center; gap:8px; max-width:420px;
+  }
+  .reader-locked-star{ font-size:2.4rem; }
+  .reader-locked-msg{ font-size:1.15rem; font-weight:bold; color:var(--khaki-dark); }
+  .reader-locked-sub{ font-size:.85rem; color:var(--taupe); line-height:1.5; }
+  .reader-day-banner{
+    position:fixed; inset:0; z-index:210; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:14px; text-align:center; padding:20px;
+    background:linear-gradient(160deg, var(--gold-light) 0%, var(--cream) 70%);
+    animation:readerBannerIn .35s ease;
+  }
+  .reader-day-banner[hidden]{ display:none; }
+  .reader-day-banner-stars{ font-size:2.6rem; animation:readerBannerPulse 1.1s ease-in-out infinite; }
+  .reader-day-banner-title{ font-size:1.25rem; font-weight:bold; color:var(--khaki-dark); max-width:340px; }
+  .reader-day-banner-msg{ font-size:.95rem; color:var(--olive); max-width:320px; }
+  @keyframes readerBannerIn{ from{ opacity:0; transform:scale(.92); } to{ opacity:1; transform:scale(1); } }
+  @keyframes readerBannerPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.12); } }
+
+  /* --- Ajouts : écran de verrouillage (mot de passe) --- */
+  .lock-screen{
+    position:fixed; inset:0; z-index:300; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, var(--gold-light) 0%, var(--cream) 70%); padding:20px;
+    overflow:hidden; transition:background 1.2s ease;
+  }
+  .lock-box{
+    position:relative; z-index:2;
+    width:100%; max-width:320px; background:var(--cream-alt); border:1px solid #e0d8c0;
+    border-radius:14px; padding:28px 24px; text-align:center;
+    transition:background .6s ease, border-color .6s ease, box-shadow .6s ease;
+  }
+
+  /* --- Fonds animés de l'écran de connexion (4 ambiances, tirée au hasard à chaque ouverture) --- */
+  .login-bg{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .theme-layer{ display:none; position:absolute; inset:0; }
+  #loginScreen[data-theme="a"] .theme-a{ display:block; }
+  #loginScreen[data-theme="b"] .theme-b{ display:block; }
+  #loginScreen[data-theme="c"] .theme-c{ display:block; }
+  #loginScreen[data-theme="d"] .theme-d{ display:block; }
+
+  /* A — Aube dorée */
+  #loginScreen[data-theme="a"]{
+    background: radial-gradient(120% 70% at 50% 100%, #E7B975 0%, #C98A3F 38%, #7A4A22 72%, #3A2410 100%);
+  }
+  .sunwrap{ position:absolute; left:50%; top:66%; transform:translateX(-50%); width:520px; height:520px; }
+  .sun{
+    position:absolute; left:50%; top:50%; width:220px; height:220px; border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, #FFE9BE 0%, #F7CE83 45%, rgba(247,206,131,0) 72%);
+    filter:blur(1px); animation: loginSunPulse 6s ease-in-out infinite;
+  }
+  @keyframes loginSunPulse{
+    0%,100%{ opacity:.85; transform:translate(-50%,-50%) scale(1); }
+    50%{ opacity:1; transform:translate(-50%,-50%) scale(1.08); }
+  }
+  .rays{
+    position:absolute; inset:0; border-radius:50%;
+    background: repeating-conic-gradient(from 0deg, rgba(255,236,196,.16) 0deg 6deg, transparent 6deg 18deg);
+    animation: loginSpin 60s linear infinite; mix-blend-mode: screen;
+  }
+  @keyframes loginSpin{ to{ transform:rotate(360deg); } }
+  .mote{
+    position:absolute; bottom:-20px; border-radius:50%;
+    background:rgba(255,244,220,.75); filter:blur(.5px);
+    animation-name: loginRise; animation-timing-function: ease-in; animation-iteration-count: infinite;
+  }
+  @keyframes loginRise{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:.9; } 90%{ opacity:.5; }
+    100%{ transform:translateY(-760px) translateX(var(--drift,20px)); opacity:0; }
+  }
+  #loginScreen[data-theme="a"] .lock-title{ color:#6B4A22; }
+  #loginScreen[data-theme="a"] .lock-sub{ color:#8A6A34; }
+  #loginScreen[data-theme="a"] .lock-box{ background:rgba(255,250,240,.94); border-color:rgba(230,211,172,.6); box-shadow:0 20px 50px rgba(40,20,0,.35); }
+
+  /* B — Ciel nocturne */
+  #loginScreen[data-theme="b"]{
+    background: radial-gradient(120% 60% at 50% 0%, #2B2A3D 0%, #1B1A28 45%, #100F18 100%);
+  }
+  .moon{
+    position:absolute; top:9%; left:50%; transform:translateX(-50%);
+    width:96px; height:96px; border-radius:50%;
+    background:radial-gradient(circle at 38% 35%, #FFF8E4 0%, #F3E3B8 55%, #C9AF7C 100%);
+    box-shadow:0 0 60px 18px rgba(243,227,184,.35);
+    animation: loginMoonGlow 7s ease-in-out infinite;
+  }
+  @keyframes loginMoonGlow{
+    0%,100%{ box-shadow:0 0 60px 18px rgba(243,227,184,.32); }
+    50%{ box-shadow:0 0 80px 26px rgba(243,227,184,.5); }
+  }
+  .star{
+    position:absolute; border-radius:50%; background:#F3E9CE;
+    animation-name: loginTwinkle; animation-timing-function: ease-in-out; animation-iteration-count: infinite;
+  }
+  @keyframes loginTwinkle{
+    0%,100%{ opacity:.25; transform:scale(.8); }
+    50%{ opacity:1; transform:scale(1.15); }
+  }
+  #loginScreen[data-theme="b"] .lock-title{ color:#F3E9CE; text-shadow:0 2px 20px rgba(0,0,0,.5); }
+  #loginScreen[data-theme="b"] .lock-sub{ color:#B9AE93; }
+  #loginScreen[data-theme="b"] .lock-box{
+    background:rgba(30,28,42,.78); border:1px solid rgba(217,190,134,.28); box-shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  #loginScreen[data-theme="b"] .lock-box label{ color:#D9BE86; }
+  #loginScreen[data-theme="b"] .lock-box input{
+    background:rgba(16,15,24,.55); border-color:rgba(217,190,134,.3); color:#F3E9CE;
+  }
+  #loginScreen[data-theme="b"] .lock-hint{ color:#B9AE93; }
+
+  /* C — Lumière vivante */
+  #loginScreen[data-theme="c"]{
+    background: linear-gradient(165deg, #F0E9D8 0%, #E4D9B8 42%, #C9BB86 100%);
+  }
+  .bokeh{
+    position:absolute; border-radius:50%; filter:blur(1px);
+    background:radial-gradient(circle, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 70%);
+    animation-name: loginDrift; animation-timing-function: ease-in-out; animation-iteration-count: infinite;
+  }
+  @keyframes loginDrift{
+    0%{ transform:translate(0,0) scale(1); opacity:.5; }
+    50%{ transform:translate(var(--dx,14px), -26px) scale(1.12); opacity:.9; }
+    100%{ transform:translate(0,0) scale(1); opacity:.5; }
+  }
+  #loginScreen[data-theme="c"] .lock-title{ color:#4E4A2E; }
+  #loginScreen[data-theme="c"] .lock-sub{ color:#6B6440; }
+  #loginScreen[data-theme="c"] .lock-box{ background:rgba(255,253,246,.88); box-shadow:0 20px 46px rgba(74,68,40,.18); }
+
+  /* D — Vagues abstraites */
+  #loginScreen[data-theme="d"]{ background:#3A3524; }
+  .blob{
+    position:absolute; border-radius:50%; filter:blur(40px); opacity:.75;
+    animation-timing-function: ease-in-out; animation-iteration-count: infinite;
+  }
+  .blob.b1{
+    width:340px; height:340px; left:-90px; top:-60px;
+    background:radial-gradient(circle, #B7975A 0%, rgba(183,151,90,0) 70%);
+    animation-name: loginFloatA; animation-duration:11s;
+  }
+  .blob.b2{
+    width:300px; height:300px; right:-100px; top:34%;
+    background:radial-gradient(circle, #6B6440 0%, rgba(107,100,64,0) 70%);
+    animation-name: loginFloatB; animation-duration:13s;
+  }
+  .blob.b3{
+    width:360px; height:360px; left:-60px; bottom:-120px;
+    background:radial-gradient(circle, #8A8060 0%, rgba(138,128,96,0) 70%);
+    animation-name: loginFloatA; animation-duration:15s; animation-delay:2s;
+  }
+  @keyframes loginFloatA{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(30px,-24px) scale(1.08); }
+  }
+  @keyframes loginFloatB{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(-26px,20px) scale(1.1); }
+  }
+  #loginScreen[data-theme="d"] .lock-title{ color:var(--khaki-dark); }
+  #loginScreen[data-theme="d"] .lock-sub{ color:var(--taupe); }
+  #loginScreen[data-theme="d"] .lock-box{
+    background:rgba(251,247,239,.96); box-shadow:0 20px 50px rgba(0,0,0,.4);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .sun, .rays, .mote, .moon, .star, .bokeh, .blob{ animation:none !important; }
+  }
+  .lock-icon{ font-size:2.4rem; margin-bottom:6px; }
+  .lock-title{
+    background:none; border:none; padding:0; letter-spacing:normal;
+    font-size:1.2rem; margin:0 0 4px; color:var(--khaki-dark);
+  }
+  .lock-sub{ font-size:.82rem; color:var(--taupe); margin:0 0 16px; }
+  .lock-box label{ text-align:left; }
+  .lock-box input{ margin-bottom:4px; }
+  .lock-box button{ width:100%; }
+  .lock-error{ color:var(--red); font-size:.8rem; margin:0 0 12px; }
+  .lock-error:empty{ display:none; }
+  .lock-error.lock-success{ color:var(--green); }
+  .lock-forgot{
+    background:none; width:auto; display:block; margin:0 0 4px auto; padding:0;
+    color:var(--khaki-med); font-weight:normal; font-size:.76rem; text-decoration:underline;
+  }
+  .lock-hint{ font-size:.74rem; color:var(--taupe); line-height:1.4; margin:0 0 16px; }
+  .lock-secondary{ background:var(--khaki-med); }
+  .lock-google{ background:var(--cream); color:var(--khaki-dark); border:1px solid #d8cca3 !important; }
+  .lock-divider{
+    display:flex; align-items:center; gap:10px; margin:16px 0 4px;
+    font-size:.72rem; color:var(--taupe); text-transform:uppercase; letter-spacing:1px;
+  }
+  .lock-divider::before, .lock-divider::after{ content:""; flex:1; height:1px; background:#e0d8c0; }
+
+  /* --- Ajouts : sections repliables de Paramètres (Réglages, Sécurité,
+     Apparence, Rappels) — toutes avec la même petite flèche qui tourne --- */
+  #page-parametres .card summary{
+    cursor:pointer; font-weight:bold; color:var(--khaki-dark); font-size:1.05rem;
+    list-style:none; padding:2px 0 2px 24px; position:relative;
+  }
+  #page-parametres .card summary::-webkit-details-marker{ display:none; }
+  #page-parametres .card summary::before{
+    content:"▶"; position:absolute; left:0; top:2px; color:var(--gold); font-size:.85rem;
+    transition:transform .15s ease; display:inline-block;
+  }
+  #page-parametres .card details[open] summary::before{ transform:rotate(90deg); }
+
+  /* --- Ajouts : sous-onglets de Paramètres (Réglage général / Sécurité) --- */
+  .subtabs{
+    display:flex; gap:8px; margin:0 0 16px; border-bottom:2px solid var(--gold-light);
+  }
+  .subtab-btn{
+    flex:1; width:auto; margin:0; padding:11px 8px; border-radius:10px 10px 0 0;
+    background:none; color:var(--khaki-med); font-weight:bold; font-size:.92rem;
+    border-bottom:3px solid transparent; margin-bottom:-2px;
+  }
+  .subtab-btn.active{ color:var(--khaki-dark); border-bottom-color:var(--gold); }
+  .param-subtab{ display:block; }
+  .param-subtab[hidden]{ display:none; }
+
+  .security-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--cream-alt); border-radius:10px; padding:10px 14px; margin-top:2px;
+  }
+  .security-value{
+    font-size:.92rem; color:var(--text-dark); font-weight:600; word-break:break-all;
+  }
+  .security-edit-btn{
+    width:auto; flex:none; padding:7px 14px; font-size:.78rem;
+    background:var(--gold); color:var(--text-light); border-radius:8px; margin:0;
+  }
+  .security-date{
+    font-size:.7rem; color:var(--taupe); margin:5px 2px 0; font-style:italic;
+  }
+  .security-edit{
+    margin-top:8px; padding:12px; background:var(--gold-light); border-radius:10px;
+  }
+  .security-edit input{ margin-bottom:8px; }
+  .security-edit-actions{ display:flex; gap:8px; }
+  .security-edit-actions button{
+    width:auto; flex:1; margin:0; padding:9px; font-size:.82rem;
+  }
+  .security-cancel{ background:var(--taupe) !important; }
+  .security-message{
+    font-size:.82rem; color:var(--green); background:var(--gold-light);
+    border-radius:8px; padding:8px 12px; margin-top:10px;
+  }
+  .security-message-error{ color:var(--red); }
+
+  @media (min-width:700px){
+    .plans-grid{ grid-template-columns:repeat(3, 1fr); }
+  }
+
+  /* --- Ajouts : rappels / notifications --- */
+  #notifStatus.on{ color:var(--green); }
+  #notifStatus.off{ color:var(--taupe); }
+
+  /* --- Ajouts : synchronisation & connexion --- */
+  .syncbadge{
+    text-align:center; font-size:.7rem; font-weight:bold; letter-spacing:.3px;
+    padding:6px; border-radius:8px; margin:-8px 0 14px; background:var(--gold-light); color:var(--khaki-med);
+  }
+  .syncbadge.synced{color:var(--green);}
+  .syncbadge.error{color:var(--red);}
+  .syncbadge.connecting{color:var(--khaki-med);}
+  .login-screen{
+    display:flex; flex-direction:column; align-items:center; text-align:center; padding:28px 20px;
+  }
+  .login-screen h2{margin-bottom:8px;}
+  .login-screen button{min-width:220px;}
+
+  /* --- Ajouts : position actuelle --- */
+  details summary{cursor:pointer; font-size:.78rem; color:var(--khaki-med); font-weight:bold; list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{content:"▸ "; }
+  details[open] summary::before{content:"▾ "; }
+  .poslivre{
+    display:flex; justify-content:space-between; padding:6px 4px; font-size:.8rem;
+    border-bottom:1px solid #e5dcc0;
+  }
+  .poslivre.done{color:var(--green);}
+  .poslivre.current{color:var(--text-dark); font-weight:bold; background:var(--gold-light); border-radius:5px; padding-left:6px;}
+  .poslivre.todo{color:var(--taupe);}
+
+  /* =========================================================================
+     PALETTES DE COULEURS — choisies dans Paramètres. On redéfinit juste les
+     variables de couleur ; comme tout le CSS ci-dessus les utilise déjà,
+     tout le style de l'appli (y compris le verset du jour) suit automatiquement.
+     ========================================================================= */
+  html[data-palette="bleu"]{
+    --khaki-dark:#2C3E5C; --khaki-med:#6D84A8; --gold:#5B7FA6; --gold-light:#DCE6F2;
+    --taupe:#8FA0B8; --olive:#33507A; --cream:#F5F8FC; --cream-alt:#E8EFF7;
+  }
+  html[data-palette="rose"]{
+    --khaki-dark:#7A4356; --khaki-med:#B47B8C; --gold:#C98A9C; --gold-light:#F5DEE4;
+    --taupe:#C6A0AA; --olive:#8C4F63; --cream:#FDF6F7; --cream-alt:#F8E9EC;
+  }
+  html[data-palette="vert"]{
+    --khaki-dark:#3B5240; --khaki-med:#71937A; --gold:#7FA087; --gold-light:#DCEADB;
+    --taupe:#9AB29E; --olive:#2F4A38; --cream:#F6FAF5; --cream-alt:#E9F2E7;
+  }
+  html[data-palette="violet"]{
+    --khaki-dark:#4B3B66; --khaki-med:#8672A3; --gold:#9B84C0; --gold-light:#E9E0F5;
+    --taupe:#B0A0C8; --olive:#5A3F80; --cream:#FAF7FD; --cream-alt:#F1E9F8;
+  }
+  html[data-palette="corail"]{
+    --khaki-dark:#8C4A3D; --khaki-med:#C98268; --gold:#D98F6F; --gold-light:#F6E1D4;
+    --taupe:#D9AE9B; --olive:#A3573F; --cream:#FFF8F4; --cream-alt:#FBEBE1;
+  }
+  html[data-palette="turquoise"]{
+    --khaki-dark:#1F5C5C; --khaki-med:#5FA3A3; --gold:#4FB3AC; --gold-light:#DCF3F1;
+    --taupe:#9FC9C6; --olive:#1E6E68; --cream:#F3FBFA; --cream-alt:#E4F5F3;
+  }
+  html[data-palette="bordeaux"]{
+    --khaki-dark:#5C1F2E; --khaki-med:#9C5060; --gold:#8C2F42; --gold-light:#F0DADE;
+    --taupe:#C79AA3; --olive:#6E1F30; --cream:#FBF3F4; --cream-alt:#F5E4E7;
+  }
+  html[data-palette="anthracite"]{
+    --khaki-dark:#33383D; --khaki-med:#6B7278; --gold:#55606B; --gold-light:#E4E7EA;
+    --taupe:#97A0A8; --olive:#40474E; --cream:#F7F8F9; --cream-alt:#ECEEF0;
+  }
+  html[data-palette="menthe"]{
+    --khaki-dark:#285C4A; --khaki-med:#6BA893; --gold:#4FA98A; --gold-light:#DFF3EA;
+    --taupe:#9CC9B8; --olive:#1F5C46; --cream:#F4FBF8; --cream-alt:#E6F5EF;
+  }
+  html[data-palette="noir"]{
+    --khaki-dark:#1A1A1A; --khaki-med:#4D4D4D; --gold:#333333; --gold-light:#D9D9D9;
+    --taupe:#808080; --olive:#262626; --cream:#F5F5F5; --cream-alt:#E8E8E8;
+  }
+  html[data-palette="gris"]{
+    --khaki-dark:#3D3D3D; --khaki-med:#757575; --gold:#5C5C5C; --gold-light:#E0E0E0;
+    --taupe:#9E9E9E; --olive:#4A4A4A; --cream:#F7F7F7; --cream-alt:#ECECEC;
+  }
+  html[data-palette="blanc"]{
+    --khaki-dark:#2B2B2B; --khaki-med:#8A8A8A; --gold:#BDBDBD; --gold-light:#F5F5F5;
+    --taupe:#B0B0B0; --olive:#404040; --cream:#FFFFFF; --cream-alt:#FAFAFA;
+  }
+
+  /* =========================================================================
+     FONDS D'ÉCRAN — dégradés décoratifs (aucune image à charger, donc ça
+     marche aussi hors-ligne). Choisi dans Paramètres, appliqué sur <body>.
+     ========================================================================= */
+  body[data-bg="sombre"]{
+    background:
+      radial-gradient(circle at 15% -10%, rgba(255,255,255,.05), transparent 40%),
+      radial-gradient(circle at 105% 15%, rgba(183,151,90,.10), transparent 45%),
+      linear-gradient(180deg, #1D1B18 0%, #26221D 55%, #131110 100%);
+    background-attachment:fixed;
+  }
+  body[data-bg="clair"]{
+    background:#FFFFFF;
+    background-attachment:fixed;
+  }
+  body[data-bg="mer"]{
+    background:
+      radial-gradient(circle at 15% -10%, rgba(255,255,255,.35), transparent 40%),
+      radial-gradient(circle at 100% 10%, rgba(13,110,140,.30), transparent 45%),
+      radial-gradient(circle at 50% 115%, rgba(10,70,95,.35), transparent 55%),
+      linear-gradient(180deg, #DFF3F6, #A9D8DE 55%, #4F97A6);
+    background-attachment:fixed;
+  }
+  body[data-bg="plage"]{
+    background:
+      radial-gradient(circle at 10% -10%, rgba(255,244,214,.6), transparent 45%),
+      radial-gradient(circle at 100% 0%, rgba(120,196,199,.35), transparent 45%),
+      radial-gradient(circle at 50% 130%, rgba(214,178,122,.5), transparent 60%),
+      linear-gradient(180deg, #EAF6F3 0%, #F3E7C4 55%, #E7C88C 100%);
+    background-attachment:fixed;
+  }
+  body[data-bg="nuages"]{
+    background:
+      radial-gradient(circle at 20% 0%, rgba(255,255,255,.8), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(255,255,255,.6), transparent 38%),
+      radial-gradient(circle at 50% 100%, rgba(255,255,255,.55), transparent 50%),
+      linear-gradient(180deg, #DCEBF7, #EFF6FB 60%, #F8FBFD);
+    background-attachment:fixed;
+  }
+  body[data-bg="ciel"]{
+    background:
+      radial-gradient(circle at 15% -10%, rgba(255,255,255,.4), transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(255,236,196,.4), transparent 45%),
+      linear-gradient(180deg, #1E6FB0 0%, #5AA6DD 45%, #BEE1F5 100%);
+    background-attachment:fixed;
+  }
+  body[data-bg="aurore"]{
+    background:
+      radial-gradient(circle at 20% 0%, rgba(90,220,170,.45), transparent 45%),
+      radial-gradient(circle at 80% 10%, rgba(150,110,220,.45), transparent 45%),
+      radial-gradient(circle at 50% 40%, rgba(230,110,200,.28), transparent 55%),
+      radial-gradient(circle at 50% 110%, rgba(60,90,160,.4), transparent 55%),
+      linear-gradient(180deg, #0B1330, #131B3E 55%, #1C1440);
+    background-attachment:fixed;
+  }
+  body[data-bg="noir"]{
+    background:#111111;
+    background-attachment:fixed;
+  }
+  body[data-bg="gris"]{
+    background:#5A5A5A;
+    background-attachment:fixed;
+  }
+
+  /* --- Fonds animés (les 4 mêmes ambiances que l'écran de connexion),
+     utilisables partout dans l'appli via #appBgLayer --- */
+  body[data-bg="aube"]{
+    background: radial-gradient(120% 70% at 50% 100%, #E7B975 0%, #C98A3F 38%, #7A4A22 72%, #3A2410 100%);
+    background-attachment:fixed;
+  }
+  body[data-bg="nuit"]{
+    background: radial-gradient(120% 60% at 50% 0%, #2B2A3D 0%, #1B1A28 45%, #100F18 100%);
+    background-attachment:fixed;
+  }
+  body[data-bg="lumiere"]{
+    background: linear-gradient(165deg, #F0E9D8 0%, #E4D9B8 42%, #C9BB86 100%);
+    background-attachment:fixed;
+  }
+  body[data-bg="vagues"]{
+    background:#3A3524;
+    background-attachment:fixed;
+  }
+  #appBgLayer{
+    position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; display:none;
+  }
+  body[data-bg="aube"] #appBgLayer,
+  body[data-bg="nuit"] #appBgLayer,
+  body[data-bg="lumiere"] #appBgLayer,
+  body[data-bg="vagues"] #appBgLayer{ display:block; }
+  body[data-bg="aube"] #appBgLayer .theme-a{ display:block; }
+  body[data-bg="nuit"] #appBgLayer .theme-b{ display:block; }
+  body[data-bg="lumiere"] #appBgLayer .theme-c{ display:block; }
+  body[data-bg="vagues"] #appBgLayer .theme-d{ display:block; }
+
+  @media (min-width:700px){
+    body[data-bg="mer"], body[data-bg="plage"], body[data-bg="nuages"],
+    body[data-bg="ciel"], body[data-bg="aurore"]{
+      background-size:100% 140%;
+      background-position:top;
+    }
+  }
+
+  /* --- Ajouts : proposition d'activer les rappels à l'ouverture --- */
+  .notif-prompt-overlay[hidden]{ display:none; }
+  .notif-prompt-overlay{
+    position:fixed; inset:0; background:rgba(58,53,36,.55); z-index:200;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .notif-prompt-box{
+    background:var(--cream); border-radius:16px; padding:28px 24px; max-width:340px;
+    text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  .notif-prompt-icon{ font-size:2.4rem; margin-bottom:8px; }
+  .notif-prompt-box h2{ margin:0 0 8px; font-size:1.15rem; color:var(--khaki-dark); }
+  .notif-prompt-box .subnote{ margin-bottom:16px; }
+  .notif-prompt-box button{ width:100%; }
+  .avis-etoiles{ font-size:2rem; letter-spacing:6px; margin-bottom:14px; cursor:pointer; }
+  .avis-etoile{ color:#D8CFB4; transition:color .15s ease; }
+  .avis-etoile.pleine{ color:var(--gold); }
+  #avisCommentaire{ width:100%; margin-bottom:14px; font-family:inherit; border-radius:8px; border:1px solid #d8cfb4; padding:8px; resize:vertical; }
+  .avis-admin-item{ border-bottom:1px solid #e0d8c0; padding:10px 0; }
+  .avis-admin-item:last-child{ border-bottom:none; }
+  .avis-admin-etoiles{ color:var(--gold); letter-spacing:2px; }
+
+  /* --- Ajouts : "En groupe" (prière / lecture à plusieurs) --- */
+  .groupe-vue[hidden]{ display:none; }
+  /* #sessionLivreTrouve utilise la classe .stats-grid (display:grid) : sans
+     cette règle, l'attribut "hidden" (même spécificité CSS) ne suffirait pas
+     à le masquer une fois la classe appliquée. */
+  #sessionLivreTrouve[hidden]{ display:none; }
+  .groupe-carte-wrap{ position:relative; overflow:hidden; border-radius:12px; margin-bottom:10px; }
+  .groupe-carte-supprimer-strip{
+    position:absolute; top:0; right:0; height:100%; width:92px; background:var(--red);
+    color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:.68rem; font-weight:bold; text-align:center; cursor:pointer; line-height:1.5;
+  }
+  .groupe-carte{
+    position:relative; background:var(--cream-alt); border-radius:12px; padding:14px 16px;
+    margin-bottom:0; border:1px solid #e0d8c0; cursor:pointer; transition:transform .2s ease;
+    touch-action:pan-y;
+  }
+  .groupe-carte:active{ opacity:.85; }
+  .groupe-carte-nom{ font-weight:bold; color:var(--khaki-dark); font-size:1rem; padding-right:24px; }
+  .groupe-carte-menu-btn{
+    position:absolute; top:6px; right:4px; background:none; border:none; color:var(--khaki-med);
+    font-size:1.3rem; line-height:1; padding:6px 10px; margin-top:0; cursor:pointer;
+  }
+  .groupe-carte-menu[hidden]{ display:none; }
+  .groupe-carte-menu{
+    position:absolute; top:36px; right:8px; background:var(--cream); border:1px solid #e0d8c0;
+    border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.18); z-index:5; overflow:hidden;
+  }
+  .groupe-carte-menu button{
+    display:block; width:100%; text-align:left; background:none; color:var(--red); margin-top:0;
+    padding:10px 14px; border-radius:0; font-size:.8rem; white-space:nowrap;
+  }
+  .groupe-membres{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+  .groupe-membre-chip{
+    display:inline-flex; align-items:center; gap:6px; background:var(--cream);
+    border:1px solid #e0d8c0; border-radius:20px; padding:4px 10px 4px 6px; font-size:.78rem;
+    color:var(--text-dark);
+  }
+  .groupe-membre-dot{
+    width:12px; height:12px; border-radius:50%; flex-shrink:0; display:inline-block;
+  }
+  .groupe-membre-statut{ font-size:.68rem; color:var(--taupe); font-style:italic; margin-left:2px; }
+  .groupe-membre-absent{ opacity:.55; text-decoration:line-through; }
+  .groupe-presence-row{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--cream); border:1px solid #e0d8c0; border-radius:10px; padding:8px 12px; margin-bottom:6px;
+  }
+  .groupe-presence-nom{ font-size:.85rem; font-weight:bold; color:var(--khaki-dark); display:flex; align-items:center; gap:8px; }
+  .groupe-presence-boutons{ display:flex; gap:6px; }
+  .groupe-presence-boutons button{
+    margin-top:0; padding:6px 10px; font-size:.72rem; border-radius:8px;
+  }
+  .groupe-presence-btn-present.actif{ background:var(--green); color:var(--text-light); }
+  .groupe-presence-btn-absent.actif{ background:var(--red); color:var(--text-light); }
+  .groupe-echanges{
+    max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;
+    margin-bottom:10px; padding-right:2px;
+  }
+  .groupe-echange{
+    background:var(--cream); border-left:5px solid var(--gold); border-radius:8px;
+    padding:8px 10px; font-size:.85rem;
+  }
+  .groupe-echange-auteur{ font-weight:bold; font-size:.72rem; margin-bottom:2px; }
+  .groupe-echange-texte{ white-space:pre-wrap; word-break:break-word; }
+  .groupe-echange-heure{ font-size:.62rem; color:var(--taupe); margin-top:3px; }
+  .groupe-historique-item{
+    background:var(--cream); border:1px solid #e0d8c0; border-radius:10px; padding:10px 12px;
+    margin-bottom:8px; cursor:pointer;
+  }
+  .groupe-historique-item:active{ opacity:.85; }
+  .groupe-historique-titre{ font-weight:bold; color:var(--khaki-dark); font-size:.88rem; }
+  .groupe-historique-detail{ font-size:.72rem; color:var(--taupe); margin-top:2px; }
+  .groupe-rapport-table{ width:100%; border-collapse:collapse; font-size:.78rem; }
+  .groupe-rapport-table th, .groupe-rapport-table td{
+    border-bottom:1px solid #e0d8c0; padding:6px 4px; text-align:left; vertical-align:top;
+  }
+  .groupe-rapport-table th{ color:var(--khaki-med); font-size:.68rem; text-transform:uppercase; }
+
+  /* --- Ajouts : rapport imprimable / export PDF --- */
+  @media print{
+    body, body[data-bg]{ padding:0; max-width:100%; background:#fff !important; }
+    h1{ background:none; color:var(--text-dark); border:2px solid var(--khaki-dark); }
+    .no-print, button, input, select, textarea, label,
+    .syncbadge, #loginScreen, #accountBox, .reminder{ display:none !important; }
+    .page[hidden]{ display:block !important; }
+    .card{ border:1px solid #ccc; break-inside:avoid; background:#fff; }
+    #positionList{ max-height:none !important; overflow:visible !important; }
+    .entry .del{ display:none !important; }
+  }
+
+
+/* =========================================================================
+   POLICE (comme Mission Réussite : Baloo 2 pour les titres, Nunito pour le
+   texte), un peu plus grande — et fonds Jour / Nuit
+   ========================================================================= */
+html{ font-size:18px; }
+h1, h2, h3, summary, .topbar h1, .verse-tab, .bg-choice button, .side-menu button, .side-menu-title{
+  font-family:"Manrope","Avenir Next","Segoe UI",system-ui,sans-serif; font-weight:700;
 }
-*{box-sizing:border-box;}
-body{
-  margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  color:var(--text-dark);
-  padding:calc(env(safe-area-inset-top) + 20px) 16px 50px; max-width:560px; margin:0 auto;
+button, input, select, textarea{ font-family:inherit; }
+
+body[data-bg="jour"]{
   background:
-    radial-gradient(circle at 15% -10%, rgba(183,151,90,.20), transparent 45%),
-    radial-gradient(circle at 105% 15%, rgba(83,75,50,.14), transparent 42%),
-    var(--cream);
+    radial-gradient(circle at 15% -10%, rgba(255,255,255,.9), transparent 45%),
+    linear-gradient(180deg, #FFFDF6 0%, #F7F0DC 60%, #F1E7C9 100%);
   background-attachment:fixed;
-  min-height:100vh;
 }
+/* Nuit : bleu profond mais pas noir, avec lune et étoiles qui brillent */
+body[data-bg="nuit"]{
+  background:
+    radial-gradient(120% 55% at 50% 0%, #4A5C9A 0%, rgba(74,92,154,0) 70%),
+    linear-gradient(180deg, #33437A 0%, #243063 55%, #1B2550 100%);
+  background-attachment:fixed;
+}
+body[data-bg="jour"] #appBgLayer{ display:none; }
+body[data-bg="nuit"] #appBgLayer{ display:block; }
+body[data-bg="nuit"] #appBgLayer .theme-b{ display:block; }
+#appBgLayer .moon{ top:5%; width:70px; height:70px; box-shadow:0 0 70px 24px rgba(255,240,200,.45); }
+#appBgLayer .star{
+  background:#FFF6D8; box-shadow:0 0 6px 2px rgba(255,246,216,.85), 0 0 14px 4px rgba(255,246,216,.4);
+}
+#appBgLayer .star.star-b{ width:3px; height:3px; }
 
-/* --- Connexion --- */
-#loginScreen{ display:flex; align-items:center; justify-content:center; min-height:90vh; }
-.login-card{ width:100%; max-width:380px; text-align:center; }
-.login-icon{ font-size:2.4rem; margin-bottom:6px; }
-.login-card h1{ color:var(--khaki-dark); margin:0 0 6px; font-size:1.5rem; }
-.login-sub{ color:var(--taupe); font-size:.85rem; margin-bottom:20px; }
-.login-card label{ display:block; text-align:left; font-size:.8rem; color:var(--khaki-dark); font-weight:bold; margin:12px 0 4px; }
-.login-card input{
-  width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
-  background:#fff; font-size:1rem; color:var(--text-dark);
+.bg-choice{ display:flex; gap:10px; margin-top:6px; }
+.bg-choice button{
+  flex:1; padding:12px 8px; font-size:1.05rem; border-radius:12px; cursor:pointer;
+  border:2px solid var(--gold); background:var(--cream); color:var(--text-dark); opacity:.7;
 }
-.forgot-link{ display:block; text-align:right; font-size:.78rem; color:var(--khaki-med); margin-top:6px; text-decoration:underline; }
-.login-hint{ font-size:.75rem; color:var(--taupe); margin:12px 0 18px; line-height:1.4; }
-.login-msg{
-  background:var(--gold-light); border:1px solid var(--gold); color:var(--khaki-dark);
-  border-radius:10px; padding:10px 14px; font-size:.85rem; margin-bottom:14px; text-align:left;
-}
-.login-msg.lock-success{ background:#E3F1E6; border-color:var(--green); color:var(--green); }
-.btn-primary, .btn-secondary, .btn-google{
-  width:100%; padding:13px; border-radius:10px; border:1px solid var(--gold);
-  font-size:.95rem; font-weight:bold; cursor:pointer; margin-top:10px;
-}
-.btn-primary{ background:var(--khaki-dark); color:#fff; border:none; }
-.btn-secondary{ background:transparent; color:var(--khaki-dark); }
-.btn-google{ background:#fff; color:var(--text-dark); border:1px solid var(--border); }
-.divider{ display:flex; align-items:center; gap:10px; margin:18px 0 6px; color:var(--taupe); font-size:.78rem; }
-.divider::before, .divider::after{ content:""; flex:1; height:1px; background:var(--border); }
+.bg-choice button.actif{ opacity:1; background:var(--gold-light); font-weight:800; }
 
-/* --- Navigation --- */
-.topnav{ display:flex; gap:8px; margin-bottom:18px; }
-.topnav button{
-  flex:1; padding:10px; border-radius:10px; border:1px solid var(--gold);
-  background:transparent; color:var(--khaki-dark); font-size:.85rem; font-weight:bold; cursor:pointer;
-}
-.topnav button.actif{ background:var(--khaki-dark); color:#fff; }
 
-.page{ }
-
-/* --- En-tête / horloge --- */
-.greeting{ text-align:center; margin-bottom:18px; }
-.greeting .hello{ font-size:1.2rem; font-weight:bold; color:var(--khaki-dark); }
-.greeting .datetime{ font-size:.8rem; color:var(--taupe); font-style:italic; margin-top:2px; }
-
-/* --- Sélecteur de version du texte --- */
-.version-row{ display:flex; gap:8px; margin-bottom:10px; }
-.version-btn{
-  flex:1; padding:8px; border-radius:8px; border:1px solid var(--border);
-  background:#fff; color:var(--khaki-med); font-size:.74rem; font-weight:bold; cursor:pointer;
+/* =========================================================================
+   APPLI FIXE + BARRE DU BAS (plus de menu latéral, plus de glissement)
+   ========================================================================= */
+html, body{ overflow-x:hidden; overscroll-behavior-x:none; touch-action:pan-y; width:100%; }
+body{ padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
+.bottom-nav{
+  position:fixed; left:0; right:0; bottom:0; z-index:100; display:flex;
+  background:var(--cream-alt); border-top:1px solid var(--gold);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  box-shadow:0 -4px 16px rgba(0,0,0,.12);
 }
-.version-btn.actif{ background:var(--khaki-dark); color:#fff; border-color:var(--khaki-dark); }
+.bottom-nav button{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+  background:none; border:none; padding:6px 2px; margin:0; border-radius:10px;
+  color:var(--text-dark); font-size:.72rem; font-weight:600; cursor:pointer; opacity:.75;
+}
+.bottom-nav .bn-ico{ font-size:1.35rem; line-height:1; }
+.bottom-nav button.active{ opacity:1; background:var(--gold-light); font-weight:800; color:var(--khaki-dark); }
+.plus-links{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.plus-links button{
+  text-align:left; padding:12px; border-radius:10px; font-size:.95rem; cursor:pointer;
+  border:1px solid var(--gold); background:var(--cream); color:var(--text-dark);
+}
+.admin-link{ width:100%; text-align:left; padding:12px; border-radius:10px; margin-bottom:14px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); cursor:pointer; }
 
-/* --- Carte verset --- */
-.verse-card{
-  background:linear-gradient(160deg,#F6EFD8,#EEE2BF); border:1px solid var(--gold);
-  border-radius:14px; padding:20px 18px; text-align:center; margin-bottom:20px;
-}
-.verse-card .progress{ font-size:.66rem; color:var(--taupe); margin-bottom:10px; letter-spacing:.5px; text-transform:uppercase; }
-.verse-card .ref{ font-weight:bold; color:#5B4A22; font-size:.95rem; margin-bottom:8px; }
-.verse-card .text{ font-size:1.2rem; line-height:1.55; color:#3A3524; font-style:italic; }
+.bible-pick{ display:flex; flex-direction:column; gap:8px; margin:10px 0; }
+.bible-pick select{ width:100%; padding:10px; font-size:1rem; }
+.bible-nav{ display:flex; gap:8px; margin-bottom:12px; }
+.bible-nav button{ flex:1; padding:10px; border-radius:10px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); font-size:.95rem; cursor:pointer; }
+.bible-texte{ font-size:1.05rem; line-height:1.6; }
+.bible-v{ margin:0 0 10px; padding:4px 6px; border-radius:8px; }
+.bible-v b{ color:var(--olive); font-size:.8em; margin-right:4px; vertical-align:super; }
+.bible-v.sel{ background:var(--gold-light); }
 
-.section-title{
-  font-size:.78rem; text-transform:uppercase; letter-spacing:1px; color:var(--khaki-dark);
-  margin:0 0 10px; font-weight:bold;
-}
-.word-card{
-  background:var(--cream-alt); border:1px solid var(--border); border-radius:12px;
-  padding:14px 16px; margin-bottom:10px;
-}
-.word-card .row-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
-.word-card .hebrew{ font-size:1.35rem; color:#5B4A22; direction:rtl; }
-.word-card .xlit{ font-size:.8rem; color:var(--taupe); font-style:italic; }
-.word-card .strongno{
-  font-size:.66rem; font-weight:bold; color:#fff; background:var(--khaki-dark);
-  padding:2px 8px; border-radius:10px; white-space:nowrap;
-}
-.word-card .def{ font-size:.85rem; margin-top:6px; line-height:1.45; }
-.word-card .fr-word{ font-size:.72rem; color:var(--taupe); margin-top:6px; }
+.heb-btn{ margin:0 0 8px 6px; padding:4px 12px; border-radius:14px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); font-size:.8rem; cursor:pointer; }
+.heb-panel{ background:var(--cream-alt); border:1px solid var(--gold); border-radius:12px; padding:10px; margin:0 0 12px; }
+.heb-panel[hidden]{ display:none; }
+.heb-mots{ display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start; }
+.heb-mot{ font-size:1.5rem; padding:6px 10px; border-radius:10px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); cursor:pointer; font-family:"Times New Roman",serif; }
+.heb-mot.sel{ background:var(--gold-light); border-width:2px; }
+.heb-detail{ margin-top:10px; font-size:.92rem; line-height:1.5; }
+.heb-big{ font-size:2rem; font-family:"Times New Roman",serif; margin-bottom:4px; }
+.heb-usage{ opacity:.8; font-size:.85rem; }
 
-.meaning-card{
-  background:var(--cream-alt); border:1px solid var(--khaki-dark); border-left:4px solid var(--khaki-dark);
-  border-radius:0 12px 12px 0; padding:16px 18px; margin-bottom:16px; font-size:.87rem; line-height:1.55;
-}
-.meaning-card p{ margin:0 0 10px; }
-.meaning-card p:last-child{ margin-bottom:0; }
-.meaning-card .q{ font-weight:bold; color:#5B4A22; }
+.heb-panel{ margin:0 0 8px; }
+.heb-mot{ font-size:1.35rem; }
+.sens-btn{ margin:0 0 8px; padding:6px 14px; border-radius:14px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); font-size:.85rem; cursor:pointer; }
+.sens-btn[hidden], .sens-panel[hidden]{ display:none; }
+.sens-panel{ background:var(--cream-alt); border:1px solid var(--gold); border-radius:12px; padding:10px 12px; margin:0 0 14px; font-size:.95rem; line-height:1.5; }
+.sens-panel h4{ margin:6px 0 2px; font-size:.95rem; }
+.sens-panel p{ margin:0 0 8px; }
+.bible-vwrap{ margin-bottom:6px; }
 
-.nav-row{ display:flex; gap:10px; margin-top:10px; }
-.nav-row button{
-  flex:1; padding:13px; border-radius:10px; border:1px solid var(--gold);
-  background:var(--khaki-dark); color:#fff; font-size:.88rem; font-weight:bold; cursor:pointer;
-}
-.nav-row button.secondary{ background:transparent; color:var(--khaki-dark); }
-.nav-row button:disabled{ opacity:.4; cursor:default; }
+.heb-mot{ display:flex; flex-direction:column; align-items:center; gap:2px; }
+.hm-h{ font-family:"Times New Roman",serif; font-size:1.35rem; line-height:1.2; }
+.hm-f{ font-family:"Manrope",sans-serif; font-size:.68rem; font-weight:600; direction:ltr; opacity:.85; }
+.verse-heb{ text-align:left; margin-top:10px; }
+.verse-card .heb-detail{ font-style:normal; color:var(--text-dark); }
 
-.note{ margin-top:22px; font-size:.7rem; color:var(--taupe); text-align:center; line-height:1.5; }
 
-/* --- Carte générique / Compte --- */
-.card{
-  background:var(--cream-alt); border:1px solid var(--border); border-radius:14px;
-  padding:18px; margin-bottom:16px;
+/* =========================================================================
+   PAGE BIBLE — un verset par page
+   ========================================================================= */
+#page-bible{ display:flex; flex-direction:column; gap:14px; padding-bottom:84px; }
+#page-bible[hidden]{ display:none; }
+.bible-titre{
+  align-self:center; background:var(--cream); border:1px solid var(--gold); color:var(--khaki-dark);
+  font-family:"Manrope",sans-serif; font-weight:800; font-size:1.05rem; letter-spacing:.5px;
+  padding:9px 22px; border-radius:24px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
-.card h2{ margin-top:0; color:var(--khaki-dark); font-size:1.1rem; }
-.champ-label{ font-size:.78rem; color:var(--taupe); margin-bottom:2px; }
-.champ-valeur{ font-size:1rem; margin:0 0 16px; }
+.bible-picker{ background:var(--cream); border:1px solid var(--gold); border-radius:16px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+.bible-picker[hidden]{ display:none; }
+.bible-picker-row{ display:flex; gap:8px; }
+.bible-picker select{ flex:1; width:100%; padding:10px; font-size:1rem; border-radius:10px; }
+.bible-page{ display:flex; flex-direction:column; gap:14px; }
+.bible-vtext{
+  background:var(--cream); border:1px solid var(--gold-light); border-radius:20px; padding:20px 18px;
+  font-size:1.3rem; line-height:1.6; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+.bible-num{
+  display:block; width:34px; height:34px; line-height:34px; margin:0 auto 10px; border-radius:50%;
+  background:var(--gold); color:var(--cream); font-weight:800; font-size:.95rem;
+}
+#page-bible .heb-panel{ background:var(--cream-alt); border:1px solid var(--gold-light); border-radius:20px; padding:14px 12px; margin:0; box-shadow:0 4px 16px rgba(0,0,0,.06); }
+#page-bible .heb-panel[hidden]{ display:none; }
+#page-bible .heb-mots{ justify-content:center; }
+.sens-box{ background:var(--gold-light); border-left:5px solid var(--gold); border-radius:16px; padding:12px 16px; font-size:.95rem; line-height:1.55; }
+.sens-box[hidden]{ display:none; }
+.sens-box h4{ margin:0 0 4px; font-size:1rem; color:var(--khaki-dark); }
+.sens-box p{ margin:0; }
+.bible-nav-fixed{
+  position:fixed; left:12px; right:12px; bottom:calc(78px + env(safe-area-inset-bottom)); z-index:90;
+  display:flex; align-items:center; gap:10px; background:var(--cream); border:1px solid var(--gold);
+  border-radius:28px; padding:8px; box-shadow:0 4px 18px rgba(0,0,0,.18);
+}
+.bible-nav-fixed button{ flex:1; padding:12px 8px; border-radius:22px; border:none; background:var(--khaki-dark); color:var(--text-light); font-weight:800; font-size:1rem; cursor:pointer; }
+.bible-nav-fixed span{ font-weight:700; font-size:.85rem; color:var(--khaki-med); min-width:56px; text-align:center; }
+
+.sur-bible .topbar, .sur-bible #syncBadge{ display:none; }
+#page-bible{ padding-bottom:150px; gap:10px; }
+.bible-vtext{ padding:14px 16px; font-size:1.2rem; }
+.bible-num{ width:28px; height:28px; line-height:28px; margin-bottom:6px; font-size:.85rem; }
+#page-bible .heb-panel{ padding:10px 8px; }
+#page-bible .heb-mots{ gap:6px; }
+#page-bible .heb-mot{ padding:4px 8px; }
+#page-bible .hm-h{ font-size:1.25rem; }
+
+
+/* =========================================================================
+   STYLE ÉPURÉ — Jour : fond blanc, texte noir. Nuit : fond noir, texte blanc.
+   Cartes gris très clair / gris foncé, boutons noirs ou blancs, barre du bas
+   flottante avec icônes. (Remplace les anciennes ambiances.)
+   ========================================================================= */
+body[data-bg="jour"], body[data-bg="nuit"]{
+  background:var(--page) !important; color:var(--text-dark);
+  --khaki-med:var(--muted); --taupe:var(--muted);
+}
+body[data-bg="jour"]{
+  --page:#FFFFFF; --cream:#F2F2F7; --cream-alt:#F2F2F7; --khaki-dark:#000000; --muted:#6E6E73;
+  --gold:#D1D1D6; --gold-light:#E5E5EA; --olive:#000000; --text-dark:#000000; --text-light:#FFFFFF;
+  --nav-bg:#FFFFFF; --shadow:rgba(0,0,0,.12);
+}
+body[data-bg="nuit"]{
+  --page:#000000; --cream:#1C1C1E; --cream-alt:#1C1C1E; --khaki-dark:#FFFFFF; --muted:#98989D;
+  --gold:#3A3A3C; --gold-light:#2C2C2E; --olive:#FFFFFF; --text-dark:#FFFFFF; --text-light:#000000;
+  --nav-bg:#1C1C1E; --shadow:rgba(0,0,0,.6);
+}
+#appBgLayer{ display:none !important; }
+.card, .verse-card, .verse-card[class]{
+  background:var(--cream) !important; border:none !important; border-radius:22px; box-shadow:none; color:var(--text-dark);
+}
+.card h2, .verse-card h2, .verse-card .verse-ref, .verse-card .verse-text, .verse-card[class] h2, .verse-card[class] .verse-ref{ color:var(--text-dark) !important; }
+.card h2{ font-size:.8rem; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted) !important; }
+.card label, .subnote{ color:var(--muted); }
+h1{ background:none !important; border:none !important; box-shadow:none !important; color:var(--text-dark) !important; letter-spacing:0; }
+.topbar{ margin:6px 0 18px; }
+.top-date{ font-size:1rem; color:var(--muted); font-weight:500; text-transform:lowercase; }
+.top-greeting{ text-align:left !important; font-size:2rem; font-weight:800; margin:0; padding:0 !important; border:none; }
+.syncbadge{ background:none !important; text-align:left; margin:-10px 0 12px; padding:0; font-weight:600; color:var(--muted) !important; }
+.verse-card{ padding:20px 22px; text-align:left !important; }
+.verse-card h2{ margin-bottom:10px; }
+.verse-card .verse-text{ font-size:1.35rem; line-height:1.5; font-style:normal !important; }
+.verse-card .verse-ref{ font-weight:800; font-size:1rem; margin-bottom:6px; }
+.heb-panel, #page-bible .heb-panel{ background:var(--page) !important; border:1px solid var(--gold) !important; border-radius:18px; box-shadow:none; }
+.heb-mot, .heb-btn, .sens-btn, .bible-nav button, .bible-titre, .bible-picker, .bg-choice button, .plus-links button, .admin-link{ background:var(--cream); color:var(--text-dark); border-color:var(--gold); }
+.heb-mot.sel, .bg-choice button.actif{ background:var(--gold-light); border-color:var(--text-dark); }
+.heb-detail{ color:var(--text-dark) !important; }
+.sens-box{ background:var(--cream) !important; border-left:none !important; border-radius:18px; }
+.sens-box h4{ color:var(--muted); font-size:.8rem; letter-spacing:1.2px; text-transform:uppercase; }
+.verse-card .sens-box{ background:var(--page) !important; margin-top:12px; }
+.bible-vtext{ background:var(--cream) !important; border:none !important; box-shadow:none !important; border-radius:22px; }
+.bible-num{ background:var(--text-dark) !important; color:var(--page) !important; }
+.bible-titre{ box-shadow:none; }
+.bible-nav-fixed{ background:var(--nav-bg) !important; border:none !important; box-shadow:0 6px 24px var(--shadow) !important; }
+.bible-nav-fixed button{ background:var(--text-dark) !important; color:var(--page) !important; }
+.bible-nav-fixed span{ color:var(--muted); }
+select, input, textarea{ background:var(--cream); color:var(--text-dark); border:1px solid var(--gold); }
+button{ color:inherit; }
+details > summary{ color:var(--text-dark); }
+/* barre du bas flottante, icônes seules */
+.bottom-nav{
+  left:16px !important; right:16px !important; bottom:calc(14px + env(safe-area-inset-bottom)) !important;
+  background:var(--nav-bg) !important; border:none !important; border-radius:32px; padding:8px !important;
+  box-shadow:0 6px 28px var(--shadow) !important;
+}
+.bottom-nav button{ height:54px; justify-content:center; border-radius:24px !important; color:var(--muted) !important; opacity:1 !important; }
+.bottom-nav button.active{ background:var(--gold-light) !important; color:var(--text-dark) !important; }
+.bible-nav-fixed{ bottom:calc(92px + env(safe-area-inset-bottom)) !important; }
+body{ padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important; }
+#page-bible{ padding-bottom:170px; }
+
+.bottom-nav button{ font-family:"Manrope",sans-serif; font-size:.8rem !important; font-weight:700 !important; letter-spacing:0; }
+
+.notes-head{ display:flex; align-items:center; justify-content:space-between; margin:6px 0 14px; }
+.notes-titre{ font-size:2rem; font-weight:800; margin:0; background:none !important; color:var(--text-dark) !important; text-align:left; padding:0; }
+.notes-new{ background:var(--text-dark); color:var(--page); border:none; border-radius:20px; padding:9px 16px; font-weight:700; font-size:.9rem; cursor:pointer; }
+.note-page{ background:var(--cream); border-radius:22px; padding:18px; margin-bottom:14px; }
+.note-date{ font-size:.85rem; font-weight:700; color:var(--muted); margin-bottom:10px; }
+.note-page textarea{ width:100%; min-height:160px; border:none !important; background:transparent !important; color:var(--text-dark); font-family:"Manrope",sans-serif; font-size:1.05rem; line-height:1.6; resize:none; outline:none; padding:0; }
+.note-suppr{ background:none; border:none; color:var(--muted); font-size:.8rem; cursor:pointer; padding:6px 0 0; }
+.notes-anciennes{ margin:10px 0; color:var(--text-dark); }
+.note-page textarea{ font-family:"Manrope",sans-serif !important; }
+
+/* ===== Mise en page choisie : accueil plein écran + panneau, grille de chapitres, notes en liste ===== */
+.sur-notes .topbar, .sur-notes #syncBadge{ display:none; }
+.sur-accueil .topbar > div{ display:flex; flex-direction:row-reverse; justify-content:center; align-items:baseline; gap:6px; }
+.sur-accueil .top-greeting{ font-size:.95rem !important; font-weight:600 !important; color:var(--muted) !important; }
+.sur-accueil .top-date::before{ content:"· "; }
+.sur-accueil .top-date{ font-size:.95rem; }
+.home-verse{ text-align:center; padding:10vh 10px 0; }
+.home-verse .verse-text{ font-size:1.75rem; font-weight:700; line-height:1.35; }
+.home-verse .verse-ref{ margin-top:14px; font-weight:700; font-size:.95rem; color:var(--muted); }
+.home-sheet{ position:fixed; left:0; right:0; bottom:0; height:min(48vh,420px); background:var(--page); border-radius:28px 28px 0 0; box-shadow:0 -8px 30px var(--shadow); padding:12px 20px 110px; box-sizing:border-box; z-index:5; display:flex; flex-direction:column; }
+.home-sheet[hidden], body:not(.sur-accueil) .home-sheet{ display:none; }
+.home-handle{ width:40px; height:5px; border-radius:3px; background:var(--gold); margin:0 auto 12px; flex:none; }
+.seg{ display:flex; background:var(--cream); border-radius:14px; padding:3px; margin-bottom:12px; flex:none; }
+.seg button{ flex:1; height:34px; border:0; border-radius:11px; background:none; font:700 13px "Manrope",sans-serif; color:var(--muted); cursor:pointer; }
+.seg button.actif{ background:var(--page); color:var(--text-dark); box-shadow:0 1px 4px var(--shadow); }
+.home-sheet-body{ overflow-y:auto; flex:1; }
+.home-sheet .heb-panel{ border:none !important; background:none !important; padding:0; }
+.home-sheet .heb-mots{ justify-content:center; }
+.home-sheet .sens-box{ background:none !important; padding:0; }
+.bible-livre-btn{ font-size:1.9rem !important; font-weight:800; background:none !important; padding:0; }
+.bible-lab{ font:700 11px "Manrope",sans-serif; letter-spacing:.08em; color:var(--muted); margin:14px 0 8px; }
+.bible-grille{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; padding-bottom:110px; }
+.bible-grille button{ height:48px; border:0; border-radius:14px; background:var(--cream); color:var(--text-dark); font:700 15px "Manrope",sans-serif; cursor:pointer; }
+.bible-grille button.sel{ background:var(--text-dark); color:var(--page); }
+.bible-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.bible-compteur{ font:600 12px "Manrope",sans-serif; color:var(--muted); }
+.bible-nav-fixed{ gap:10px; }
+.notes-search{ width:100%; box-sizing:border-box; border:none; background:var(--cream); color:var(--text-dark); border-radius:14px; padding:11px 14px; font:500 15px "Manrope",sans-serif; margin-bottom:6px; }
+.note-row{ display:flex; width:100%; justify-content:space-between; gap:14px; align-items:center; background:none; border:none; border-bottom:1px solid var(--gold-light); padding:16px 0; color:var(--text-dark); font:600 16px "Manrope",sans-serif; text-align:left; cursor:pointer; }
+.note-row-txt{ color:var(--muted); font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:45%; }
+.notes-edit-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.notes-retour{ background:none; border:none; color:var(--text-dark); font:700 16px "Manrope",sans-serif; padding:6px 0; cursor:pointer; }
+.note-edit{ width:100%; box-sizing:border-box; min-height:60vh; border:none !important; background:transparent !important; color:var(--text-dark); font:500 18px/1.6 "Manrope",sans-serif !important; resize:none; outline:none; padding:0; }
+/* Nuit lumineuse */
+body[data-bg="nuit"]{
+  --cream:#121212; --cream-alt:#121212; --gold:#2B2B2B; --gold-light:#1D1D1D; --muted:#9A9A9A; --nav-bg:#0C0C0C; --accent:#FFD978;
+  background:radial-gradient(560px 420px at 20% -60px, rgba(255,200,90,.22), rgba(0,0,0,0)) no-repeat fixed, #000 !important;
+}
+body[data-bg="nuit"] .top-greeting{ text-shadow:0 0 18px rgba(255,214,120,.45); }
+body[data-bg="nuit"] .card, body[data-bg="nuit"] .note-row-date{ box-shadow:0 0 30px rgba(255,200,90,.10); }
+body[data-bg="nuit"] .card{ border:1px solid #2B2B2B !important; }
+body[data-bg="nuit"] .card h2, body[data-bg="nuit"] .sens-box h4, body[data-bg="nuit"] .bible-lab, body[data-bg="nuit"] .home-verse .verse-ref{ color:var(--accent) !important; }
+body[data-bg="nuit"] .heb-mot{ text-shadow:0 0 12px rgba(255,214,120,.8); }
+body[data-bg="nuit"] .bottom-nav{ border:1px solid #2A2A2A; box-shadow:0 0 24px rgba(255,214,120,.18) !important; }
+body[data-bg="nuit"] .bottom-nav button.active{ background:#1D1D1D !important; color:var(--accent) !important; text-shadow:0 0 10px rgba(255,214,120,.7); }
+body[data-bg="nuit"] .home-sheet{ border-top:1px solid #2B2B2B; box-shadow:0 -8px 40px rgba(255,200,90,.10); }
+#bibleVueVerset{ padding-bottom:170px; }
+
+/* ===== Accueil v51 : en-tête accueillant, bouton jour/nuit, panneau qui s'adapte au texte ===== */
+.sur-accueil .topbar{ display:flex; flex-direction:row; align-items:flex-start; justify-content:space-between; gap:12px; margin:10px 0 0; }
+.sur-accueil .topbar > .top-texte{ display:block; flex-direction:column; text-align:left; }
+.sur-accueil .top-greeting{ font-size:2.1rem !important; font-weight:800 !important; color:var(--text-dark) !important; line-height:1.15; }
+.sur-accueil .top-date::before{ content:none; }
+.sur-accueil .top-date{ font-size:1.05rem; font-weight:600; color:var(--muted); text-transform:none; margin-top:4px; }
+.theme-toggle{ display:none; }
+.sur-accueil .theme-toggle{ display:block; flex:none; height:36px; padding:0 16px; border-radius:18px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); font:700 13px "Manrope",sans-serif; cursor:pointer; }
+body[data-bg="nuit"] .theme-toggle{ color:var(--accent); border-color:var(--accent); background:#121212; }
+.home-verse{ padding:5vh 6px 0; }
+.home-verse .verse-text{ font-size:1.55rem; }
+.home-sheet{ height:auto; min-height:34vh; max-height:calc(100dvh - 340px); padding-bottom:100px; }
+.home-sheet .sens-box p{ font-size:15px; line-height:1.5; }
+.sur-accueil .top-greeting{ font-size:1.75rem !important; white-space:nowrap; }
+.sur-accueil #syncBadge{ margin:12px 0 0; }
+.home-verse{ padding:2vh 6px 0; }
+.home-verse .verse-text{ font-size:1.4rem; line-height:1.3; }
+.home-verse .verse-ref{ margin-top:8px; }
+.home-sheet{ max-height:calc(100dvh - 270px); padding-bottom:96px; }
+
+/* ===== v52 : sections dépliables (Accueil, Bible), Notes carte vierge, Paramètres en liste ===== */
+.dcard{ background:var(--cream); border-radius:22px; padding:14px 18px; margin:0 0 10px; }
+.dcard[hidden]{ display:none; }
+.dcard-tete{ display:flex; justify-content:space-between; align-items:center; width:100%; background:none; border:0; padding:0; font:700 11px "Manrope",sans-serif; letter-spacing:.08em; color:var(--muted); cursor:pointer; text-align:left; }
+.dcard-fl{ font-size:13px; transition:transform .15s; }
+.dcard.ferme .dcard-fl{ transform:rotate(-90deg); }
+.dcard.ferme .dcard-corps{ display:none; }
+.dcard-corps{ margin-top:10px; }
+.dcard .verse-text{ font-size:1.15rem; font-weight:600; line-height:1.4; text-align:left; }
+.dcard .verse-ref{ margin-top:6px; font-weight:700; font-size:.85rem; color:var(--text-dark); text-align:left; }
+.dcard .heb-panel{ border:none !important; background:none !important; padding:0; }
+.dcard .heb-mots{ justify-content:center; }
+.dcard .sens-box{ background:none !important; border:none !important; padding:0; }
+.dcard .sens-box p{ font-size:15px; line-height:1.5; }
+.dcard .bible-vtext{ font-size:1.15rem; font-weight:600; line-height:1.4; }
+.sur-accueil #page-accueil{ padding-top:6px; padding-bottom:120px; }
+.sur-accueil #syncBadge{ margin:10px 0 12px; }
+body[data-bg="nuit"] .dcard{ background:#121212; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .dcard-tete{ color:var(--accent); }
+body[data-bg="nuit"] .dcard .verse-ref{ color:var(--accent); }
+body[data-bg="nuit"] .dcard .verse-text, body[data-bg="nuit"] .dcard .bible-vtext{ text-shadow:0 0 14px rgba(255,217,120,.3); }
+
+/* Bible */
+.bible-sel{ display:flex; gap:8px; margin:6px 0 0; }
+.sel-wrap{ position:relative; display:block; }
+.sel-livre{ flex:2; } .sel-chap{ flex:1; }
+.sel-wrap select{ width:100%; height:44px; border:0; border-radius:14px; background:var(--cream); color:var(--text-dark); font:800 15px "Manrope",sans-serif; padding:0 34px 0 14px; appearance:none; -webkit-appearance:none; }
+.sel-wrap::after{ content:"▾"; position:absolute; right:14px; top:50%; transform:translateY(-50%); pointer-events:none; color:var(--text-dark); font-size:13px; }
+.bible-pills{ display:flex; gap:6px; overflow-x:auto; margin:12px 0; padding-bottom:2px; scrollbar-width:none; }
+.bible-pills::-webkit-scrollbar{ display:none; }
+.bible-pills button{ flex:none; min-width:38px; height:38px; border:0; border-radius:19px; background:var(--cream); color:var(--text-dark); font:700 14px "Manrope",sans-serif; cursor:pointer; }
+.bible-pills button.sel{ background:var(--text-dark); color:var(--page); }
+body[data-bg="nuit"] .bible-pills button{ background:#121212; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .bible-pills button.sel{ background:var(--accent); color:#000; border-color:var(--accent); }
+.sur-bible #page-bible{ padding-bottom:120px; }
+
+/* Notes : carte vierge */
+.note-inline{ background:var(--cream); border-radius:22px; padding:16px 18px; margin:0 0 12px; }
+.note-inline textarea{ width:100%; min-height:130px; max-height:34vh; border:0; background:none; outline:none; resize:none; font:500 16px/1.5 "Manrope",sans-serif; color:var(--text-dark); padding:0; margin-top:6px; box-sizing:border-box; }
+body[data-bg="nuit"] .note-inline{ background:#121212; border:1px solid #2B2B2B; }
+
+/* Paramètres */
+.subtabs{ display:none !important; }
+.param-titre{ font:800 2rem "Manrope",sans-serif; margin:6px 0 14px; color:var(--text-dark); }
+.set-groupe{ background:var(--cream); border-radius:22px; padding:4px 20px; }
+.set-ligne{ display:block; width:100%; background:none; border:0; border-bottom:1px solid var(--line, rgba(0,0,0,.08)); padding:0; text-align:left; font:600 16px "Manrope",sans-serif; color:var(--text-dark); }
+.set-ligne:last-child{ border-bottom:0; }
+.set-ligne > summary, .set-compte{ display:flex; justify-content:space-between; align-items:center; padding:14px 0; cursor:pointer; list-style:none; }
+.set-compte{ background:none; border:0; width:100%; font:inherit; color:inherit; }
+.set-ligne > summary::-webkit-details-marker{ display:none; }
+.set-val{ color:var(--muted); font-weight:600; }
+.set-val::after{ content:" ›"; }
+.set-ligne[open] > summary .set-val::after{ content:" ⌄"; }
+.set-corps{ padding:0 0 14px; }
+body[data-bg="nuit"] .set-groupe{ background:#121212; border:1px solid #2B2B2B; }
+.sur-param .topbar, .sur-param #syncBadge{ display:none; }
+.set-ligne + .set-ligne{ border-top:1px solid rgba(0,0,0,.08); }
+.set-ligne{ border-bottom:0 !important; }
+.set-ligne > summary{ justify-content:space-between !important; text-align:left; }
+.set-ligne > summary::marker{ content:""; }
+.set-ligne > summary > span:first-child, .set-compte > span:first-child{ text-align:left; flex:1; }
+#bibleHebPanel{ border:none !important; background:none !important; padding:0 !important; }
+.dcard .bible-vtext{ text-align:left; }
+body[data-bg="nuit"] .set-ligne + .set-ligne{ border-top-color:#2B2B2B; }
+.set-ligne > summary::before, .set-ligne > summary::after{ content:none !important; }

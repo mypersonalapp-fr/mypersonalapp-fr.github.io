@@ -1,7 +1,7 @@
 {
-  "name": "Étude biblique",
-  "short_name": "Étude biblique",
-  "description": "Étude biblique approfondie, verset par verset, de Genèse à Apocalypse — texte, mots hébreu/grec (Strong) et sens pour aujourd'hui.",
+  "name": "Suivi de lecture biblique",
+  "short_name": "Ma Bible",
+  "description": "Suivi personnel de mon plan de lecture biblique en 66 mois.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

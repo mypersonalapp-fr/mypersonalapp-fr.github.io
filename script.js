@@ -2207,6 +2207,7 @@ function renderReaderDay(){
     document.getElementById('readerRef'), document.getElementById('readerText'),
     document.getElementById('readerExplication'), document.getElementById('readerPrayer'),
     document.getElementById('readerSensBloc'), document.getElementById('readerMotsBloc'), document.getElementById('readerExempleBloc'),
+    document.getElementById('readerTitreEns'), document.getElementById('readerRetenirBloc'),
     document.getElementById('readerVersions')
   ];
   if(locked){
@@ -2219,7 +2220,8 @@ function renderReaderDay(){
     document.getElementById('readerRef').textContent = jour.ref;
     document.getElementById('readerText').textContent = '« ' + jour.texte + ' »';
     const explEl = document.getElementById('readerExplication');
-    if(explEl) explEl.textContent = jour.explication ? ('💡 ' + jour.explication) : '';
+    if(explEl) explEl.textContent = jour.explication || '';
+    { const rb = document.getElementById('readerRetenirBloc'); if(rb) rb.hidden = !jour.explication; }
     document.getElementById('readerPrayer').textContent = '🙏 ' + jour.priere;
     readerEtude(jour.ref);
 
@@ -4021,7 +4023,14 @@ function readerEtude(ref){
   const e = (typeof THEME_ETUDE !== 'undefined' && THEME_ETUDE[ref]) || null;
   const sb = document.getElementById('readerSensBloc'), eb = document.getElementById('readerExempleBloc');
   sb.hidden = !(e && e.sens); eb.hidden = !(e && e.exemple);
-  document.getElementById('readerSens').textContent = e && e.sens || '';
+  // L'enseignement est découpé en paragraphes (3 phrases environ) pour la lecture.
+  const sensBox = document.getElementById('readerSens');
+  sensBox.innerHTML = '';
+  if(e && e.sens){
+    const phrases = e.sens.match(/[^.!?]+[.!?]+(?:\s*[»)]+)?(?:\s*\([^)]*\)\.?)?/g) || [e.sens];
+    for(let k = 0; k < phrases.length; k += 3){ const pEl = document.createElement('p'); pEl.textContent = phrases.slice(k, k+3).join(' ').trim(); sensBox.appendChild(pEl); }
+  }
+  document.getElementById('readerTitreEns').textContent = e && e.titre || '';
   document.getElementById('readerExemple').textContent = e && e.exemple || '';
   const mb = document.getElementById('readerMotsBloc'), box = document.getElementById('readerMots');
   mb.hidden = true; box.innerHTML = ''; mb.querySelector('.heb-detail').innerHTML = '';

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=64">
+<link rel="stylesheet" href="style.css?v=66">
 </head>
 <body>
 
@@ -358,7 +358,7 @@
 
 <section id="page-plans" class="page" hidden>
   <div class="notes-head"><h2 class="notes-titre">Thème</h2></div>
-  <p class="obj-intro">Plans de 7 jours par thème : un verset, son explication et une prière chaque jour. Touche un thème pour commencer.</p>
+  <p class="obj-intro">Chaque thème dure 7 jours : un enseignement par jour, à partir d'un verset, avec le mot hébreu ou grec, la mise en pratique et une prière. Touche un thème pour commencer.</p>
   <div id="plansGrid" class="plans-grid"></div>
 </section>
 
@@ -690,13 +690,14 @@
   </div>
   <div class="plan-reader-body" id="readerBody">
     <div class="plan-reader-day" id="readerDay"></div>
+    <div class="reader-titre" id="readerTitreEns"></div>
     <div class="plan-reader-ref" id="readerRef"></div>
     <div class="plan-reader-text" id="readerText"></div>
-    <div class="plan-reader-explication" id="readerExplication"></div>
-    <div class="reader-bloc" id="readerSensBloc" hidden><div class="reader-bloc-titre">SENS PROFOND</div><p id="readerSens"></p></div>
+    <div class="reader-bloc" id="readerSensBloc" hidden><div class="reader-bloc-titre">L'ENSEIGNEMENT</div><div id="readerSens"></div></div>
     <div class="reader-bloc" id="readerMotsBloc" hidden><div class="reader-bloc-titre" id="readerMotsTitre">MOT À MOT</div>
       <div class="heb-panel"><div class="heb-mots" id="readerMots"></div><div class="heb-detail"></div></div></div>
-    <div class="reader-bloc" id="readerExempleBloc" hidden><div class="reader-bloc-titre">EXEMPLE CONCRET</div><p id="readerExemple"></p></div>
+    <div class="reader-bloc" id="readerExempleBloc" hidden><div class="reader-bloc-titre">MISE EN PRATIQUE</div><p id="readerExemple"></p></div>
+    <div class="reader-bloc reader-retenir" id="readerRetenirBloc"><div class="reader-bloc-titre">À RETENIR</div><div class="plan-reader-explication" id="readerExplication"></div></div>
     <div class="plan-reader-prayer" id="readerPrayer"></div>
     <div class="plan-reader-versions" id="readerVersions"></div>
     <div class="reader-locked" id="readerLocked" hidden>
@@ -729,9 +730,9 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="objectif-data.js?v=64"></script>
-<script src="themes-etude.js?v=65"></script>
-<script src="script.js?v=64"></script>
+<script src="objectif-data.js?v=66"></script>
+<script src="themes-etude.js?v=66"></script>
+<script src="script.js?v=66"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

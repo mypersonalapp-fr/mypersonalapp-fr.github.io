@@ -1373,3 +1373,10 @@ body[data-bg="nuit"] .lx sup{ color:var(--accent); }
 .lex-sep{ font:800 10px "Manrope",sans-serif; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin:12px 0 6px; padding-top:10px; border-top:1px solid var(--page); }
 .lex-sous{ font-size:13px; color:var(--muted); margin:4px 0 8px; }
 #lexContexte .notes-retour{ margin-bottom:8px; }
+/* Thèmes : un enseignement par jour */
+.reader-titre{ font:800 1.35rem/1.25 "Manrope",sans-serif; color:var(--text-dark); margin:6px 0 10px; }
+.reader-titre:empty{ display:none; }
+#readerSens p{ margin:0 0 10px; font-size:15px; line-height:1.6; text-align:left; }
+#readerSens p:last-child{ margin-bottom:0; }
+.reader-retenir .plan-reader-explication{ margin:0; text-align:left; font-style:italic; }
+.reader-retenir[hidden]{ display:none; }

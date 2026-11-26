@@ -3595,7 +3595,7 @@ document.addEventListener('visibilitychange', ()=>{
 const HEB_DISPO = Array.from({length:66}, (_,i)=>i);   // tous les livres
 const HEB_PREFIXES = { b:"dans / en", c:"et", d:"le / la / les", k:"comme", l:"à / pour", m:"de / depuis", s:"que / qui", i:"(question)" };
 function origLangue(livre){ return livre < 39 ? 'heb' : 'grc'; }
-const hebCache = {}, origLex = {}; let hebLexFr = null;
+const hebCache = {}, origLex = {}; let hebLexFr = null, origNotes = null;
 const hebFrCache = {};
 function hebCharger(livre){
   const lg = origLangue(livre);
@@ -3603,8 +3603,9 @@ function hebCharger(livre){
   const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/'+lg+'/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
   const pFr = (lg !== 'heb' || hebFrCache[livre]) ? Promise.resolve(1) : fetch('bible/heb/fr-'+livre+'.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{ hebFrCache[livre]=x; });
   const pLexFr = (lg !== 'heb' || hebLexFr) ? Promise.resolve(1) : fetch('bible/heb/lex-fr.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>(hebLexFr=x));
+  const pNotes = origNotes ? Promise.resolve(1) : fetch('bible/orig/notes.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{ origNotes = x; });
   const pIdx = (typeof lexIndex !== 'undefined' && lexIndex) ? Promise.resolve(1) : fetch('bible/lexique/fr.json').then(r=>r.json()).then(x=>{ lexIndex = x; }).catch(()=>{});
-  return Promise.all([pLivre, pLex, pFr, pLexFr, pIdx]).then(r=>r[0]);
+  return Promise.all([pLivre, pLex, pFr, pLexFr, pIdx, pNotes]).then(r=>r[0]);
 }
 /* Relie chaque mot hébreu/grec du verset au mot français de Segond qui le
    traduit : d'abord les traductions mot à mot écrites (Genèse 1-11), sinon un
@@ -4095,36 +4096,21 @@ const TEMPS_PHRASE = {
   'parfait':"est au parfait : une action passée dont le résultat demeure encore.",
   'plus-que-parfait':"est au plus-que-parfait : une action passée dont le résultat durait alors."
 };
+/* SENS DANS L'HÉBREU / LE GREC — notes rédigées à la main (bible/orig/notes.json,
+   clé « livre:chapitre:verset ») sur les mots qui portent le sens du verset.
+   Pas de note = la carte n'apparaît pas (le verset est simple). */
 function origRemplir(ou, livre, mots, texteFr, c, v){
   const carte = document.getElementById(ou === 'bible' ? 'dcbOrig' : 'dcOrig');
   const box = document.getElementById(ou === 'bible' ? 'bibleOrig' : 'accOrig');
-  const lg = origLangue(livre), lex = origLex[lg] || {};
+  const lg = origLangue(livre);
   document.getElementById(ou === 'bible' ? 'bibleOrigTitre' : 'accOrigTitre').textContent = lg === 'heb' ? "SENS DANS L'HÉBREU" : 'SENS DANS LE GREC';
-  if(!mots || !mots.length){ carte.hidden = true; return; }
+  const notes = origNotes && origNotes[livre + ':' + (c+1) + ':' + (v+1)];
+  if(!notes || !notes.length){ carte.hidden = true; box.innerHTML = ''; return; }
   const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  const fr = alignerVerset(livre, c, v, mots, texteFr);
-  const lignes = [];
-  mots.forEach((m,i)=>{
-    const isVerbe = lg === 'heb' ? /(^|\/)V/.test((m[3]||'').slice(1)) : /^V-/.test(m[3]||'');
-    if(!isVerbe) return;
-    const lx = lex[m[1]], mf = morphFr(m[3], lg);
-    const base = lx ? (lx[3] ? lx[3] + ' (' + lx[0] + ')' : lx[0]) : '';
-    const SENS_FIXE = { 'H1961':'être, devenir, arriver', 'H559':'dire', 'H1980':'aller, marcher', 'H935':'venir, entrer', 'H5414':'donner', 'H6213':'faire', 'H7200':'voir', 'H8085':'écouter, entendre', 'G1510':'être', 'G3004':'dire', 'G2064':'venir', 'G1096':'devenir, arriver', 'G2192':'avoir' };
-    const PARASITES = new Set(['éternel','israël','dieu','seigneur','roi','jésus','christ','dit','fils','peuple','juda','david','moïse','toi','lui']);
-    const sensBase = SENS_FIXE[(lg==='heb'?'H':'G')+m[1]] || (lx && lx[4] ? lx[4].filter(t=>!PARASITES.has(t)).slice(0,3).join(', ') : '');
-    const p = (mf.txt.split(' + ').find(x=>x.indexOf('verbe') >= 0) || mf.txt).split(' · ');
-    const motFr = fr[i] ? '« '+esc(fr[i])+' »' : 'Ce verbe';
-    let phrase = mf.temps && TEMPS_PHRASE[mf.temps] ? motFr+' '+TEMPS_PHRASE[mf.temps] : '';
-    const nuance = [];
-    if(lg === 'heb'){ const rad = p[p.indexOf('verbe')+1]; if(RADICAL_AIDE[rad] && rad !== 'Qal' && rad !== 'Peal') nuance.push('<b>'+esc(rad)+'</b> : '+RADICAL_AIDE[rad]+'.'); }
-    else { const voix = p.find(x=>VOIX_AIDE[x]); if(voix && voix !== 'actif') nuance.push('<b>'+esc(voix)+'</b> : '+VOIX_AIDE[voix]+'.');
-           const mode = p.find(x=>MODE_AIDE[x]); if(mode && mode !== 'participe' && mode !== 'infinitif') nuance.push('<b>'+esc(mode)+'</b> : '+MODE_AIDE[mode]+'.'); }
-    lignes.push('<div class="orig-l"><div class="orig-t">'+(fr[i] ? '« '+esc(fr[i])+' » = ' : '')+'<span class="orig-w"'+(lg==='heb'?' dir="rtl"':'')+'>'+m[0]+'</span>'
-      + (base ? ' <span class="orig-b">· '+esc(base)+(sensBase ? ' : '+esc(sensBase) : '')+'</span>' : '')+'</div>'
-      + (phrase ? '<div class="orig-n">'+phrase+'</div>' : '') + (nuance.length ? '<div class="orig-n">'+nuance.join('<br>')+'</div>' : '') + '</div>');
-  });
-  carte.hidden = !lignes.length;
-  box.innerHTML = '<p class="orig-intro">'+(lg==='heb' ? "L'hébreu se lit de droite à gauche. Voici les verbes du verset et ce que leur forme ajoute au sens :" : "Voici les verbes du verset dans le grec et ce que leur forme ajoute au sens :")+'</p>' + lignes.join('');
+  box.innerHTML = notes.map(n=>'<div class="orig-l">'
+    + (n.heb ? '<div class="orig-t">« '+esc(n.fr)+' » = <span class="orig-w"'+(lg==='heb'?' dir="rtl"':'')+'>'+esc(n.heb)+'</span>'+(n.tr ? ' <span class="orig-b">('+esc(n.tr)+')</span>' : '')+'</div>' : '')
+    + '<div class="orig-n">'+esc(n.note)+'</div></div>').join('');
+  carte.hidden = false;
 }
 
 /* =========================================================================

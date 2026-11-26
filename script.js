@@ -2330,6 +2330,8 @@ document.addEventListener('keydown', e=>{
 });
 
 function showPage(id){
+  if(id !== 'bible' && !retourEnCours) retourContexte = null;
+  { const rb = document.getElementById('bibleRetour'); if(rb) rb.hidden = !(id === 'bible' && retourContexte); }
   document.querySelectorAll('.page').forEach(p=>{ p.hidden = (p.id !== 'page-'+id); });
   document.querySelectorAll('#bottomNav button').forEach(b=>{
     b.classList.toggle('active', b.dataset.page === id);
@@ -4321,6 +4323,7 @@ function lexRendreRefs(box){
 }
 function lexAllerVerset(l, c, v){
   lexPageRetour = 'lexique';
+  memoriserRetour();
   showPage('bible');
   bibleL = l; bibleC = c; bibleV = v; bibleRendre();
 }
@@ -4345,8 +4348,43 @@ function lierRefs(html){
   });
 }
 function allerVerset(l, c, v){
+  memoriserRetour();
   const lecteur = document.getElementById('planReader');
   if(lecteur && lecteur.classList.contains('open')) closePlanReader();
   showPage('bible');
   bibleL = l; bibleC = parseInt(c,10); bibleV = parseInt(v,10); bibleRendre();
+}
+
+
+/* =========================================================================
+   RETOUR — quand on ouvre un passage depuis un Thème, le Lexique, l'Accueil
+   ou l'Objectif, un bouton « ‹ Retour » en haut de la Bible ramène
+   exactement à l'endroit quitté (même jour de thème, même position).
+   ========================================================================= */
+var retourContexte = null, retourEnCours = false;
+const RETOUR_NOMS = { theme:'au thème', lexique:'au Lexique', accueil:"à l'Accueil", objectif:"à l'Objectif", 'journal-comprehension':'aux Notes' };
+function memoriserRetour(){
+  const lecteur = document.getElementById('planReader');
+  if(lecteur && lecteur.classList.contains('open')){
+    retourContexte = { type:'theme', plan: readerPlanId, jour: readerDayIndex, scroll: lecteur.scrollTop };
+  } else {
+    const pg = document.querySelector('.page:not([hidden])');
+    const id = pg ? pg.id.replace('page-','') : 'accueil';
+    retourContexte = id === 'bible' ? null : { type:'page', page:id, scroll: window.scrollY };
+  }
+  const rb = document.getElementById('bibleRetour');
+  if(rb && retourContexte) rb.textContent = '‹ Retour ' + (RETOUR_NOMS[retourContexte.type === 'theme' ? 'theme' : retourContexte.page] || '');
+}
+function retourDepuisBible(){
+  const r = retourContexte; if(!r) return;
+  retourContexte = null;
+  if(r.type === 'theme'){
+    showPage('plans');
+    openPlanReader(r.plan);
+    readerDayIndex = r.jour; renderReaderDay();
+    setTimeout(()=>{ document.getElementById('planReader').scrollTop = r.scroll || 0; }, 50);
+  } else {
+    retourEnCours = true; showPage(r.page); retourEnCours = false;
+    setTimeout(()=>window.scrollTo(0, r.scroll || 0), 50);
+  }
 }

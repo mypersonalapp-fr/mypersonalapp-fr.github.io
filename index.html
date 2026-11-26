@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=49">
+<link rel="stylesheet" href="style.css?v=50">
 </head>
 <body>
 
@@ -220,15 +220,21 @@
 
 <!-- 1. ACCUEIL — le graphique et la position, priorité à "où j'en suis" -->
 <section id="page-accueil" class="page">
-
-  <div class="card verse-card">
-    <h2>VERSET DU JOUR</h2>
+  <div class="home-verse">
     <div class="verse-text" id="verseText">...</div>
     <div class="verse-ref" id="verseRef"></div>
-    <div class="heb-panel verse-heb"><div class="heb-mots" id="verseHebMots" dir="rtl"></div><div class="heb-detail"></div></div>
-    <div class="sens-box" id="verseSens" hidden></div>
   </div>
-
+  <div class="home-sheet no-print">
+    <div class="home-handle"></div>
+    <div class="seg">
+      <button type="button" id="homeBtnHeb" class="actif" onclick="homeOnglet('heb')">Hébreu</button>
+      <button type="button" id="homeBtnSens" onclick="homeOnglet('sens')">Sens</button>
+    </div>
+    <div class="home-sheet-body">
+      <div id="homeTabHeb"><div class="heb-panel verse-heb"><div class="heb-mots" id="verseHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
+      <div id="homeTabSens" hidden><div class="sens-box" id="verseSens" hidden></div></div>
+    </div>
+  </div>
 </section>
 
 <!-- VISION BOARD -->
@@ -262,23 +268,29 @@
 
 <!-- PLANS THÉMATIQUES -->
 <section id="page-bible" class="page" hidden>
-  <button type="button" id="bibleTitre" class="bible-titre" onclick="biblePickerToggle()">Genèse 1 : 1 ▾</button>
-  <div id="biblePicker" class="bible-picker" hidden>
-    <select id="bibleLivre" onchange="bibleChoixLivre()" aria-label="Livre"></select>
-    <div class="bible-picker-row">
-      <select id="bibleChap" onchange="bibleChoixChap()" aria-label="Chapitre"></select>
-      <select id="bibleVerset" onchange="bibleChoixVerset()" aria-label="Verset"></select>
+  <div id="bibleVueGrille">
+    <button type="button" id="bibleLivreBtn" class="bible-titre bible-livre-btn" onclick="biblePickerToggle()">Genèse ▾</button>
+    <div id="biblePicker" class="bible-picker" hidden>
+      <select id="bibleLivre" onchange="bibleChoixLivre()" aria-label="Livre"></select>
     </div>
+    <div class="bible-lab">CHAPITRES</div>
+    <div id="bibleGrille" class="bible-grille"></div>
   </div>
-  <div class="bible-page">
-    <div class="bible-vtext"><span id="bibleNum" class="bible-num">1</span><span id="bibleTexte"></span></div>
-    <div class="heb-panel" id="bibleHebPanel"><div class="heb-mots" id="bibleHebMots" dir="rtl"></div><div class="heb-detail"></div></div>
-    <div class="sens-box" id="bibleSens" hidden></div>
-  </div>
-  <div class="bible-nav-fixed no-print">
-    <button type="button" onclick="bibleVerset(-1)">‹ Précédent</button>
-    <span id="bibleCompteur">1 / 31</span>
-    <button type="button" onclick="bibleVerset(1)">Suivant ›</button>
+  <div id="bibleVueVerset" hidden>
+    <div class="bible-top">
+      <button type="button" id="bibleTitre" class="bible-titre" onclick="bibleVue('grille')">Genèse 1 · 1 ▾</button>
+      <span id="bibleCompteur" class="bible-compteur">1 / 31</span>
+    </div>
+    <div hidden><select id="bibleChap"></select><select id="bibleVerset"></select></div>
+    <div class="bible-page">
+      <div class="bible-vtext"><span id="bibleNum" class="bible-num">1</span><span id="bibleTexte"></span></div>
+      <div class="heb-panel" id="bibleHebPanel"><div class="heb-mots" id="bibleHebMots" dir="rtl"></div><div class="heb-detail"></div></div>
+      <div class="sens-box" id="bibleSens" hidden></div>
+    </div>
+    <div class="bible-nav-fixed no-print">
+      <button type="button" onclick="bibleVerset(-1)">Précédent</button>
+      <button type="button" onclick="bibleVerset(1)">Suivant</button>
+    </div>
   </div>
 </section>
 
@@ -312,15 +324,26 @@
 
 <!-- 3a. JOURNAL DE COMPRÉHENSION -->
 <section id="page-journal-comprehension" class="page" hidden>
-  <div class="notes-head">
-    <h2 class="notes-titre">Notes</h2>
-    <button type="button" class="notes-new" onclick="noteNouvelle()">+ Nouvelle note</button>
+  <div id="notesVueListe">
+    <div class="notes-head">
+      <h2 class="notes-titre">Notes</h2>
+      <button type="button" class="notes-new" onclick="noteNouvelle()">+ Nouvelle note</button>
+    </div>
+    <input id="notesRecherche" class="notes-search" type="search" placeholder="Rechercher une note" oninput="notesRendre()">
+    <div id="notesListe"></div>
+    <details id="anciennesNotes" class="notes-anciennes" hidden>
+      <summary>Anciennes notes</summary>
+      <div id="compList"></div>
+    </details>
   </div>
-  <div id="notesListe"></div>
-  <details id="anciennesNotes" class="notes-anciennes" hidden>
-    <summary>Anciennes notes</summary>
-    <div id="compList"></div>
-  </details>
+  <div id="notesVueEditeur" hidden>
+    <div class="notes-edit-top">
+      <button type="button" class="notes-retour" onclick="noteRetour()">‹ Notes</button>
+      <button type="button" class="note-suppr" onclick="noteSupprimer()">Supprimer</button>
+    </div>
+    <div id="noteEditDate" class="note-date"></div>
+    <textarea id="noteEditTexte" class="note-edit" placeholder="Écris ici…" oninput="noteSaisie()"></textarea>
+  </div>
 </section>
 
 <!-- 3b. PRIÈRES -->
@@ -645,7 +668,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=49"></script>
+<script src="script.js?v=50"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

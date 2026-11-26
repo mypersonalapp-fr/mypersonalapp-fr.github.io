@@ -1663,6 +1663,7 @@ function afficherVerset(){
 }
 
 function renderVerseAndDate(){
+  { const pa = document.getElementById('page-accueil'); if(pa) document.body.classList.toggle('sur-accueil', !pa.hidden); }
   const d = new Date();
   let txt = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const salut = d.getHours() >= 18 || d.getHours() < 4 ? 'Bonsoir' : 'Bonjour';
@@ -2278,6 +2279,9 @@ function showPage(id){
   if(id === 'plans') renderThematicPlans();
   if(id === 'parametres') updateNotifUI();
   document.body.classList.toggle('sur-bible', id === 'bible');
+  document.body.classList.toggle('sur-notes', id === 'journal-comprehension');
+  document.body.classList.toggle('sur-accueil', id === 'accueil');
+  if(id !== 'journal-comprehension' && typeof noteFlush === 'function') noteFlush();
   if(id === 'bible') bibleInit();
   if(id === 'en-groupe') afficherVueListeGroupes();
   if(id === 'admin'){ renderAvisAdmin(); renderUsersAdmin(); renderSuggestionsAdmin(); }
@@ -3571,6 +3575,7 @@ function bibleSauver(){
   try{ localStorage.setItem('biblePos', JSON.stringify({l:bibleL,c:bibleC,v:bibleV})); }catch(e){}
 }
 function bibleInit(){
+  bibleVue('grille');
   if(bibleOk){ bibleRendre(); return; }
   bibleOk = true;
   const sel = document.getElementById('bibleLivre');
@@ -3589,7 +3594,28 @@ function bibleRemplirChap(){
   for(let i=1;i<=n;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Chapitre '+i; cs.appendChild(o); }
   cs.value = bibleC;
 }
-function bibleChoixLivre(){ bibleL = parseInt(document.getElementById('bibleLivre').value,10); bibleC = 1; bibleV = 1; bibleRendre(); }
+function bibleChoixLivre(){ bibleL = parseInt(document.getElementById('bibleLivre').value,10); bibleC = 1; bibleV = 1; document.getElementById('biblePicker').hidden = true; bibleRendre(); }
+function bibleVue(v){
+  document.getElementById('bibleVueGrille').hidden = (v !== 'grille');
+  document.getElementById('bibleVueVerset').hidden = (v !== 'verset');
+  document.body.classList.toggle('sur-bible-verset', v === 'verset');
+  window.scrollTo(0,0);
+}
+function bibleGrilleRendre(){
+  const n = chapters[BIBLE_LIVRES[bibleL]], g = document.getElementById('bibleGrille');
+  if(!g) return;
+  document.getElementById('bibleLivreBtn').textContent = BIBLE_LIVRES[bibleL] + ' ▾';
+  let h = '';
+  for(let i=1;i<=n;i++) h += '<button type="button" class="'+(i===bibleC?'sel':'')+'" onclick="bibleChapitre('+i+')">'+i+'</button>';
+  g.innerHTML = h;
+}
+function bibleChapitre(n){ if(n !== bibleC){ bibleC = n; bibleV = 1; } bibleVue('verset'); bibleRendre(); }
+function homeOnglet(x){
+  document.getElementById('homeTabHeb').hidden = (x !== 'heb');
+  document.getElementById('homeTabSens').hidden = (x !== 'sens');
+  document.getElementById('homeBtnHeb').classList.toggle('actif', x === 'heb');
+  document.getElementById('homeBtnSens').classList.toggle('actif', x === 'sens');
+}
 function bibleChoixChap(){ bibleC = parseInt(document.getElementById('bibleChap').value,10); bibleV = 1; bibleRendre(); }
 function bibleChoixVerset(){ bibleV = parseInt(document.getElementById('bibleVerset').value,10); document.getElementById('biblePicker').hidden = true; bibleRendre(); }
 function bibleVerset(delta){
@@ -3615,7 +3641,8 @@ function bibleRendre(){
   const livre = bibleL, chap = bibleC, vers = bibleV;
   document.getElementById('bibleLivre').value = livre;
   bibleRemplirChap();
-  document.getElementById('bibleTitre').textContent = BIBLE_LIVRES[livre] + ' ' + chap + ' : ' + vers + ' ▾';
+  document.getElementById('bibleTitre').textContent = BIBLE_LIVRES[livre] + ' ' + chap + ' · ' + vers + ' ▾';
+  bibleGrilleRendre();
   const txt = document.getElementById('bibleTexte');
   Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null)]).then(r=>{
     if(livre !== bibleL || chap !== bibleC || vers !== bibleV) return;
@@ -3646,50 +3673,58 @@ function bibleRendre(){
    automatique (state.notes, synchronisé comme le reste). Les anciennes notes
    (journal de compréhension) restent consultables en bas de page.
    ========================================================================= */
-let notesTimer = null;
-function noteDateTxt(iso){
+let notesTimer = null, noteCourante = null;
+function noteDateTxt(iso, court){
   const d = new Date(iso + 'T12:00:00');
-  const t = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const t = d.toLocaleDateString('fr-FR', court ? { weekday:'long', day:'numeric', month:'long' } : { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
+function noteTrouver(){ return (state.notes || []).find(x=>x.id === noteCourante); }
 function noteNouvelle(){
   if(!state.notes) state.notes = [];
-  state.notes.unshift({ id: Date.now(), date: todayStr(), text: '' });
-  notesRendre();
-  const ta = document.querySelector('#notesListe textarea');
-  if(ta) ta.focus();
+  const n = { id: Date.now(), date: todayStr(), text: '' };
+  state.notes.unshift(n);
+  noteOuvrir(n.id);
 }
-function noteSaisie(id, el){
-  el.style.height = 'auto'; el.style.height = Math.max(el.scrollHeight, 160) + 'px';
+function noteOuvrir(id){
+  noteCourante = id;
+  const n = noteTrouver(); if(!n) return;
+  document.getElementById('notesVueListe').hidden = true;
+  document.getElementById('notesVueEditeur').hidden = false;
+  document.getElementById('noteEditDate').textContent = noteDateTxt(n.date);
+  const ta = document.getElementById('noteEditTexte');
+  ta.value = n.text; ta.focus();
+}
+function noteSaisie(){
+  const n = noteTrouver(); if(!n) return;
+  n.text = document.getElementById('noteEditTexte').value;
   clearTimeout(notesTimer);
-  notesTimer = setTimeout(()=>{
-    const n = (state.notes || []).find(x=>x.id === id);
-    if(!n) return;
-    n.text = el.value;
-    persist();
-  }, 500);
+  notesTimer = setTimeout(()=>persist(), 500);
 }
-function noteSupprimer(id){
+function noteFlush(){
+  clearTimeout(notesTimer);
+  const n = noteTrouver();
+  if(n && !n.text.trim()) state.notes = state.notes.filter(x=>x !== n);
+  if(noteCourante !== null){ noteCourante = null; persist(); }
+}
+function noteRetour(){ noteFlush(); notesRendre(); }
+function noteSupprimer(){
   if(!confirm('Supprimer cette note ?')) return;
-  state.notes = (state.notes || []).filter(x=>x.id !== id);
-  persist(); notesRendre();
+  state.notes = (state.notes || []).filter(x=>x.id !== noteCourante);
+  noteCourante = null; persist(); notesRendre();
 }
 function notesRendre(){
   const box = document.getElementById('notesListe');
   if(!box) return;
-  if(!state.notes) state.notes = [];
-  // Toujours une note vierge datée d'aujourd'hui en haut si aucune n'existe.
-  if(!state.notes.length || state.notes[0].date !== todayStr()){
-    state.notes.unshift({ id: Date.now(), date: todayStr(), text: '' });
-  }
+  document.getElementById('notesVueListe').hidden = false;
+  document.getElementById('notesVueEditeur').hidden = true;
+  const q = (document.getElementById('notesRecherche').value || '').toLowerCase().trim();
   const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  box.innerHTML = state.notes.map(n =>
-    '<div class="note-page">'
-    + '<div class="note-date">'+noteDateTxt(n.date)+'</div>'
-    + '<textarea placeholder="Écris ici…" oninput="noteSaisie('+n.id+', this)">'+esc(n.text)+'</textarea>'
-    + '<button type="button" class="note-suppr" onclick="noteSupprimer('+n.id+')">Supprimer</button>'
-    + '</div>').join('');
-  box.querySelectorAll('textarea').forEach(t=>{ t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, 160) + 'px'; });
+  const liste = (state.notes || []).filter(n => !q || n.text.toLowerCase().includes(q) || noteDateTxt(n.date, true).toLowerCase().includes(q));
+  box.innerHTML = liste.length ? liste.map(n => {
+    const apercu = (n.text.trim().split('\n')[0]) || 'Note vide';
+    return '<button type="button" class="note-row" onclick="noteOuvrir('+n.id+')"><span class="note-row-date">'+noteDateTxt(n.date, true)+'</span><span class="note-row-txt">'+esc(apercu)+'</span></button>';
+  }).join('') : '<div class="empty">Aucune note.</div>';
   const anc = document.getElementById('anciennesNotes');
   if(anc){ anc.hidden = !(state.compLog && state.compLog.length); renderComp(); }
 }

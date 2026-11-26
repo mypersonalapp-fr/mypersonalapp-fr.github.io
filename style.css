@@ -1155,3 +1155,51 @@ body{ padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important; }
 .note-suppr{ background:none; border:none; color:var(--muted); font-size:.8rem; cursor:pointer; padding:6px 0 0; }
 .notes-anciennes{ margin:10px 0; color:var(--text-dark); }
 .note-page textarea{ font-family:"Manrope",sans-serif !important; }
+
+/* ===== Mise en page choisie : accueil plein écran + panneau, grille de chapitres, notes en liste ===== */
+.sur-notes .topbar, .sur-notes #syncBadge{ display:none; }
+.sur-accueil .topbar > div{ display:flex; flex-direction:row-reverse; justify-content:center; align-items:baseline; gap:6px; }
+.sur-accueil .top-greeting{ font-size:.95rem !important; font-weight:600 !important; color:var(--muted) !important; }
+.sur-accueil .top-date::before{ content:"· "; }
+.sur-accueil .top-date{ font-size:.95rem; }
+.home-verse{ text-align:center; padding:10vh 10px 0; }
+.home-verse .verse-text{ font-size:1.75rem; font-weight:700; line-height:1.35; }
+.home-verse .verse-ref{ margin-top:14px; font-weight:700; font-size:.95rem; color:var(--muted); }
+.home-sheet{ position:fixed; left:0; right:0; bottom:0; height:min(48vh,420px); background:var(--page); border-radius:28px 28px 0 0; box-shadow:0 -8px 30px var(--shadow); padding:12px 20px 110px; box-sizing:border-box; z-index:5; display:flex; flex-direction:column; }
+.home-sheet[hidden], body:not(.sur-accueil) .home-sheet{ display:none; }
+.home-handle{ width:40px; height:5px; border-radius:3px; background:var(--gold); margin:0 auto 12px; flex:none; }
+.seg{ display:flex; background:var(--cream); border-radius:14px; padding:3px; margin-bottom:12px; flex:none; }
+.seg button{ flex:1; height:34px; border:0; border-radius:11px; background:none; font:700 13px "Manrope",sans-serif; color:var(--muted); cursor:pointer; }
+.seg button.actif{ background:var(--page); color:var(--text-dark); box-shadow:0 1px 4px var(--shadow); }
+.home-sheet-body{ overflow-y:auto; flex:1; }
+.home-sheet .heb-panel{ border:none !important; background:none !important; padding:0; }
+.home-sheet .heb-mots{ justify-content:center; }
+.home-sheet .sens-box{ background:none !important; padding:0; }
+.bible-livre-btn{ font-size:1.9rem !important; font-weight:800; background:none !important; padding:0; }
+.bible-lab{ font:700 11px "Manrope",sans-serif; letter-spacing:.08em; color:var(--muted); margin:14px 0 8px; }
+.bible-grille{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; padding-bottom:110px; }
+.bible-grille button{ height:48px; border:0; border-radius:14px; background:var(--cream); color:var(--text-dark); font:700 15px "Manrope",sans-serif; cursor:pointer; }
+.bible-grille button.sel{ background:var(--text-dark); color:var(--page); }
+.bible-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.bible-compteur{ font:600 12px "Manrope",sans-serif; color:var(--muted); }
+.bible-nav-fixed{ gap:10px; }
+.notes-search{ width:100%; box-sizing:border-box; border:none; background:var(--cream); color:var(--text-dark); border-radius:14px; padding:11px 14px; font:500 15px "Manrope",sans-serif; margin-bottom:6px; }
+.note-row{ display:flex; width:100%; justify-content:space-between; gap:14px; align-items:center; background:none; border:none; border-bottom:1px solid var(--gold-light); padding:16px 0; color:var(--text-dark); font:600 16px "Manrope",sans-serif; text-align:left; cursor:pointer; }
+.note-row-txt{ color:var(--muted); font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:45%; }
+.notes-edit-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.notes-retour{ background:none; border:none; color:var(--text-dark); font:700 16px "Manrope",sans-serif; padding:6px 0; cursor:pointer; }
+.note-edit{ width:100%; box-sizing:border-box; min-height:60vh; border:none !important; background:transparent !important; color:var(--text-dark); font:500 18px/1.6 "Manrope",sans-serif !important; resize:none; outline:none; padding:0; }
+/* Nuit lumineuse */
+body[data-bg="nuit"]{
+  --cream:#121212; --cream-alt:#121212; --gold:#2B2B2B; --gold-light:#1D1D1D; --muted:#9A9A9A; --nav-bg:#0C0C0C; --accent:#FFD978;
+  background:radial-gradient(560px 420px at 20% -60px, rgba(255,200,90,.22), rgba(0,0,0,0)) no-repeat fixed, #000 !important;
+}
+body[data-bg="nuit"] .top-greeting{ text-shadow:0 0 18px rgba(255,214,120,.45); }
+body[data-bg="nuit"] .card, body[data-bg="nuit"] .note-row-date{ box-shadow:0 0 30px rgba(255,200,90,.10); }
+body[data-bg="nuit"] .card{ border:1px solid #2B2B2B !important; }
+body[data-bg="nuit"] .card h2, body[data-bg="nuit"] .sens-box h4, body[data-bg="nuit"] .bible-lab, body[data-bg="nuit"] .home-verse .verse-ref{ color:var(--accent) !important; }
+body[data-bg="nuit"] .heb-mot{ text-shadow:0 0 12px rgba(255,214,120,.8); }
+body[data-bg="nuit"] .bottom-nav{ border:1px solid #2A2A2A; box-shadow:0 0 24px rgba(255,214,120,.18) !important; }
+body[data-bg="nuit"] .bottom-nav button.active{ background:#1D1D1D !important; color:var(--accent) !important; text-shadow:0 0 10px rgba(255,214,120,.7); }
+body[data-bg="nuit"] .home-sheet{ border-top:1px solid #2B2B2B; box-shadow:0 -8px 40px rgba(255,200,90,.10); }
+#bibleVueVerset{ padding-bottom:170px; }

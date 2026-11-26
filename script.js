@@ -320,6 +320,7 @@ function applyAppearance(){
   if(bN) bN.classList.toggle('actif', bg === 'nuit');
   const tt = document.getElementById('themeToggle');
   if(tt) tt.textContent = bg === 'nuit' ? 'Jour' : 'Nuit';
+  const va = document.getElementById('valApparence'); if(va) va.textContent = bg === 'nuit' ? 'Nuit' : 'Jour';
 
   const musicBar = document.getElementById('musicCard');
   if(musicBar){
@@ -610,6 +611,7 @@ function updateNotifUI(){
   const on = supported && state.settings && state.settings.notifs && Notification.permission === 'granted';
   status.textContent = !supported ? "🔕 Non pris en charge sur cet appareil" : (on ? "🔔 Rappels activés" : "🔕 Rappels désactivés");
   status.className = "detail " + (on ? "on" : "off");
+  const vr = document.getElementById('valRappels'); if(vr) vr.textContent = on ? 'Activés' : 'Désactivés';
   btn.textContent = on ? "Désactiver les rappels" : "Activer les rappels";
   btn.disabled = !supported;
   const rythmeSel = document.getElementById('notifRythmeSelect');
@@ -1010,6 +1012,7 @@ function initCloudIfConfigured(){
         try{ demarrerSuiviActivite(user); }catch(e){ console.error('Erreur de suivi d\'activité :', e); }
         const securiteTabBtn = document.getElementById('securiteTabBtn');
         if(securiteTabBtn) securiteTabBtn.style.display = '';
+        { const cr = document.getElementById('compteRow'); if(cr) cr.style.display = ''; }
         renderSecurityCard(user);
         // "En groupe" est une fonctionnalité à part (données partagées, pas
         // seulement les tiennes) : si son démarrage échoue pour une raison
@@ -1662,7 +1665,7 @@ function afficherVerset(){
     hebCharger(0).then(c=>{ vh.innerHTML = hebMotsHtml(0, 0, 0, c[0][0]); }).catch(()=>{});
     sensCharger(0).then(d=>{
       const e = d['1'] && d['1']['1'], sb = document.getElementById('verseSens');
-      if(e && sb){ sb.hidden = false; sb.innerHTML = '<h4>Sens du verset</h4><p>'+e.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>'; }
+      if(e && sb){ sb.hidden = false; sb.innerHTML = '<p>'+e.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>'; }
     });
   }, 0);
 }
@@ -2287,6 +2290,7 @@ function showPage(id){
   document.body.classList.toggle('sur-bible', id === 'bible');
   document.body.classList.toggle('sur-notes', id === 'journal-comprehension');
   document.body.classList.toggle('sur-accueil', id === 'accueil');
+  document.body.classList.toggle('sur-param', id === 'parametres');
   if(id !== 'journal-comprehension' && typeof noteFlush === 'function') noteFlush();
   if(id === 'bible') bibleInit();
   if(id === 'en-groupe') afficherVueListeGroupes();
@@ -3581,7 +3585,6 @@ function bibleSauver(){
   try{ localStorage.setItem('biblePos', JSON.stringify({l:bibleL,c:bibleC,v:bibleV})); }catch(e){}
 }
 function bibleInit(){
-  bibleVue('grille');
   if(bibleOk){ bibleRendre(); return; }
   bibleOk = true;
   const sel = document.getElementById('bibleLivre');
@@ -3593,83 +3596,49 @@ function bibleInit(){
   }
   bibleRendre();
 }
-function biblePickerToggle(){ const p = document.getElementById('biblePicker'); p.hidden = !p.hidden; }
+function dcToggle(id){
+  const e = document.getElementById(id); if(!e) return;
+  const ouvrir = e.classList.contains('ferme');
+  // Mot à mot et Sens s'ouvrent l'un ou l'autre : tout reste visible sans défiler.
+  if(ouvrir && e.dataset.groupe) document.querySelectorAll('.dcard[data-groupe="'+e.dataset.groupe+'"]').forEach(x=>x.classList.add('ferme'));
+  e.classList.toggle('ferme', !ouvrir);
+}
 function bibleRemplirChap(){
   const n = chapters[BIBLE_LIVRES[bibleL]], cs = document.getElementById('bibleChap');
   cs.innerHTML = '';
-  for(let i=1;i<=n;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Chapitre '+i; cs.appendChild(o); }
+  for(let i=1;i<=n;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; cs.appendChild(o); }
   cs.value = bibleC;
 }
-function bibleChoixLivre(){ bibleL = parseInt(document.getElementById('bibleLivre').value,10); bibleC = 1; bibleV = 1; document.getElementById('biblePicker').hidden = true; bibleRendre(); }
-function bibleVue(v){
-  document.getElementById('bibleVueGrille').hidden = (v !== 'grille');
-  document.getElementById('bibleVueVerset').hidden = (v !== 'verset');
-  document.body.classList.toggle('sur-bible-verset', v === 'verset');
-  window.scrollTo(0,0);
-}
-function bibleGrilleRendre(){
-  const n = chapters[BIBLE_LIVRES[bibleL]], g = document.getElementById('bibleGrille');
-  if(!g) return;
-  document.getElementById('bibleLivreBtn').textContent = BIBLE_LIVRES[bibleL] + ' ▾';
-  let h = '';
-  for(let i=1;i<=n;i++) h += '<button type="button" class="'+(i===bibleC?'sel':'')+'" onclick="bibleChapitre('+i+')">'+i+'</button>';
-  g.innerHTML = h;
-}
-function bibleChapitre(n){ if(n !== bibleC){ bibleC = n; bibleV = 1; } bibleVue('verset'); bibleRendre(); }
-function homeOnglet(x){
-  document.getElementById('homeTabHeb').hidden = (x !== 'heb');
-  document.getElementById('homeTabSens').hidden = (x !== 'sens');
-  document.getElementById('homeBtnHeb').classList.toggle('actif', x === 'heb');
-  document.getElementById('homeBtnSens').classList.toggle('actif', x === 'sens');
-}
+function bibleChoixLivre(){ bibleL = parseInt(document.getElementById('bibleLivre').value,10); bibleC = 1; bibleV = 1; bibleRendre(); }
+function bibleVue(){}
 function bibleChoixChap(){ bibleC = parseInt(document.getElementById('bibleChap').value,10); bibleV = 1; bibleRendre(); }
-function bibleChoixVerset(){ bibleV = parseInt(document.getElementById('bibleVerset').value,10); document.getElementById('biblePicker').hidden = true; bibleRendre(); }
-function bibleVerset(delta){
-  bibleLoadLivre(bibleL).then(c=>{
-    let v = bibleV + delta;
-    if(v < 1){
-      if(bibleC > 1){ bibleC--; }
-      else if(bibleL > 0){ bibleL--; bibleC = chapters[BIBLE_LIVRES[bibleL]]; }
-      else return;
-      bibleLoadLivre(bibleL).then(c2=>{ bibleV = c2[bibleC-1].length; bibleRendre(); });
-      return;
-    }
-    if(v > c[bibleC-1].length){
-      if(bibleC < chapters[BIBLE_LIVRES[bibleL]]){ bibleC++; }
-      else if(bibleL < BIBLE_LIVRES.length-1){ bibleL++; bibleC = 1; }
-      else return;
-      bibleV = 1; bibleRendre(); return;
-    }
-    bibleV = v; bibleRendre();
-  });
-}
+function bibleChoixVerset(n){ bibleV = n; bibleRendre(); }
+function homeOnglet(){}
 function bibleRendre(){
   const livre = bibleL, chap = bibleC, vers = bibleV;
   document.getElementById('bibleLivre').value = livre;
   bibleRemplirChap();
-  document.getElementById('bibleTitre').textContent = BIBLE_LIVRES[livre] + ' ' + chap + ' · ' + vers + ' ▾';
-  bibleGrilleRendre();
   const txt = document.getElementById('bibleTexte');
   Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null)]).then(r=>{
     if(livre !== bibleL || chap !== bibleC || vers !== bibleV) return;
     const versets = r[0][chap-1] || [];
     txt.textContent = versets[vers-1] || '';
-    document.getElementById('bibleNum').textContent = vers;
-    document.getElementById('bibleCompteur').textContent = vers + ' / ' + versets.length;
+    document.getElementById('bibleVLabel').textContent = 'VERSET ' + vers;
+    document.getElementById('biblePills').innerHTML = versets.map((_,i)=>'<button type="button" class="'+(i+1===vers?'sel':'')+'" onclick="bibleChoixVerset('+(i+1)+')">'+(i+1)+'</button>').join('');
+    { const sel = document.querySelector('#biblePills .sel'); if(sel) sel.scrollIntoView({inline:'center', block:'nearest'}); }
     const vs = document.getElementById('bibleVerset');
     vs.innerHTML = versets.map((_,i)=>'<option value="'+(i+1)+'">Verset '+(i+1)+'</option>').join('');
     vs.value = vers;
     const hp = document.getElementById('bibleHebPanel');
     const mots = r[2] && r[2][chap-1] && r[2][chap-1][vers-1];
-    hp.hidden = !mots;
+    document.getElementById('dcbMots').hidden = !mots;
     hp.querySelector('.heb-detail').innerHTML = '';
     document.getElementById('bibleHebMots').innerHTML = mots ? hebMotsHtml(livre, chap-1, vers-1, mots) : '';
     const sens = r[1] && r[1][String(chap)] && r[1][String(chap)][String(vers)];
     const sb = document.getElementById('bibleSens');
-    sb.hidden = !sens;
-    if(sens) sb.innerHTML = '<h4>Sens du verset</h4><p>'+sens.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>';
+    sb.hidden = !sens; document.getElementById('dcbSens').hidden = !sens;
+    if(sens) sb.innerHTML = '<p>'+sens.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>';
     bibleSauver();
-    window.scrollTo(0,0);
   }).catch(()=>{ txt.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
 }
 
@@ -3679,20 +3648,34 @@ function bibleRendre(){
    automatique (state.notes, synchronisé comme le reste). Les anciennes notes
    (journal de compréhension) restent consultables en bas de page.
    ========================================================================= */
-let notesTimer = null, noteCourante = null;
+let notesTimer = null, noteCourante = null, noteInline = null;
 function noteDateTxt(iso, court){
   const d = new Date(iso + 'T12:00:00');
   const t = d.toLocaleDateString('fr-FR', court ? { weekday:'long', day:'numeric', month:'long' } : { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 function noteTrouver(){ return (state.notes || []).find(x=>x.id === noteCourante); }
-function noteNouvelle(){
+function noteInlineFin(){
+  clearTimeout(notesTimer);
+  if(noteInline){
+    if(!noteInline.text.trim()) state.notes = (state.notes || []).filter(x=>x !== noteInline);
+    noteInline = null; persist();
+  }
+}
+function noteInlineSaisie(){
   if(!state.notes) state.notes = [];
-  const n = { id: Date.now(), date: todayStr(), text: '' };
-  state.notes.unshift(n);
-  noteOuvrir(n.id);
+  if(!noteInline){ noteInline = { id: Date.now(), date: todayStr(), text: '' }; state.notes.unshift(noteInline); }
+  noteInline.text = document.getElementById('noteInlineTexte').value;
+  clearTimeout(notesTimer);
+  notesTimer = setTimeout(()=>persist(), 500);
+}
+function noteNouvelle(){
+  noteInlineFin();
+  notesRendre();
+  const ta = document.getElementById('noteInlineTexte'); if(ta) ta.focus();
 }
 function noteOuvrir(id){
+  noteInlineFin();
   noteCourante = id;
   const n = noteTrouver(); if(!n) return;
   document.getElementById('notesVueListe').hidden = true;
@@ -3708,6 +3691,7 @@ function noteSaisie(){
   notesTimer = setTimeout(()=>persist(), 500);
 }
 function noteFlush(){
+  noteInlineFin();
   clearTimeout(notesTimer);
   const n = noteTrouver();
   if(n && !n.text.trim()) state.notes = state.notes.filter(x=>x !== n);
@@ -3726,7 +3710,10 @@ function notesRendre(){
   document.getElementById('notesVueEditeur').hidden = true;
   const q = (document.getElementById('notesRecherche').value || '').toLowerCase().trim();
   const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  const liste = (state.notes || []).filter(n => !q || n.text.toLowerCase().includes(q) || noteDateTxt(n.date, true).toLowerCase().includes(q));
+  { const dd = document.getElementById('noteInlineDate'), ta = document.getElementById('noteInlineTexte');
+    if(dd) dd.textContent = noteDateTxt(todayStr());
+    if(ta && document.activeElement !== ta) ta.value = noteInline ? noteInline.text : ''; }
+  const liste = (state.notes || []).filter(n => n !== noteInline && (!q || n.text.toLowerCase().includes(q) || noteDateTxt(n.date, true).toLowerCase().includes(q)));
   box.innerHTML = liste.length ? liste.map(n => {
     const apercu = (n.text.trim().split('\n')[0]) || 'Note vide';
     return '<button type="button" class="note-row" onclick="noteOuvrir('+n.id+')"><span class="note-row-date">'+noteDateTxt(n.date, true)+'</span><span class="note-row-txt">'+esc(apercu)+'</span></button>';

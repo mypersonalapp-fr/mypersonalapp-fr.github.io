@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=51">
+<link rel="stylesheet" href="style.css?v=52">
 </head>
 <body>
 
@@ -221,20 +221,17 @@
 
 <!-- 1. ACCUEIL — le graphique et la position, priorité à "où j'en suis" -->
 <section id="page-accueil" class="page">
-  <div class="home-verse">
-    <div class="verse-text" id="verseText">...</div>
-    <div class="verse-ref" id="verseRef"></div>
+  <div class="dcard" id="dcVerset">
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcVerset')"><span>VERSET DU JOUR</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="verse-text" id="verseText">...</div><div class="verse-ref" id="verseRef"></div></div>
   </div>
-  <div class="home-sheet no-print">
-    <div class="home-handle"></div>
-    <div class="seg">
-      <button type="button" id="homeBtnHeb" class="actif" onclick="homeOnglet('heb')">Hébreu</button>
-      <button type="button" id="homeBtnSens" onclick="homeOnglet('sens')">Sens</button>
-    </div>
-    <div class="home-sheet-body">
-      <div id="homeTabHeb"><div class="heb-panel verse-heb"><div class="heb-mots" id="verseHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
-      <div id="homeTabSens" hidden><div class="sens-box" id="verseSens" hidden></div></div>
-    </div>
+  <div class="dcard" id="dcMots" data-groupe="acc">
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcMots')"><span>MOT À MOT</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="heb-panel verse-heb"><div class="heb-mots" id="verseHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
+  </div>
+  <div class="dcard ferme" id="dcSens" data-groupe="acc">
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcSens')"><span>SENS DU VERSET</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="sens-box" id="verseSens" hidden></div></div>
   </div>
 </section>
 
@@ -269,30 +266,24 @@
 
 <!-- PLANS THÉMATIQUES -->
 <section id="page-bible" class="page" hidden>
-  <div id="bibleVueGrille">
-    <button type="button" id="bibleLivreBtn" class="bible-titre bible-livre-btn" onclick="biblePickerToggle()">Genèse ▾</button>
-    <div id="biblePicker" class="bible-picker" hidden>
-      <select id="bibleLivre" onchange="bibleChoixLivre()" aria-label="Livre"></select>
-    </div>
-    <div class="bible-lab">CHAPITRES</div>
-    <div id="bibleGrille" class="bible-grille"></div>
+  <div class="bible-sel">
+    <label class="sel-wrap sel-livre"><select id="bibleLivre" onchange="bibleChoixLivre()" aria-label="Livre"></select></label>
+    <label class="sel-wrap sel-chap"><select id="bibleChap" onchange="bibleChoixChap()" aria-label="Chapitre"></select></label>
   </div>
-  <div id="bibleVueVerset" hidden>
-    <div class="bible-top">
-      <button type="button" id="bibleTitre" class="bible-titre" onclick="bibleVue('grille')">Genèse 1 · 1 ▾</button>
-      <span id="bibleCompteur" class="bible-compteur">1 / 31</span>
-    </div>
-    <div hidden><select id="bibleChap"></select><select id="bibleVerset"></select></div>
-    <div class="bible-page">
-      <div class="bible-vtext"><span id="bibleNum" class="bible-num">1</span><span id="bibleTexte"></span></div>
-      <div class="heb-panel" id="bibleHebPanel"><div class="heb-mots" id="bibleHebMots" dir="rtl"></div><div class="heb-detail"></div></div>
-      <div class="sens-box" id="bibleSens" hidden></div>
-    </div>
-    <div class="bible-nav-fixed no-print">
-      <button type="button" onclick="bibleVerset(-1)">Précédent</button>
-      <button type="button" onclick="bibleVerset(1)">Suivant</button>
-    </div>
+  <div id="biblePills" class="bible-pills" aria-label="Versets"></div>
+  <div class="dcard" id="dcbVerset">
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcbVerset')"><span id="bibleVLabel">VERSET 1</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="bible-vtext"><span id="bibleTexte"></span></div></div>
   </div>
+  <div class="dcard" id="dcbMots" data-groupe="bib">
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcbMots')"><span>MOT À MOT</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="heb-panel" id="bibleHebPanel"><div class="heb-mots" id="bibleHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
+  </div>
+  <div class="dcard ferme" id="dcbSens" data-groupe="bib">
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcbSens')"><span>SENS DU VERSET</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="sens-box" id="bibleSens" hidden></div></div>
+  </div>
+  <div hidden><select id="bibleVerset"></select></div>
 </section>
 
 <section id="page-plans" class="page" hidden>
@@ -330,6 +321,7 @@
       <h2 class="notes-titre">Notes</h2>
       <button type="button" class="notes-new" onclick="noteNouvelle()">+ Nouvelle note</button>
     </div>
+    <div class="note-inline"><div id="noteInlineDate" class="note-date"></div><textarea id="noteInlineTexte" placeholder="Écris ici…" rows="6" oninput="noteInlineSaisie()"></textarea></div>
     <input id="notesRecherche" class="notes-search" type="search" placeholder="Rechercher une note" oninput="notesRendre()">
     <div id="notesListe"></div>
     <details id="anciennesNotes" class="notes-anciennes" hidden>
@@ -544,26 +536,21 @@
   </div>
 
   <div id="paramSubtab-general" class="param-subtab">
-
+    <h2 class="param-titre">Paramètres</h2>
     <button type="button" id="navAdminBtn" class="admin-link" onclick="showPage('admin')" style="display:none;">🛠️ Espace admin</button>
-
-    <div class="card">
-      <details>
-        <summary>Apparence</summary>
-        <div style="margin-top:14px;">
-          <label>Fond d'écran</label>
+    <div class="set-groupe">
+      <details class="set-ligne">
+        <summary><span>Apparence</span><span class="set-val" id="valApparence">Jour</span></summary>
+        <div class="set-corps">
           <div class="bg-choice">
             <button type="button" id="bgJourBtn" onclick="setBackground('jour')">Jour</button>
             <button type="button" id="bgNuitBtn" onclick="setBackground('nuit')">Nuit</button>
           </div>
         </div>
       </details>
-    </div>
-
-    <div class="card">
-      <details>
-        <summary>🔔 Rappels</summary>
-        <div style="margin-top:14px;">
+      <details class="set-ligne">
+        <summary><span>Rappels</span><span class="set-val" id="valRappels">Désactivés</span></summary>
+        <div class="set-corps">
           <div class="detail" id="notifStatus" style="margin:4px 0 8px;">🔕 Rappels désactivés</div>
           <label>Me rappeler si je n'ai rien lu depuis…</label>
           <select id="notifRythmeSelect" onchange="setNotifRythme(this.value)">
@@ -575,11 +562,12 @@
           <button id="notifBtn" onclick="toggleNotifs()">Activer les rappels</button>
         </div>
       </details>
+      <button type="button" class="set-ligne set-compte" id="compteRow" onclick="showParamSubtab('securite')" style="display:none;"><span>Compte</span><span class="set-val">Ashley</span></button>
     </div>
-
   </div>
 
   <div id="paramSubtab-securite" class="param-subtab" hidden>
+    <button type="button" class="notes-retour" onclick="showParamSubtab('general')">‹ Paramètres</button>
     <div class="card" id="securityCard">
       <h2>🔒 Sécurité et compte</h2>
 
@@ -669,7 +657,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=51"></script>
+<script src="script.js?v=52"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

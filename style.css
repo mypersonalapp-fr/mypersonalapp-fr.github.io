@@ -1223,3 +1223,69 @@ body[data-bg="nuit"] .theme-toggle{ color:var(--accent); border-color:var(--acce
 .home-verse .verse-text{ font-size:1.4rem; line-height:1.3; }
 .home-verse .verse-ref{ margin-top:8px; }
 .home-sheet{ max-height:calc(100dvh - 270px); padding-bottom:96px; }
+
+/* ===== v52 : sections dépliables (Accueil, Bible), Notes carte vierge, Paramètres en liste ===== */
+.dcard{ background:var(--cream); border-radius:22px; padding:14px 18px; margin:0 0 10px; }
+.dcard[hidden]{ display:none; }
+.dcard-tete{ display:flex; justify-content:space-between; align-items:center; width:100%; background:none; border:0; padding:0; font:700 11px "Manrope",sans-serif; letter-spacing:.08em; color:var(--muted); cursor:pointer; text-align:left; }
+.dcard-fl{ font-size:13px; transition:transform .15s; }
+.dcard.ferme .dcard-fl{ transform:rotate(-90deg); }
+.dcard.ferme .dcard-corps{ display:none; }
+.dcard-corps{ margin-top:10px; }
+.dcard .verse-text{ font-size:1.15rem; font-weight:600; line-height:1.4; text-align:left; }
+.dcard .verse-ref{ margin-top:6px; font-weight:700; font-size:.85rem; color:var(--text-dark); text-align:left; }
+.dcard .heb-panel{ border:none !important; background:none !important; padding:0; }
+.dcard .heb-mots{ justify-content:center; }
+.dcard .sens-box{ background:none !important; border:none !important; padding:0; }
+.dcard .sens-box p{ font-size:15px; line-height:1.5; }
+.dcard .bible-vtext{ font-size:1.15rem; font-weight:600; line-height:1.4; }
+.sur-accueil #page-accueil{ padding-top:6px; padding-bottom:120px; }
+.sur-accueil #syncBadge{ margin:10px 0 12px; }
+body[data-bg="nuit"] .dcard{ background:#121212; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .dcard-tete{ color:var(--accent); }
+body[data-bg="nuit"] .dcard .verse-ref{ color:var(--accent); }
+body[data-bg="nuit"] .dcard .verse-text, body[data-bg="nuit"] .dcard .bible-vtext{ text-shadow:0 0 14px rgba(255,217,120,.3); }
+
+/* Bible */
+.bible-sel{ display:flex; gap:8px; margin:6px 0 0; }
+.sel-wrap{ position:relative; display:block; }
+.sel-livre{ flex:2; } .sel-chap{ flex:1; }
+.sel-wrap select{ width:100%; height:44px; border:0; border-radius:14px; background:var(--cream); color:var(--text-dark); font:800 15px "Manrope",sans-serif; padding:0 34px 0 14px; appearance:none; -webkit-appearance:none; }
+.sel-wrap::after{ content:"▾"; position:absolute; right:14px; top:50%; transform:translateY(-50%); pointer-events:none; color:var(--text-dark); font-size:13px; }
+.bible-pills{ display:flex; gap:6px; overflow-x:auto; margin:12px 0; padding-bottom:2px; scrollbar-width:none; }
+.bible-pills::-webkit-scrollbar{ display:none; }
+.bible-pills button{ flex:none; min-width:38px; height:38px; border:0; border-radius:19px; background:var(--cream); color:var(--text-dark); font:700 14px "Manrope",sans-serif; cursor:pointer; }
+.bible-pills button.sel{ background:var(--text-dark); color:var(--page); }
+body[data-bg="nuit"] .bible-pills button{ background:#121212; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .bible-pills button.sel{ background:var(--accent); color:#000; border-color:var(--accent); }
+.sur-bible #page-bible{ padding-bottom:120px; }
+
+/* Notes : carte vierge */
+.note-inline{ background:var(--cream); border-radius:22px; padding:16px 18px; margin:0 0 12px; }
+.note-inline textarea{ width:100%; min-height:130px; max-height:34vh; border:0; background:none; outline:none; resize:none; font:500 16px/1.5 "Manrope",sans-serif; color:var(--text-dark); padding:0; margin-top:6px; box-sizing:border-box; }
+body[data-bg="nuit"] .note-inline{ background:#121212; border:1px solid #2B2B2B; }
+
+/* Paramètres */
+.subtabs{ display:none !important; }
+.param-titre{ font:800 2rem "Manrope",sans-serif; margin:6px 0 14px; color:var(--text-dark); }
+.set-groupe{ background:var(--cream); border-radius:22px; padding:4px 20px; }
+.set-ligne{ display:block; width:100%; background:none; border:0; border-bottom:1px solid var(--line, rgba(0,0,0,.08)); padding:0; text-align:left; font:600 16px "Manrope",sans-serif; color:var(--text-dark); }
+.set-ligne:last-child{ border-bottom:0; }
+.set-ligne > summary, .set-compte{ display:flex; justify-content:space-between; align-items:center; padding:14px 0; cursor:pointer; list-style:none; }
+.set-compte{ background:none; border:0; width:100%; font:inherit; color:inherit; }
+.set-ligne > summary::-webkit-details-marker{ display:none; }
+.set-val{ color:var(--muted); font-weight:600; }
+.set-val::after{ content:" ›"; }
+.set-ligne[open] > summary .set-val::after{ content:" ⌄"; }
+.set-corps{ padding:0 0 14px; }
+body[data-bg="nuit"] .set-groupe{ background:#121212; border:1px solid #2B2B2B; }
+.sur-param .topbar, .sur-param #syncBadge{ display:none; }
+.set-ligne + .set-ligne{ border-top:1px solid rgba(0,0,0,.08); }
+.set-ligne{ border-bottom:0 !important; }
+.set-ligne > summary{ justify-content:space-between !important; text-align:left; }
+.set-ligne > summary::marker{ content:""; }
+.set-ligne > summary > span:first-child, .set-compte > span:first-child{ text-align:left; flex:1; }
+#bibleHebPanel{ border:none !important; background:none !important; padding:0 !important; }
+.dcard .bible-vtext{ text-align:left; }
+body[data-bg="nuit"] .set-ligne + .set-ligne{ border-top-color:#2B2B2B; }
+.set-ligne > summary::before, .set-ligne > summary::after{ content:none !important; }

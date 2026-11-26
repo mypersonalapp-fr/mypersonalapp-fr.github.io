@@ -1295,3 +1295,20 @@ body[data-bg="nuit"] .set-ligne + .set-ligne{ border-top-color:#2B2B2B; }
 .bible-vnote{ margin-top:10px; font-size:12px; color:var(--muted); }
 .bible-vnote[hidden]{ display:none; }
 .bible-versions button:not(.sel){ background:var(--page); }
+
+/* Page Objectif */
+.sur-objectif .topbar, .sur-objectif #syncBadge{ display:none; }
+.obj-intro{ color:var(--muted); font-size:.95rem; margin:6px 0 14px; }
+.obj-stats{ display:flex; gap:10px; margin-bottom:10px; }
+.obj-stats > div{ flex:1; background:var(--cream); border-radius:22px; padding:12px 16px; display:flex; flex-direction:column; }
+.obj-stats b{ font-size:1.6rem; font-weight:800; color:var(--text-dark); }
+.obj-stats span{ font-size:.8rem; color:var(--muted); }
+.obj-ref{ margin-top:8px; font-weight:700; font-size:.9rem; color:var(--text-dark); }
+.obj-texte .obj-cache{ background:var(--page); border-radius:6px; padding:0 4px; color:var(--muted); cursor:pointer; }
+.obj-niveaux{ flex-wrap:wrap; }
+.obj-aide{ font-size:12px; color:var(--muted); margin:8px 0 0; }
+.obj-valider{ width:100%; height:52px; border:none; border-radius:26px; background:var(--text-dark); color:var(--page); font:700 15px "Manrope",sans-serif; margin:4px 0 12px; cursor:pointer; }
+.obj-valider.fait{ background:var(--cream); color:var(--text-dark); }
+.obj-hist-row{ display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--page); font-size:.9rem; }
+.obj-hist-row span{ color:var(--muted); }
+body[data-bg="nuit"] .obj-stats > div{ background:#121212; border:1px solid #2B2B2B; }

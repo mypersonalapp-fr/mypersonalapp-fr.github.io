@@ -2292,6 +2292,8 @@ function showPage(id){
   document.body.classList.toggle('sur-param', id === 'parametres');
   if(id !== 'journal-comprehension' && typeof noteFlush === 'function') noteFlush();
   if(id === 'bible') bibleInit();
+  if(id === 'objectif') objRendre();
+  document.body.classList.toggle('sur-objectif', id === 'objectif');
   if(id === 'en-groupe') afficherVueListeGroupes();
   if(id === 'admin'){ renderAvisAdmin(); renderUsersAdmin(); renderSuggestionsAdmin(); }
   if(id === 'vision-board') renderVisionBoard();
@@ -3744,4 +3746,62 @@ function notesRendre(){
   }).join('') : '<div class="empty">Aucune note.</div>';
   const anc = document.getElementById('anciennesNotes');
   if(anc){ anc.hidden = !(state.compLog && state.compLog.length); renderComp(); }
+}
+
+
+/* =========================================================================
+   OBJECTIF — un verset à apprendre chaque jour, tiré de la concordance du
+   verset du jour (objectif-data.js). Le même verset toute la journée ; on
+   s'entraîne en cachant des mots, puis on valide. Les versets appris sont
+   enregistrés dans state.objectif (synchronisé comme le reste).
+   ========================================================================= */
+let objNiv = 0;
+function objJourStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function objDuJour(){
+  const d = new Date();
+  const n = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+  return OBJECTIF_VERSETS[n % OBJECTIF_VERSETS.length];
+}
+function objAppris(){ if(!state.objectif) state.objectif = { appris:{} }; if(!state.objectif.appris) state.objectif.appris = {}; return state.objectif.appris; }
+function objSerie(){
+  const a = objAppris(); const d = new Date(); let n = 0;
+  if(!a[objJourStr(d)]) d.setDate(d.getDate()-1);
+  while(a[objJourStr(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function objNiveau(n){ objNiv = n; objRendreTexte(); }
+function objRendreTexte(){
+  const v = objDuJour(), box = document.getElementById('objTexte');
+  const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  box.innerHTML = v.texte.split(' ').map((m,i)=>{
+    const cache = objNiv === 3 || (objNiv === 2 && i % 3 !== 0) || (objNiv === 1 && i % 3 === 2);
+    if(!cache) return '<span>'+esc(m)+'</span>';
+    const lettre = (m.match(/[A-Za-zÀ-ÿ]/) || [''])[0];
+    return '<span class="obj-cache" onclick="this.classList.remove(\'obj-cache\');this.textContent=this.dataset.m" data-m="'+esc(m)+'">'+esc(lettre)+'…</span>';
+  }).join(' ');
+  document.querySelectorAll('#objNiveaux button').forEach(b=>b.classList.toggle('sel', +b.dataset.n === objNiv));
+  document.getElementById('objAide').hidden = objNiv === 0;
+}
+function objRendre(){
+  const v = objDuJour(), a = objAppris(), auj = objJourStr(new Date());
+  document.getElementById('objSource').textContent = OBJECTIF_SOURCE;
+  document.getElementById('objRef').textContent = v.ref;
+  document.getElementById('objSens').textContent = v.sens;
+  objRendreTexte();
+  const fait = a[auj] === v.ref;
+  const btn = document.getElementById('objValider');
+  btn.textContent = fait ? 'Appris aujourd\'hui ✓' : 'Je le connais par cœur ✓';
+  btn.classList.toggle('fait', fait);
+  const refs = {}; Object.values(a).forEach(r=>{ refs[r] = 1; });
+  document.getElementById('objNb').textContent = Object.keys(refs).length;
+  document.getElementById('objSerie').textContent = objSerie();
+  const jours = Object.keys(a).sort().reverse();
+  document.getElementById('objHist').innerHTML = jours.length
+    ? jours.map(j=>'<div class="obj-hist-row"><span>'+noteDateTxt(j, true)+'</span><b>'+a[j]+'</b></div>').join('')
+    : '<div class="empty">Aucun verset appris pour l\'instant.</div>';
+}
+function objValider(){
+  const a = objAppris(), auj = objJourStr(new Date()), v = objDuJour();
+  if(a[auj] === v.ref) delete a[auj]; else a[auj] = v.ref;
+  persist(); objRendre();
 }

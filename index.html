@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=54">
+<link rel="stylesheet" href="style.css?v=55">
 </head>
 <body>
 
@@ -163,6 +163,7 @@
 <nav id="bottomNav" class="bottom-nav no-print">
   <button data-page="accueil" class="active" onclick="showPage('accueil')" aria-label="Accueil">Accueil</button>
   <button data-page="bible" onclick="showPage('bible')" aria-label="Bible">Bible</button>
+  <button data-page="objectif" onclick="showPage('objectif')" aria-label="Objectif">Objectif</button>
   <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')" aria-label="Notes">Notes</button>
   <button data-page="parametres" onclick="showPage('parametres')" aria-label="Paramètres">Paramètres</button>
 </nav>
@@ -290,6 +291,36 @@
     <div class="dcard-corps"><div class="sens-box" id="bibleSens" hidden></div></div>
   </div>
   <div hidden><select id="bibleVerset"></select></div>
+</section>
+
+<!-- OBJECTIF : un verset par jour, dans la concordance du verset du jour -->
+<section id="page-objectif" class="page" hidden>
+  <div class="notes-head"><h2 class="notes-titre">Objectif</h2></div>
+  <p class="obj-intro">Apprendre un verset par jour, en lien avec le verset du jour (<span id="objSource"></span>).</p>
+  <div class="obj-stats"><div><b id="objNb">0</b><span>versets appris</span></div><div><b id="objSerie">0</b><span>jours d'affilée</span></div></div>
+  <div class="dcard">
+    <div class="dcard-tete"><span id="objDate">VERSET DU JOUR À APPRENDRE</span></div>
+    <div class="dcard-corps">
+      <div class="bible-vtext obj-texte" id="objTexte"></div>
+      <div class="obj-ref" id="objRef"></div>
+      <div class="bible-pills bible-versions obj-niveaux" id="objNiveaux">
+        <button type="button" data-n="0" onclick="objNiveau(0)">Lire</button>
+        <button type="button" data-n="1" onclick="objNiveau(1)">Cacher 1/3</button>
+        <button type="button" data-n="2" onclick="objNiveau(2)">Cacher 2/3</button>
+        <button type="button" data-n="3" onclick="objNiveau(3)">Tout cacher</button>
+      </div>
+      <p class="obj-aide" id="objAide" hidden>Récite le verset, puis touche un mot caché pour vérifier.</p>
+    </div>
+  </div>
+  <div class="dcard">
+    <div class="dcard-tete"><span>SON SENS</span></div>
+    <div class="dcard-corps"><div class="sens-box"><p id="objSens"></p></div></div>
+  </div>
+  <button type="button" class="obj-valider" id="objValider" onclick="objValider()">Je le connais par cœur ✓</button>
+  <div class="dcard ferme" id="objHistCard">
+    <button type="button" class="dcard-tete" onclick="dcToggle('objHistCard')"><span>VERSETS DÉJÀ APPRIS</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps" id="objHist"></div>
+  </div>
 </section>
 
 <section id="page-plans" class="page" hidden>
@@ -663,7 +694,8 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=54"></script>
+<script src="objectif-data.js?v=55"></script>
+<script src="script.js?v=55"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

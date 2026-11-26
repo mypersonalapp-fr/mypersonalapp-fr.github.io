@@ -1706,7 +1706,7 @@ function afficherVerset(){
       document.getElementById('dcMots').hidden = !mots;
       vh.dir = origLangue(pos.l) === 'heb' ? 'rtl' : 'ltr';
       document.getElementById('accMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(pos.l) === 'heb' ? 'HÉBREU' : 'GREC');
-      vh.innerHTML = mots ? hebMotsHtml(pos.l, pos.c, pos.v, mots) : '';
+      vh.innerHTML = mots ? hebMotsHtml(pos.l, pos.c, pos.v, mots, pos.texte) : '';
       origRemplir('acc', pos.l, mots, pos.texte, pos.c, pos.v);
     }).catch(()=>{});
     sensCharger(pos.l).then(d=>{
@@ -3599,14 +3599,45 @@ function hebCharger(livre){
   const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/'+lg+'/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
   const pFr = (lg !== 'heb' || hebFrCache[livre]) ? Promise.resolve(1) : fetch('bible/heb/fr-'+livre+'.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{ hebFrCache[livre]=x; });
   const pLexFr = (lg !== 'heb' || hebLexFr) ? Promise.resolve(1) : fetch('bible/heb/lex-fr.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>(hebLexFr=x));
-  return Promise.all([pLivre, pLex, pFr, pLexFr]).then(r=>r[0]);
+  const pIdx = (typeof lexIndex !== 'undefined' && lexIndex) ? Promise.resolve(1) : fetch('bible/lexique/fr.json').then(r=>r.json()).then(x=>{ lexIndex = x; }).catch(()=>{});
+  return Promise.all([pLivre, pLex, pFr, pLexFr, pIdx]).then(r=>r[0]);
 }
-function hebMotsHtml(livre, chapIdx, vi, mots){
-  const fr = ((hebFrCache[livre] || {})[chapIdx+':'+vi]) || [];
+/* Relie chaque mot hébreu/grec du verset au mot français de Segond qui le
+   traduit : d'abord les traductions mot à mot écrites (Genèse 1-11), sinon un
+   alignement calculé (index bible/lexique/fr.json + traductions Segond de
+   chaque numéro Strong, en comparant les racines des mots). */
+const ETRE_AVOIR = new Set(['était','étaient','fut','furent','sera','seront','est','sont','soit','soient','eut','avait','avaient','devint','devinrent','arriva','arrivera','existe']);
+function texteSegond(livre, c, v){ const ch = bibleCache['lsg'+livre]; return (ch && ch[c] && ch[c][v]) || ''; }
+function alignerVerset(livre, c, v, mots, texte){
+  const fr0 = ((hebFrCache[livre] || {})[c+':'+v]) || [];
+  const res = mots.map((_,i)=>fr0[i] || '');
+  if(fr0.length) return res;
+  const lg = origLangue(livre), P = lg === 'heb' ? 'H' : 'G', lex = origLex[lg] || {};
+  const toks = frTokens(texte || texteSegond(livre, c, v));
+  const paires = [];
+  mots.forEach((m,i)=>{
+    if(!m[1]) return;
+    const S = P + m[1], rendus = (lex[m[1]] && lex[m[1]][4]) || [];
+    toks.forEach((t,j)=>{
+      let sc = 0;
+      const e = typeof lexIndex !== 'undefined' && lexIndex && lexIndex[t];
+      if(e){ const f = e.find(x=>x[0] === S); if(f) sc = f[1]; }
+      rendus.forEach((r,k)=>{ if(t === r || (r.length >= 5 && t.length >= 5 && t.slice(0,5) === r.slice(0,5))) sc = Math.max(sc, 0.4 - 0.03*k); });
+      if(S === 'H1961' && ETRE_AVOIR.has(t)) sc = Math.max(sc, 0.5);
+      if(sc > 0.1) paires.push([sc, i, j]);
+    });
+  });
+  paires.sort((a,b)=>b[0]-a[0]);
+  const motPris = {}, tokPris = {};
+  paires.forEach(([sc,i,j])=>{ if(motPris[i] || tokPris[j]) return; motPris[i] = tokPris[j] = 1; res[i] = toks[j]; });
+  return res;
+}
+function hebMotsHtml(livre, chapIdx, vi, mots, texte){
+  const fr = alignerVerset(livre, chapIdx, vi, mots, texte);
   const grc = origLangue(livre) === 'grc';
   return mots.map((m,i)=>
     '<button type="button" class="heb-mot'+(grc?' grc':'')+'" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+vi+')"><span class="hm-h">'+m[0]+'</span>'
-    + (fr[i] ? '<span class="hm-f">'+fr[i]+'</span>' : (grc && m[2] ? '<span class="hm-f">'+m[2]+'</span>' : '')) + '</button>').join('');
+    + '<span class="hm-f">'+(fr[i] || (grc && m[2] ? m[2] : '·'))+'</span></button>').join('');
 }
 /* Sens du « temps » en une phrase, pour comprendre la nuance du verbe. */
 const TEMPS_AIDE = {
@@ -3811,7 +3842,7 @@ function bibleRendre(){
     hp.querySelector('.heb-detail').innerHTML = '';
     document.getElementById('bibleHebMots').dir = origLangue(livre) === 'heb' ? 'rtl' : 'ltr';
     document.getElementById('bibleMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(livre) === 'heb' ? 'HÉBREU' : 'GREC');
-    document.getElementById('bibleHebMots').innerHTML = mots ? hebMotsHtml(livre, chap-1, vers-1, mots) : '';
+    document.getElementById('bibleHebMots').innerHTML = mots ? hebMotsHtml(livre, chap-1, vers-1, mots, versets[vers-1]) : '';
     origRemplir('bible', livre, mots, versets[vers-1] || '', chap-1, vers-1);
     const sens = r[1] && r[1][String(chap)] && r[1][String(chap)][String(vers)];
     const sb = document.getElementById('bibleSens');
@@ -3992,7 +4023,7 @@ function readerEtude(ref){
   const mb = document.getElementById('readerMotsBloc'), box = document.getElementById('readerMots');
   mb.hidden = true; box.innerHTML = ''; mb.querySelector('.heb-detail').innerHTML = '';
   const r = refAnalyse(ref); if(!r) return;
-  hebCharger(r.l).then(c=>{
+  Promise.all([hebCharger(r.l), bibleLoadLivre(r.l)]).then(([c])=>{
     if(document.getElementById('readerRef').textContent !== ref) return;
     const html = [];
     for(let v = r.v1; v <= r.v2; v++){
@@ -4025,17 +4056,26 @@ const RADICAL_AIDE = {
 const VOIX_AIDE = { 'actif':"le sujet fait l'action", 'moyen':"le sujet agit pour lui-même ou est engagé dans l'action", 'passif':"le sujet subit l'action, souvent de la part de Dieu", 'moyen ou passif':"le sujet est engagé dans l'action ou la subit" };
 const MODE_AIDE = { 'impératif':"un ordre", 'subjonctif':"une action possible ou voulue", 'optatif':"un souhait", 'participe':"une action en cours, vue comme une description", 'infinitif':"l'action elle-même, sans personne" };
 function frTokens(t){ return (t || '').toLowerCase().replace(/’/g,"'").match(/[a-zàâäçéèêëîïôöûùüÿœæ]+/g) || []; }
-function origMotFr(lx, toks, livre, c, v, i, pris){
-  const fr = ((hebFrCache[livre] || {})[c+':'+v]) || [];
-  if(fr[i]) return fr[i];
-  const rendus = (lx && lx[4]) || [];
-  for(const r of rendus){
-    if(pris[r]) continue;   // mot français qui traduit déjà un autre mot du verset
-    const t = toks.find(x=>x === r || (r.length > 4 && x.startsWith(r.slice(0, r.length-1))));
-    if(t) return t;
-  }
-  return '';
-}
+/* Phrase qui relie la forme du verbe à ce que dit le verset. */
+const TEMPS_PHRASE = {
+  'accompli':"est à l'accompli : l'action est présentée comme un fait établi, achevé.",
+  'accompli avec « et » (weqatal)':"est un accompli lié par « et » : il enchaîne une action qui suit ou qui se répète.",
+  'inaccompli':"est à l'inaccompli : l'action est en cours, habituelle ou à venir.",
+  'récit au passé (wayyiqtol)':"est la forme du récit (« et il… ») : un événement qui s'enchaîne dans l'histoire.",
+  'cohortatif':"est un cohortatif : une décision ou un souhait (« que je… », « allons ! »).",
+  'jussif':"est un jussif : un ordre ou un souhait (« qu'il… »).",
+  'impératif':"est un impératif : un ordre direct.",
+  'participe actif':"est un participe : une action continue, une habitude, presque un trait de caractère.",
+  'participe passif':"est un participe passif : un état qui résulte d'une action subie.",
+  'infinitif absolu':"est un infinitif absolu : il insiste (« vraiment, certainement »).",
+  'infinitif construit':"est un infinitif : l'action elle-même (« le fait de… »).",
+  'présent':"est au présent : une action en cours ou qui dure.",
+  'imparfait':"est à l'imparfait : une action qui durait ou se répétait dans le passé.",
+  'futur':"est au futur : une action annoncée, certaine.",
+  'aoriste':"est à l'aoriste : l'action est vue comme un tout, un fait accompli une fois.",
+  'parfait':"est au parfait : une action passée dont le résultat demeure encore.",
+  'plus-que-parfait':"est au plus-que-parfait : une action passée dont le résultat durait alors."
+};
 function origRemplir(ou, livre, mots, texteFr, c, v){
   const carte = document.getElementById(ou === 'bible' ? 'dcbOrig' : 'dcOrig');
   const box = document.getElementById(ou === 'bible' ? 'bibleOrig' : 'accOrig');
@@ -4043,30 +4083,29 @@ function origRemplir(ou, livre, mots, texteFr, c, v){
   document.getElementById(ou === 'bible' ? 'bibleOrigTitre' : 'accOrigTitre').textContent = lg === 'heb' ? "SENS DANS L'HÉBREU" : 'SENS DANS LE GREC';
   if(!mots || !mots.length){ carte.hidden = true; return; }
   const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  const toks = frTokens(texteFr);
+  const fr = alignerVerset(livre, c, v, mots, texteFr);
   const lignes = [];
-  // Mot français principal de chaque mot non verbal du verset (ex. « daniel ») :
-  // il ne peut pas servir de traduction à un verbe.
-  const pris = {};
-  mots.forEach(m=>{ const isV = lg === 'heb' ? /(^|\/)V/.test((m[3]||'').slice(1)) : /^V-/.test(m[3]||''); const lx = lex[m[1]]; if(!isV && lx && lx[4] && lx[4][0]) pris[lx[4][0]] = 1; });
   mots.forEach((m,i)=>{
     const isVerbe = lg === 'heb' ? /(^|\/)V/.test((m[3]||'').slice(1)) : /^V-/.test(m[3]||'');
     if(!isVerbe) return;
     const lx = lex[m[1]], mf = morphFr(m[3], lg);
-    const fr = origMotFr(lx, toks, livre, c, v, i, pris);
-    const base = lx ? (lx[3] ? lx[3] + ' (' + lx[0] + ')' : lx[0]) : m[0];
-    const parts = mf.txt.split(' + ').find(x=>x.indexOf('verbe') >= 0) || mf.txt;
-    const p = parts.split(' · ');
-    let nuance = [];
-    if(lg === 'heb'){ const rad = p[p.indexOf('verbe')+1]; if(RADICAL_AIDE[rad]) nuance.push('<b>'+esc(rad)+'</b> : '+RADICAL_AIDE[rad]); }
-    else { const voix = p.find(x=>VOIX_AIDE[x]); if(voix && voix !== 'actif') nuance.push('<b>'+esc(voix)+'</b> : '+VOIX_AIDE[voix]);
-           const mode = p.find(x=>MODE_AIDE[x]); if(mode) nuance.push('<b>'+esc(mode)+'</b> : '+MODE_AIDE[mode]); }
-    if(mf.temps) nuance.unshift('<b>'+esc(mf.temps)+'</b> : '+esc(TEMPS_AIDE[mf.temps] || ''));
-    lignes.push('<div class="orig-l"><div class="orig-t">'+(fr ? '« '+esc(fr)+' » — ' : '')+'<span class="orig-w"'+(lg==='heb'?' dir="rtl"':'')+'>'+m[0]+'</span> · '+esc(base)+'</div>'
-      + (nuance.length ? '<div class="orig-n">'+nuance.join('<br>')+'</div>' : '') + '</div>');
+    const base = lx ? (lx[3] ? lx[3] + ' (' + lx[0] + ')' : lx[0]) : '';
+    const SENS_FIXE = { 'H1961':'être, devenir, arriver', 'H559':'dire', 'H1980':'aller, marcher', 'H935':'venir, entrer', 'H5414':'donner', 'H6213':'faire', 'H7200':'voir', 'H8085':'écouter, entendre', 'G1510':'être', 'G3004':'dire', 'G2064':'venir', 'G1096':'devenir, arriver', 'G2192':'avoir' };
+    const PARASITES = new Set(['éternel','israël','dieu','seigneur','roi','jésus','christ','dit','fils','peuple','juda','david','moïse','toi','lui']);
+    const sensBase = SENS_FIXE[(lg==='heb'?'H':'G')+m[1]] || (lx && lx[4] ? lx[4].filter(t=>!PARASITES.has(t)).slice(0,3).join(', ') : '');
+    const p = (mf.txt.split(' + ').find(x=>x.indexOf('verbe') >= 0) || mf.txt).split(' · ');
+    const motFr = fr[i] ? '« '+esc(fr[i])+' »' : 'Ce verbe';
+    let phrase = mf.temps && TEMPS_PHRASE[mf.temps] ? motFr+' '+TEMPS_PHRASE[mf.temps] : '';
+    const nuance = [];
+    if(lg === 'heb'){ const rad = p[p.indexOf('verbe')+1]; if(RADICAL_AIDE[rad] && rad !== 'Qal' && rad !== 'Peal') nuance.push('<b>'+esc(rad)+'</b> : '+RADICAL_AIDE[rad]+'.'); }
+    else { const voix = p.find(x=>VOIX_AIDE[x]); if(voix && voix !== 'actif') nuance.push('<b>'+esc(voix)+'</b> : '+VOIX_AIDE[voix]+'.');
+           const mode = p.find(x=>MODE_AIDE[x]); if(mode && mode !== 'participe' && mode !== 'infinitif') nuance.push('<b>'+esc(mode)+'</b> : '+MODE_AIDE[mode]+'.'); }
+    lignes.push('<div class="orig-l"><div class="orig-t">'+(fr[i] ? '« '+esc(fr[i])+' » = ' : '')+'<span class="orig-w"'+(lg==='heb'?' dir="rtl"':'')+'>'+m[0]+'</span>'
+      + (base ? ' <span class="orig-b">· '+esc(base)+(sensBase ? ' : '+esc(sensBase) : '')+'</span>' : '')+'</div>'
+      + (phrase ? '<div class="orig-n">'+phrase+'</div>' : '') + (nuance.length ? '<div class="orig-n">'+nuance.join('<br>')+'</div>' : '') + '</div>');
   });
   carte.hidden = !lignes.length;
-  box.innerHTML = '<p class="orig-intro">'+(lg==='heb' ? "Comment les verbes sont écrits dans l'hébreu, et ce que leur forme ajoute au sens :" : "Comment les verbes sont écrits dans le grec, et ce que leur forme ajoute au sens :")+'</p>' + lignes.join('');
+  box.innerHTML = '<p class="orig-intro">'+(lg==='heb' ? "L'hébreu se lit de droite à gauche. Voici les verbes du verset et ce que leur forme ajoute au sens :" : "Voici les verbes du verset dans le grec et ce que leur forme ajoute au sens :")+'</p>' + lignes.join('');
 }
 
 /* =========================================================================

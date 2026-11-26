@@ -1315,3 +1315,12 @@ body[data-bg="nuit"] .obj-stats > div{ background:#121212; border:1px solid #2B2
 /* Barre du bas à 6 onglets */
 .bottom-nav{ gap:2px; }
 .bottom-nav button{ font-size:.66rem !important; padding:6px 0 !important; min-width:0; letter-spacing:-.01em; }
+/* Thèmes : sens profond, mot à mot, exemple concret */
+.reader-bloc{ text-align:left; background:var(--cream); border-radius:18px; padding:12px 16px; margin:12px 0; }
+.reader-bloc[hidden]{ display:none; }
+.reader-bloc-titre{ font:700 11px "Manrope",sans-serif; letter-spacing:.08em; color:var(--muted); margin-bottom:6px; }
+.reader-bloc p{ margin:0; font-size:15px; line-height:1.5; }
+.reader-bloc .heb-panel{ border:none !important; background:none !important; padding:0; }
+.reader-bloc .heb-mots{ justify-content:center; }
+.reader-vnum{ align-self:center; font-size:11px; font-weight:800; color:var(--muted); }
+body[data-bg="nuit"] .reader-bloc{ background:#121212; border:1px solid #2B2B2B; }

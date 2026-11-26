@@ -1998,7 +1998,7 @@ const THEMATIC_PLANS = [
     { ref:"Josué 24:15", texte:"quant à moi et à ma maison, nous servirons l'Éternel.", priere:"Seigneur, je choisis aujourd'hui de servir avec ma famille.", explication:"Choisir de servir Dieu en famille est une décision à assumer, pas seulement un souhait individuel." },
     { ref:"Psaume 127:1", texte:"Si l'Éternel ne bâtit la maison, ceux qui la bâtissent travaillent en vain.", priere:"Bâtis toi-même ma maison, Seigneur, je te confie ma famille.", explication:"Une maison construite sans que Dieu y participe reste fragile, quels que soient les efforts fournis." },
     { ref:"Éphésiens 5:25", texte:"Maris, aimez vos femmes, comme Christ a aimé l'Église, et s'est livré lui-même pour elle.", priere:"Seigneur, que l'amour dans ma famille reflète le tien.", explication:"L'amour attendu dans le couple se mesure au don total que Christ a fait pour l'Église." },
-    { ref:"Éphésiens 6:1-3", texte:"Enfants, obéissez à vos parents, selon le Seigneur, car cela est juste. Honore ton père et ta mère... afin que tu sois heureux et que tu vives longtemps sur la terre.", priere:"Merci pour tes promesses sur ma famille. Aide-nous à nous honorer les uns les autres.", explication:"Honorer ses parents porte une promesse concrète de bien-être, pas seulement un devoir moral." },
+    { ref:"Éphésiens 6:1-3", texte:"Enfants, obéissez à vos parents, selon le Seigneur, car cela est juste. Honore ton père et ta mère... afin que tu sois heureux et que tu vives longtemps sur la terre.", priere:"Merci pour tes promesses sur ma famille. Aide-nous à nous honorer les uns les autres.", explication:"Honorer ses parents est le premier commandement avec promesse : « afin que tu sois heureux et que tu vives longtemps sur la terre »." },
     { ref:"Proverbes 24:3-4", texte:"C'est par la sagesse qu'une maison s'élève, et par l'intelligence qu'elle s'affermit ; c'est par la science que les chambres se remplissent de tous les biens précieux et agréables.", priere:"Donne-moi la sagesse pour bâtir un foyer stable et paisible.", explication:"La sagesse et l'intelligence, pas seulement les moyens matériels, sont ce qui bâtit vraiment un foyer stable." },
     { ref:"Genèse 18:19", texte:"Car je l'ai choisi, afin qu'il ordonne à ses fils et à sa maison après lui de garder la voie de l'Éternel, en pratiquant la droiture et la justice.", priere:"Seigneur, aide-moi à transmettre ta voie à ma famille par mon exemple.", explication:"Transmettre le chemin de Dieu à sa famille par l'exemple compte parmi les responsabilités les plus importantes." },
     { ref:"1 Timothée 5:8", texte:"Si quelqu'un n'a pas soin des siens, et principalement de ceux de sa famille, il a renié la foi, et il est pire qu'un infidèle.", priere:"Donne-moi le cœur pour prendre soin des miens avec fidélité.", explication:"Prendre soin des siens est présenté comme une expression concrète et non négociable de la foi." }
@@ -2204,6 +2204,7 @@ function renderReaderDay(){
   const normalEls = [
     document.getElementById('readerRef'), document.getElementById('readerText'),
     document.getElementById('readerExplication'), document.getElementById('readerPrayer'),
+    document.getElementById('readerSensBloc'), document.getElementById('readerMotsBloc'), document.getElementById('readerExempleBloc'),
     document.getElementById('readerVersions')
   ];
   if(locked){
@@ -2218,6 +2219,7 @@ function renderReaderDay(){
     const explEl = document.getElementById('readerExplication');
     if(explEl) explEl.textContent = jour.explication ? ('💡 ' + jour.explication) : '';
     document.getElementById('readerPrayer').textContent = '🙏 ' + jour.priere;
+    readerEtude(jour.ref);
 
     const versionsEl = document.getElementById('readerVersions');
     if(versionsEl){
@@ -3948,4 +3950,49 @@ function objValider(){
   const a = objAppris(), w = objSemaine();
   if(a[w]) delete a[w]; else a[w] = objDeLaSemaine().ref;
   persist(); objRendre();
+}
+
+
+/* =========================================================================
+   THÈMES — pour chaque verset d'un plan : sens profond (uniquement biblique),
+   mot à mot dans la langue d'origine (hébreu AT / grec NT) et exemple
+   concret. Textes dans themes-etude.js (THEME_ETUDE, clé = référence).
+   ========================================================================= */
+/* Références des plans écrites en numérotation Segond d'origine, décalées
+   par rapport aux fichiers bible/ (numérotation des Psaumes sans titre). */
+const REF_DECALAGE = { 'Psaume 46:11': -1 };
+function refAnalyse(ref){
+  const dec = REF_DECALAGE[ref] || 0;
+  const m = String(ref).match(/^(.*?)\s+(\d+):(\d+)(?:-(\d+))?$/);
+  if(!m) return null;
+  let livre = m[1].trim();
+  if(livre === 'Psaume') livre = 'Psaumes';
+  const l = BIBLE_LIVRES.indexOf(livre);
+  if(l < 0) return null;
+  const v1 = parseInt(m[3],10) + dec, v2 = (m[4] ? parseInt(m[4],10) : parseInt(m[3],10)) + dec;
+  return { l, c: parseInt(m[2],10), v1, v2 };
+}
+function readerEtude(ref){
+  const e = (typeof THEME_ETUDE !== 'undefined' && THEME_ETUDE[ref]) || null;
+  const sb = document.getElementById('readerSensBloc'), eb = document.getElementById('readerExempleBloc');
+  sb.hidden = !(e && e.sens); eb.hidden = !(e && e.exemple);
+  document.getElementById('readerSens').textContent = e && e.sens || '';
+  document.getElementById('readerExemple').textContent = e && e.exemple || '';
+  const mb = document.getElementById('readerMotsBloc'), box = document.getElementById('readerMots');
+  mb.hidden = true; box.innerHTML = ''; mb.querySelector('.heb-detail').innerHTML = '';
+  const r = refAnalyse(ref); if(!r) return;
+  hebCharger(r.l).then(c=>{
+    if(document.getElementById('readerRef').textContent !== ref) return;
+    const html = [];
+    for(let v = r.v1; v <= r.v2; v++){
+      const mots = c[r.c-1] && c[r.c-1][v-1];
+      if(mots && mots.length) html.push((r.v2 > r.v1 ? '<span class="reader-vnum">'+v+'</span>' : '') + hebMotsHtml(r.l, r.c-1, v-1, mots));
+    }
+    if(!html.length) return;
+    const heb = origLangue(r.l) === 'heb';
+    box.dir = heb ? 'rtl' : 'ltr';
+    document.getElementById('readerMotsTitre').textContent = 'MOT À MOT · ' + (heb ? 'HÉBREU' : 'GREC') + ' — touche un mot';
+    box.innerHTML = html.join('');
+    mb.hidden = false;
+  }).catch(()=>{});
 }

@@ -1704,6 +1704,8 @@ function afficherVerset(){
     if(vh && hebOk) hebCharger(pos.l).then(c=>{
       const mots = c[pos.c] && c[pos.c][pos.v];
       document.getElementById('dcMots').hidden = !mots;
+      vh.dir = origLangue(pos.l) === 'heb' ? 'rtl' : 'ltr';
+      document.getElementById('accMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(pos.l) === 'heb' ? 'HÉBREU' : 'GREC');
       vh.innerHTML = mots ? hebMotsHtml(pos.l, pos.c, pos.v, mots) : '';
     }).catch(()=>{});
     sensCharger(pos.l).then(d=>{
@@ -3571,41 +3573,137 @@ document.addEventListener('visibilitychange', ()=>{
    (bible/lsg/<numéro>.json) chargé seulement quand on ouvre le livre.
    ========================================================================= */
 /* =========================================================================
-   HÉBREU MOT À MOT — Ancien Testament : texte hébreu OSHB (Open Scriptures
-   Hebrew Bible) + lexique de Strong (domaine public / libre). Pour l'instant
-   la Genèse (livre 0) ; les autres livres seront ajoutés au fur et à mesure.
+   MOT À MOT DANS LA LANGUE D'ORIGINE — toute la Bible :
+   - Ancien Testament (livres 0 à 38) : hébreu/araméen, texte OSHB (Open
+     Scriptures Hebrew Bible, Westminster Leningrad Codex) avec numéros de
+     Strong et analyse grammaticale ; numérotation alignée sur Segond grâce
+     à STEPBible (TAHOT, CC BY 4.0).
+   - Nouveau Testament (livres 39 à 65) : grec, STEPBible TAGNT (CC BY 4.0,
+     texte Nestle-Aland/SBL ; Textus Receptus quand le verset en est absent).
+   - Lexiques : Strong's Concordance (1890, domaine public, Open Scriptures).
+   Fichiers : bible/heb/<livre>.json et bible/grc/<livre>.json
+   (mot : [texte, strong, préfixes hébreux | translittération grecque, analyse]).
    ========================================================================= */
-const HEB_DISPO = [0];
+const HEB_DISPO = Array.from({length:66}, (_,i)=>i);   // tous les livres
 const HEB_PREFIXES = { b:"dans / en", c:"et", d:"le / la / les", k:"comme", l:"à / pour", m:"de / depuis", s:"que / qui", i:"(question)" };
-const hebCache = {}; let hebLex = null, hebLexFr = null;
+function origLangue(livre){ return livre < 39 ? 'heb' : 'grc'; }
+const hebCache = {}, origLex = {}; let hebLexFr = null;
+const hebFrCache = {};
 function hebCharger(livre){
-  const pLex = hebLex ? Promise.resolve(hebLex) : fetch('bible/heb/lex.json').then(r=>r.json()).then(x=>(hebLex=x));
-  const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/heb/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
-  const pFr = hebFrCache[livre] ? Promise.resolve(1) : fetch('bible/heb/fr-'+livre+'.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{ hebFrCache[livre]=x; });
-  const pLexFr = hebLexFr ? Promise.resolve(hebLexFr) : fetch('bible/heb/lex-fr.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>(hebLexFr=x));
+  const lg = origLangue(livre);
+  const pLex = origLex[lg] ? Promise.resolve(origLex[lg]) : fetch('bible/'+lg+'/lex.json').then(r=>r.json()).then(x=>(origLex[lg]=x));
+  const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/'+lg+'/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
+  const pFr = (lg !== 'heb' || hebFrCache[livre]) ? Promise.resolve(1) : fetch('bible/heb/fr-'+livre+'.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{ hebFrCache[livre]=x; });
+  const pLexFr = (lg !== 'heb' || hebLexFr) ? Promise.resolve(1) : fetch('bible/heb/lex-fr.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>(hebLexFr=x));
   return Promise.all([pLivre, pLex, pFr, pLexFr]).then(r=>r[0]);
 }
-const hebFrCache = {};
 function hebMotsHtml(livre, chapIdx, vi, mots){
   const fr = ((hebFrCache[livre] || {})[chapIdx+':'+vi]) || [];
+  const grc = origLangue(livre) === 'grc';
   return mots.map((m,i)=>
-    '<button type="button" class="heb-mot" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+vi+')"><span class="hm-h">'+m[0]+'</span>'
-    + (fr[i] ? '<span class="hm-f">'+fr[i]+'</span>' : '') + '</button>').join('');
+    '<button type="button" class="heb-mot'+(grc?' grc':'')+'" onclick="hebMot(this,'+i+','+livre+','+chapIdx+','+vi+')"><span class="hm-h">'+m[0]+'</span>'
+    + (fr[i] ? '<span class="hm-f">'+fr[i]+'</span>' : (grc && m[2] ? '<span class="hm-f">'+m[2]+'</span>' : '')) + '</button>').join('');
+}
+/* Sens du « temps » en une phrase, pour comprendre la nuance du verbe. */
+const TEMPS_AIDE = {
+  'accompli':"action vue comme achevée — se traduit souvent par un passé",
+  'accompli avec « et » (weqatal)':"suite d'actions, souvent au futur ou habituelles",
+  'inaccompli':"action vue comme en cours ou à venir — présent ou futur",
+  'récit au passé (wayyiqtol)':"forme du récit : « et il fit… », événements successifs au passé",
+  'cohortatif':"« que je… / allons ! » — souhait ou décision",
+  'jussif':"« qu'il… » — ordre ou souhait à la 3e personne",
+  'impératif':"ordre direct",
+  'participe actif':"action en train de se faire, ou celui qui la fait",
+  'participe passif':"état qui résulte de l'action",
+  'infinitif absolu':"renforce le verbe : « certainement, vraiment »",
+  'infinitif construit':"« le fait de… », souvent après une préposition",
+  'présent':"action en cours ou habituelle",
+  'imparfait':"action qui durait ou se répétait dans le passé",
+  'futur':"action à venir",
+  'aoriste':"action vue comme un tout, un fait accompli — souvent un passé simple",
+  'parfait':"action passée dont le résultat dure encore aujourd'hui",
+  'plus-que-parfait':"action passée dont le résultat durait dans le passé"
+};
+function morphFr(code, lg){
+  if(!code) return { txt:'', temps:'' };
+  let temps = '';
+  const P = { '1':'1re pers.', '2':'2e pers.', '3':'3e pers.' };
+  if(lg === 'heb'){
+    const G = { m:'masc.', f:'fém.', c:'commun', b:'masc./fém.' }, N = { s:'sing.', p:'plur.', d:'duel' }, ST = { a:'', c:'(construit)', d:'(déterminé)' };
+    const lang = code[0] === 'A' ? 'Araméen' : '';
+    const pgn = x => [P[x[0]], G[x[1]], N[x[2]]].filter(Boolean).join(' ');
+    const gns = x => [G[x[0]], N[x[1]], ST[x[2]]].filter(Boolean).join(' ');
+    const STEM_H = { q:'Qal', N:'Niphal', p:'Piel', P:'Pual', h:'Hiphil', H:'Hophal', t:'Hithpael', o:'Polel', O:'Polal', r:'Hithpolel', m:'Poel', M:'Poal', k:'Palel', K:'Pulal', Q:'Qal passif', l:'Pilpel', L:'Polpal', f:'Hithpalpel', D:'Nithpael', j:'Pealal', i:'Pilel', u:'Hothpaal', c:'Tiphil', v:'Hishtaphel', w:'Nithpalel', y:'Nithpoel', z:'Hithpoel' };
+    const STEM_A = { q:'Peal', Q:'Peil', u:'Hithpeel', p:'Pael', P:'Ithpaal', M:'Hithpaal', a:'Aphel', h:'Haphel', s:'Saphel', e:'Shaphel', H:'Hophal', i:'Ithpeel', t:'Hishtaphel', v:'Ishtaphel', w:'Hithaphel', o:'Polel', z:'Ithpoel', r:'Hithpolel', f:'Hithpalpel', b:'Hephal', c:'Tiphel', m:'Poel', l:'Palpel', L:'Ithpalpel', O:'Ithpolel', G:'Ittaphal' };
+    const TY = { p:'accompli', q:'accompli avec « et » (weqatal)', i:'inaccompli', w:'récit au passé (wayyiqtol)', h:'cohortatif', j:'jussif', v:'impératif', r:'participe actif', s:'participe passif', a:'infinitif absolu', c:'infinitif construit' };
+    const seg = x => {
+      const k = x[0], r = x.slice(1);
+      switch(k){
+        case 'V': { const t = TY[r[1]] || ''; if(!temps) temps = t;
+          const reste = (r[1]==='r'||r[1]==='s') ? gns(r.slice(2)) : pgn(r.slice(2));
+          return ['verbe', (lang ? STEM_A : STEM_H)[r[0]], t, reste].filter(Boolean).join(' · '); }
+        case 'N': return [{c:'nom',g:'nom de peuple',p:'nom propre'}[r[0]]||'nom', gns(r.slice(1))].filter(Boolean).join(' · ');
+        case 'A': return [{a:'adjectif',c:'nombre',g:'adjectif de peuple',o:'nombre ordinal'}[r[0]]||'adjectif', gns(r.slice(1))].filter(Boolean).join(' · ');
+        case 'P': return [{d:'pronom démonstratif',f:'pronom indéfini',i:'pronom interrogatif',p:'pronom personnel',r:'pronom relatif'}[r[0]]||'pronom', pgn(r.slice(1))].filter(Boolean).join(' · ');
+        case 'S': return r[0]==='p' ? 'suffixe « '+pgn(r.slice(1))+' »' : 'suffixe';
+        case 'R': return r[0]==='d' ? 'préposition + article' : 'préposition';
+        case 'C': return 'conjonction';
+        case 'D': return 'adverbe';
+        case 'T': return {a:'particule d\'affirmation',d:'article',e:'particule d\'exhortation',i:'particule interrogative',j:'interjection',m:'particule démonstrative',n:'négation',o:'marque du complément',r:'particule relative'}[r[0]] || 'particule';
+        default: return '';
+      }
+    };
+    const txt = code.slice(1).split('/').map(seg).filter(Boolean).join(' + ');
+    return { txt: (lang ? lang+' · ' : '') + txt, temps };
+  }
+  // Grec (codes Robinson, ex. V-AAI-3S, N-NSM, V-PAP-NSM)
+  const CAS = { N:'nominatif', G:'génitif', D:'datif', A:'accusatif', V:'vocatif' }, GEN = { M:'masc.', F:'fém.', N:'neutre' }, NB = { S:'sing.', P:'plur.' };
+  const cng = x => x ? [CAS[x[0]], GEN[x[2]], NB[x[1]]].filter(Boolean).join(' ') : '';
+  const parts = code.split('-');
+  const k = parts[0];
+  if(k === 'V'){
+    let t = parts[1] || '', rest = parts[2] || '';
+    const second = t[0] === '2'; if(second) t = t.slice(1);
+    const T = { P:'présent', I:'imparfait', F:'futur', A:'aoriste', R:'parfait', L:'plus-que-parfait' };
+    const V = { A:'actif', M:'moyen', P:'passif', E:'moyen ou passif', D:'moyen (déponent)', O:'passif (déponent)', N:'moyen-passif (déponent)' };
+    const M = { I:'indicatif', S:'subjonctif', O:'optatif', M:'impératif', N:'infinitif', P:'participe', R:'participe (sens impératif)' };
+    temps = T[t[0]] || '';
+    const perso = rest ? (M[t[2]] === 'participe' || t[2] === 'R' ? cng(rest) : [P[rest[0]], NB[rest[1]]].filter(Boolean).join(' ')) : '';
+    return { txt: ['verbe', temps + (second ? ' (2e forme)' : ''), V[t[1]], M[t[2]], perso].filter(Boolean).join(' · '), temps };
+  }
+  const NOMS = { N:'nom', A:'adjectif', T:'article', R:'pronom relatif', C:'pronom réciproque', D:'pronom démonstratif', K:'pronom corrélatif', I:'pronom interrogatif', X:'pronom indéfini', Q:'pronom corrélatif', F:'pronom réfléchi', S:'pronom possessif', P:'pronom personnel' };
+  const AUTRES = { ADV:'adverbe', CONJ:'conjonction', COND:'conjonction (condition)', PREP:'préposition', PRT:'particule', INJ:'interjection', ARAM:'mot araméen', HEB:'mot hébreu' };
+  if(AUTRES[k]) return { txt: AUTRES[k] + (parts[1] === 'N' ? ' (négation)' : parts[1] === 'I' ? ' (question)' : ''), temps:'' };
+  if(NOMS[k]){
+    const x = parts[1] || '';
+    if(x === 'PRI') return { txt:'nom propre', temps:'' };
+    if(x === 'NUI') return { txt:'nombre', temps:'' };
+    if(/^[123]/.test(x)) return { txt: NOMS[k] + ' · ' + [P[x[0]], CAS[x[1]], NB[x[2]]].filter(Boolean).join(' '), temps:'' };
+    return { txt: [NOMS[k], cng(x)].filter(Boolean).join(' · '), temps:'' };
+  }
+  return { txt: code, temps:'' };
 }
 function hebMot(btn, i, livre, chapIdx, versIdx){
+  const lg = origLangue(livre);
   const m = hebCache[livre][chapIdx][versIdx][i];
-  const lx = (hebLex && hebLex[m[1]]) || ['','',''];
+  const lx = (origLex[lg] && origLex[lg][m[1]]) || ['','',''];
   const panel = btn.closest('.heb-panel');
   panel.querySelectorAll('.heb-mot.sel').forEach(e=>e.classList.remove('sel'));
   btn.classList.add('sel');
-  const pref = (m[2]||'').split('').map(ch=>HEB_PREFIXES[ch]).filter(Boolean).join(' + ');
   const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const pref = lg === 'heb' ? (m[2]||'').split('').map(ch=>HEB_PREFIXES[ch]).filter(Boolean).join(' + ') : '';
+  const mf = morphFr(m[3], lg);
+  const defFr = lg === 'heb' && hebLexFr && hebLexFr[m[1]];
   panel.querySelector('.heb-detail').innerHTML =
-    '<div class="heb-big" dir="rtl">'+m[0]+'</div>'
-    + (lx[0] ? '<div><b>Transcription :</b> '+esc(lx[0])+'</div>' : '')
-    + (m[1] ? '<div><b>Strong :</b> H'+m[1]+'</div>' : '')
+    '<div class="heb-big"'+(lg==='heb'?' dir="rtl"':'')+'>'+m[0]+'</div>'
+    + '<div><b>Langue :</b> '+(lg==='heb' ? (m[3] && m[3][0]==='A' ? 'araméen' : 'hébreu') : 'grec')+'</div>'
+    + (lg==='grc' && m[2] ? '<div><b>Prononciation :</b> '+esc(m[2])+'</div>' : '')
+    + (lx[0] ? '<div><b>Mot de base :</b> '+esc(lx[0])+'</div>' : '')
+    + (m[1] ? '<div><b>Strong :</b> '+(lg==='heb'?'H':'G')+m[1]+'</div>' : '')
     + (pref ? '<div><b>Préfixe :</b> '+esc(pref)+'</div>' : '')
-    + (hebLexFr && hebLexFr[m[1]] ? '<div><b>Définition :</b> '+esc(hebLexFr[m[1]])+'</div>'
+    + (mf.txt ? '<div><b>Forme :</b> '+esc(mf.txt)+'</div>' : '')
+    + (mf.temps ? '<div><b>Temps :</b> '+esc(mf.temps)+(TEMPS_AIDE[mf.temps] ? ' — '+esc(TEMPS_AIDE[mf.temps]) : '')+'</div>' : '')
+    + (defFr ? '<div><b>Définition :</b> '+esc(defFr)+'</div>'
        : (lx[1] ? '<div><b>Sens (anglais) :</b> '+esc(lx[1])+'</div>' : ''))
     + (lx[2] ? '<div class="heb-usage"><b>Rendu dans la KJV :</b> '+esc(lx[2])+'</div>' : '');
 }
@@ -3699,6 +3797,8 @@ function bibleRendre(){
     const mots = r[2] && r[2][chap-1] && r[2][chap-1][vers-1];
     document.getElementById('dcbMots').hidden = !mots;
     hp.querySelector('.heb-detail').innerHTML = '';
+    document.getElementById('bibleHebMots').dir = origLangue(livre) === 'heb' ? 'rtl' : 'ltr';
+    document.getElementById('bibleMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(livre) === 'heb' ? 'HÉBREU' : 'GREC');
     document.getElementById('bibleHebMots').innerHTML = mots ? hebMotsHtml(livre, chap-1, vers-1, mots) : '';
     const sens = r[1] && r[1][String(chap)] && r[1][String(chap)][String(vers)];
     const sb = document.getElementById('bibleSens');

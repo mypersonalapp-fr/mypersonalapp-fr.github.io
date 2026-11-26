@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=57">
+<link rel="stylesheet" href="style.css?v=58">
 </head>
 <body>
 
@@ -228,7 +228,7 @@
     <div class="dcard-corps"><div class="verse-text" id="verseText">...</div><div class="verse-ref" id="verseRef"></div></div>
   </div>
   <div class="dcard" id="dcMots" data-groupe="acc">
-    <button type="button" class="dcard-tete" onclick="dcToggle('dcMots')"><span>MOT À MOT</span><span class="dcard-fl">▾</span></button>
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcMots')"><span id="accMotsTitre">MOT À MOT</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps"><div class="heb-panel verse-heb"><div class="heb-mots" id="verseHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
   </div>
   <div class="dcard ferme" id="dcSens" data-groupe="acc">
@@ -284,7 +284,7 @@
       </div></div>
   </div>
   <div class="dcard" id="dcbMots" data-groupe="bib">
-    <button type="button" class="dcard-tete" onclick="dcToggle('dcbMots')"><span>MOT À MOT</span><span class="dcard-fl">▾</span></button>
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcbMots')"><span id="bibleMotsTitre">MOT À MOT</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps"><div class="heb-panel" id="bibleHebPanel"><div class="heb-mots" id="bibleHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
   </div>
   <div class="dcard ferme" id="dcbSens" data-groupe="bib">
@@ -693,8 +693,8 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="objectif-data.js?v=57"></script>
-<script src="script.js?v=57"></script>
+<script src="objectif-data.js?v=58"></script>
+<script src="script.js?v=58"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

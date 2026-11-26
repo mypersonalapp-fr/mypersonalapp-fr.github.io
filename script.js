@@ -3821,6 +3821,28 @@ function bibleChoixLivre(){ bibleL = parseInt(document.getElementById('bibleLivr
 function bibleVue(){}
 function bibleChoixChap(){ bibleC = parseInt(document.getElementById('bibleChap').value,10); bibleV = 1; bibleRendre(); }
 function bibleChoixVerset(n){ bibleV = n; bibleRendre(); }
+/* Flèches Précédent / Suivant : verset par verset, en passant au chapitre
+   puis au livre suivant (ou précédent) aux extrémités. */
+function bibleSuivant(){
+  bibleLoadLivre(bibleL).then(ch=>{
+    const n = (ch[bibleC-1] || []).length;
+    if(bibleV < n){ bibleV++; }
+    else if(bibleC < ch.length){ bibleC++; bibleV = 1; }
+    else if(bibleL < BIBLE_LIVRES.length - 1){ bibleL++; bibleC = 1; bibleV = 1; }
+    else return;
+    bibleRendre(); window.scrollTo(0, 0);
+  });
+}
+function biblePrecedent(){
+  if(bibleV > 1){ bibleV--; bibleRendre(); window.scrollTo(0, 0); return; }
+  const l = bibleC > 1 ? bibleL : bibleL - 1;
+  if(l < 0) return;
+  bibleLoadLivre(l).then(ch=>{
+    if(bibleC > 1){ bibleC--; } else { bibleL = l; bibleC = ch.length; }
+    bibleV = (ch[bibleC-1] || []).length || 1;
+    bibleRendre(); window.scrollTo(0, 0);
+  });
+}
 function homeOnglet(){}
 function bibleRendre(){
   const livre = bibleL, chap = bibleC, vers = bibleV;
@@ -3843,6 +3865,9 @@ function bibleRendre(){
     document.getElementById('bibleLgFr').textContent = 'FRANÇAIS · ' + (version === 'darby' ? 'DARBY' : 'SEGOND');
     document.getElementById('bibleVNote').hidden = !(autreChap && autreChap.length !== versets.length);
     document.getElementById('bibleVLabel').textContent = 'VERSET ' + vers;
+    document.getElementById('bibleFlecheRef').textContent = BIBLE_LIVRES[livre] + ' ' + chap + ':' + vers;
+    document.getElementById('biblePrecBtn').disabled = (livre === 0 && chap === 1 && vers === 1);
+    document.getElementById('bibleSuivBtn').disabled = (livre === BIBLE_LIVRES.length - 1 && chap === r[0].length && vers === versets.length);
     document.getElementById('biblePills').innerHTML = versets.map((_,i)=>'<button type="button" class="'+(i+1===vers?'sel':'')+'" onclick="bibleChoixVerset('+(i+1)+')">'+(i+1)+'</button>').join('');
     { const sel = document.querySelector('#biblePills .sel'); if(sel) sel.scrollIntoView({inline:'center', block:'nearest'}); }
     const vs = document.getElementById('bibleVerset');

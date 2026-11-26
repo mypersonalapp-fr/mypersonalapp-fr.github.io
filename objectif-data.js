@@ -1,7 +1,7 @@
 /* =========================================================================
    LECTURE QUOTIDIENNE + OBJECTIF DE LA SEMAINE
-   - Verset du jour : la Genèse lue dans l'ordre, un verset par jour, à
-     partir de LECTURE_DEBUT (jour 1 = Genèse 1:1).
+   - Verset du jour : la Bible lue dans l'ordre, un verset par jour, à
+     partir de LECTURE_DEBUT (jour 1 = Genèse 1:1), livre après livre.
    - Objectif : un verset à apprendre par cœur par semaine (7 versets du
      jour = 1 semaine), choisi dans la concordance des versets lus cette
      semaine-là. Semaine 1 = Genèse 1:1-7, semaine 2 = 1:8-14, etc.
@@ -9,6 +9,9 @@
    originale — ce que dit le verset et son lien avec la lecture de la semaine.
    ========================================================================= */
 const LECTURE_DEBUT = "2026-11-26";
+/* Nombre de versets de chaque livre (Louis Segond, de Genèse à Apocalypse) :
+   à la fin d'un livre, la lecture continue au livre suivant. */
+const LECTURE_VERSETS_PAR_LIVRE = [1533, 1213, 859, 1288, 959, 658, 618, 85, 810, 695, 816, 719, 942, 822, 280, 406, 167, 1070, 2461, 915, 222, 117, 1292, 1364, 154, 1273, 357, 197, 73, 146, 21, 48, 105, 47, 56, 53, 38, 211, 55, 1071, 678, 1151, 879, 1007, 433, 437, 257, 149, 155, 104, 95, 89, 47, 113, 83, 46, 25, 303, 108, 105, 61, 105, 13, 14, 25, 404];
 const OBJECTIF_SEMAINES = [
   { ref:"Jean 1:1", texte:"Au commencement était la Parole, et la Parole était avec Dieu, et la Parole était Dieu.",
     sens:"Jean reprend exprès les premiers mots de la Genèse : « Au commencement ». Cette semaine, Dieu parle et la lumière existe. Jean révèle que cette Parole créatrice est une personne : Jésus (Jean 1.14). Celui qui a créé le monde s'est fait homme." },

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=56">
+<link rel="stylesheet" href="style.css?v=57">
 </head>
 <body>
 
@@ -164,6 +164,7 @@
   <button data-page="accueil" class="active" onclick="showPage('accueil')" aria-label="Accueil">Accueil</button>
   <button data-page="bible" onclick="showPage('bible')" aria-label="Bible">Bible</button>
   <button data-page="objectif" onclick="showPage('objectif')" aria-label="Objectif">Objectif</button>
+  <button data-page="plans" onclick="showPage('plans')" aria-label="Thème">Thème</button>
   <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')" aria-label="Notes">Notes</button>
   <button data-page="parametres" onclick="showPage('parametres')" aria-label="Paramètres">Paramètres</button>
 </nav>
@@ -324,10 +325,8 @@
 </section>
 
 <section id="page-plans" class="page" hidden>
-  <div class="card">
-    <h2>🕊️ Plans thématiques</h2>
-    <div class="subnote">7 jours par plan, uniquement des versets bibliques + une prière. Touche une tuile pour t'y plonger en plein écran.</div>
-  </div>
+  <div class="notes-head"><h2 class="notes-titre">Thème</h2></div>
+  <p class="obj-intro">Plans de 7 jours par thème : un verset, son explication et une prière chaque jour. Touche un thème pour commencer.</p>
   <div id="plansGrid" class="plans-grid"></div>
 </section>
 
@@ -694,8 +693,8 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="objectif-data.js?v=56"></script>
-<script src="script.js?v=56"></script>
+<script src="objectif-data.js?v=57"></script>
+<script src="script.js?v=57"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

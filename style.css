@@ -1312,3 +1312,6 @@ body[data-bg="nuit"] .set-ligne + .set-ligne{ border-top-color:#2B2B2B; }
 .obj-hist-row{ display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--page); font-size:.9rem; }
 .obj-hist-row span{ color:var(--muted); }
 body[data-bg="nuit"] .obj-stats > div{ background:#121212; border:1px solid #2B2B2B; }
+/* Barre du bas à 6 onglets */
+.bottom-nav{ gap:2px; }
+.bottom-nav button{ font-size:.66rem !important; padding:6px 0 !important; min-width:0; letter-spacing:-.01em; }

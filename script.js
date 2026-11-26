@@ -1653,8 +1653,9 @@ function renderPrayers(){
    change automatiquement le lendemain (calculé à partir du jour de l'année,
    donc pas besoin de synchronisation pour que ce soit cohérent).
    ========================================================================= */
-/* VERSET DU JOUR — la Genèse lue dans l'ordre, un verset par jour depuis
+/* VERSET DU JOUR — la Bible lue dans l'ordre, un verset par jour depuis
    LECTURE_DEBUT (objectif-data.js) : jour 1 = Genèse 1:1, jour 2 = 1:2…
+   À la fin d'un livre on passe au suivant (Exode, Lévitique… Apocalypse).
    Avec l'hébreu mot à mot et le sens du verset quand ils existent. */
 function lectureJourIndex(d){
   d = d || new Date();
@@ -1662,11 +1663,24 @@ function lectureJourIndex(d){
   const n = Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(p[0], p[1]-1, p[2])) / 86400000);
   return Math.max(0, n);
 }
-function lecturePosition(chapitres, idx){
-  const total = chapitres.reduce((a,c)=>a+c.length, 0);
+/* idx (0 = Genèse 1:1) -> { l: livre, k: rang du verset dans ce livre } */
+function lectureLivre(idx){
+  const total = LECTURE_VERSETS_PAR_LIVRE.reduce((a,b)=>a+b, 0);
   let k = idx % total;
-  for(let c=0; c<chapitres.length; c++){ if(k < chapitres[c].length) return { c, v:k }; k -= chapitres[c].length; }
-  return { c:0, v:0 };
+  for(let l=0; l<LECTURE_VERSETS_PAR_LIVRE.length; l++){
+    if(k < LECTURE_VERSETS_PAR_LIVRE[l]) return { l, k };
+    k -= LECTURE_VERSETS_PAR_LIVRE[l];
+  }
+  return { l:0, k:0 };
+}
+/* -> Promise { l, c, v, ref, texte } (c et v à partir de 0) */
+function lecturePosition(idx){
+  const p = lectureLivre(idx);
+  return bibleLoadLivre(p.l).then(chapitres=>{
+    let k = p.k, c = 0;
+    while(c < chapitres.length - 1 && k >= chapitres[c].length){ k -= chapitres[c].length; c++; }
+    return { l:p.l, c, v:k, ref: BIBLE_LIVRES[p.l] + ' ' + (c+1) + ':' + (k+1), texte: chapitres[c][k] };
+  });
 }
 function sensHtml(e){
   const x = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
@@ -1679,19 +1693,20 @@ function afficherVerset(){
   const vt = document.getElementById('verseText');
   const vr = document.getElementById('verseRef');
   // différé : bibleLoadLivre / hebCharger sont déclarés plus bas dans le fichier
-  setTimeout(()=>bibleLoadLivre(0).then(gen=>{
-    const idx = lectureJourIndex(), pos = lecturePosition(gen, idx);
-    const ref = 'Genèse ' + (pos.c+1) + ':' + (pos.v+1);
-    versetDuJour = { ref, text: gen[pos.c][pos.v] };
-    if(vt) vt.textContent = '« ' + versetDuJour.text + ' »';
-    if(vr) vr.textContent = ref + ' · Jour ' + (idx+1);
+  setTimeout(()=>lecturePosition(lectureJourIndex()).then(pos=>{
+    const idx = lectureJourIndex();
+    versetDuJour = { ref: pos.ref, text: pos.texte };
+    if(vt) vt.textContent = '« ' + pos.texte + ' »';
+    if(vr) vr.textContent = pos.ref + ' · Jour ' + (idx+1);
     const vh = document.getElementById('verseHebMots');
-    if(vh) hebCharger(0).then(c=>{
+    const hebOk = HEB_DISPO.indexOf(pos.l) >= 0;
+    document.getElementById('dcMots').hidden = true;
+    if(vh && hebOk) hebCharger(pos.l).then(c=>{
       const mots = c[pos.c] && c[pos.c][pos.v];
       document.getElementById('dcMots').hidden = !mots;
-      vh.innerHTML = mots ? hebMotsHtml(0, pos.c, pos.v, mots) : '';
+      vh.innerHTML = mots ? hebMotsHtml(pos.l, pos.c, pos.v, mots) : '';
     }).catch(()=>{});
-    sensCharger(0).then(d=>{
+    sensCharger(pos.l).then(d=>{
       const e = d[String(pos.c+1)] && d[String(pos.c+1)][String(pos.v+1)], sb = document.getElementById('verseSens');
       document.getElementById('dcSens').hidden = !e;
       if(sb){ sb.hidden = !e; sb.innerHTML = e ? sensHtml(e) : ''; }
@@ -2323,7 +2338,7 @@ function showPage(id){
   if(id !== 'journal-comprehension' && typeof noteFlush === 'function') noteFlush();
   if(id === 'bible') bibleInit();
   if(id === 'objectif') objRendre();
-  document.body.classList.toggle('sur-objectif', id === 'objectif');
+  document.body.classList.toggle('sur-objectif', id === 'objectif' || id === 'plans');
   if(id === 'en-groupe') afficherVueListeGroupes();
   if(id === 'admin'){ renderAvisAdmin(); renderUsersAdmin(); renderSuggestionsAdmin(); }
   if(id === 'vision-board') renderVisionBoard();
@@ -3814,9 +3829,8 @@ function objRendre(){
   document.getElementById('objSens').textContent = v.sens;
   const resteJours = 6 - (lectureJourIndex() % 7);
   document.getElementById('objDate').textContent = 'SEMAINE ' + (w+1) + ' · ' + (resteJours ? 'NOUVEAU VERSET DANS ' + resteJours + ' JOUR' + (resteJours > 1 ? 'S' : '') : 'DERNIER JOUR');
-  bibleLoadLivre(0).then(gen=>{
-    const d = lecturePosition(gen, w*7), f = lecturePosition(gen, w*7+6);
-    document.getElementById('objSource').textContent = 'Genèse ' + (d.c+1) + ':' + (d.v+1) + ' → ' + (f.c+1) + ':' + (f.v+1);
+  Promise.all([lecturePosition(w*7), lecturePosition(w*7+6)]).then(r=>{
+    document.getElementById('objSource').textContent = r[0].ref + ' → ' + (r[0].l === r[1].l ? (r[1].c+1) + ':' + (r[1].v+1) : r[1].ref);
   }).catch(()=>{});
   objRendreTexte();
   const fait = !!a[w];

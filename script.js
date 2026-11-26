@@ -3722,7 +3722,12 @@ let bibleL = 0, bibleC = 1, bibleV = 1, bibleOk = false;
 /* Versions affichées dans l'appli (domaine public) : Louis Segond 1910,
    Darby 1885 (français) et King James 1769 (anglais). */
 let bibleVersion = 'lsg';
-try{ const v = localStorage.getItem('bibleVersion'); if(v === 'kjv' || v === 'darby') bibleVersion = v; }catch(e){}
+try{ if(localStorage.getItem('bibleVersion') === 'darby') bibleVersion = 'darby'; }catch(e){}
+/* Versions anglaises sous droits (Amplified, The Message) : ouvertes sur bible.com au bon verset. */
+function bibleOuvrirEn(id, code){
+  const bc = BOOK_CODE_BIBLECOM[CANONICAL_BOOK_ORDER.indexOf(BIBLE_LIVRES[bibleL])];
+  if(bc) window.open('https://www.bible.com/bible/' + id + '/' + bc + '.' + bibleC + '.' + bibleV + '.' + code, '_blank', 'noopener');
+}
 function bibleLoadLivre(i, v){
   v = v || 'lsg';
   const k = v + i;
@@ -3782,12 +3787,15 @@ function bibleRendre(){
   const version = bibleVersion;
   document.querySelectorAll('#bibleVersions [data-v]').forEach(b=>b.classList.toggle('sel', b.dataset.v === version));
   Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null),
-               version === 'lsg' ? Promise.resolve(null) : bibleLoadLivre(livre, version).catch(()=>null)]).then(r=>{
+               version === 'lsg' ? Promise.resolve(null) : bibleLoadLivre(livre, version).catch(()=>null),
+               bibleLoadLivre(livre, 'kjv').catch(()=>null)]).then(r=>{
     if(livre !== bibleL || chap !== bibleC || vers !== bibleV || version !== bibleVersion) return;
     const versets = r[0][chap-1] || [];
     const autreChap = r[3] && r[3][chap-1];
     const autre = autreChap && autreChap[vers-1];
     txt.textContent = autre || versets[vers-1] || '';
+    document.getElementById('bibleTexteEn').textContent = (r[4] && r[4][chap-1] && r[4][chap-1][vers-1]) || '';
+    document.getElementById('bibleLgFr').textContent = 'FRANÇAIS · ' + (version === 'darby' ? 'DARBY' : 'SEGOND');
     document.getElementById('bibleVNote').hidden = !(autreChap && autreChap.length !== versets.length);
     document.getElementById('bibleVLabel').textContent = 'VERSET ' + vers;
     document.getElementById('biblePills').innerHTML = versets.map((_,i)=>'<button type="button" class="'+(i+1===vers?'sel':'')+'" onclick="bibleChoixVerset('+(i+1)+')">'+(i+1)+'</button>').join('');

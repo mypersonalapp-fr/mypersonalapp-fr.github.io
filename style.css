@@ -1324,3 +1324,21 @@ body[data-bg="nuit"] .obj-stats > div{ background:#121212; border:1px solid #2B2
 .reader-bloc .heb-mots{ justify-content:center; }
 .reader-vnum{ align-self:center; font-size:11px; font-weight:800; color:var(--muted); }
 body[data-bg="nuit"] .reader-bloc{ background:#121212; border:1px solid #2B2B2B; }
+/* Bible : français à gauche, anglais à droite */
+.bible-par{ display:grid; grid-template-columns:1fr 1fr; }
+.bible-col{ padding:0 12px; min-width:0; }
+.bible-col:first-child{ padding-left:0; border-right:1px solid var(--page); }
+.bible-col:last-child{ padding-right:0; }
+.bible-lg{ font:800 10px "Manrope",sans-serif; letter-spacing:.1em; color:var(--muted); margin-bottom:8px; }
+.dcard .bible-par .bible-vtext{ font-size:1rem; line-height:1.45; }
+.bible-versions2{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; align-items:center; }
+.bible-versions2 .grp{ display:flex; flex-wrap:wrap; gap:6px; }
+.bible-versions2 .sep{ width:1px; align-self:stretch; background:var(--page); }
+.bible-versions2 button{ height:32px; padding:0 12px; border:0; border-radius:16px; background:var(--page); color:var(--text-dark); font:700 12px "Manrope",sans-serif; cursor:pointer; }
+.bible-versions2 button.sel{ background:var(--text-dark); color:var(--page); }
+body[data-bg="nuit"] .bible-col:first-child{ border-right-color:rgba(255,255,255,.14); }
+body[data-bg="nuit"] .bible-versions2 .sep{ background:rgba(255,255,255,.18); }
+body[data-bg="nuit"] .bible-lg{ color:var(--accent); }
+body[data-bg="nuit"] .bible-versions2 button{ background:#121212; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .bible-versions2 button.sel{ background:var(--accent); color:#000; border-color:var(--accent); }
+.bible-par .bible-vtext{ padding:0 !important; margin:0 !important; text-align:left !important; }

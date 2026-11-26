@@ -1342,3 +1342,22 @@ body[data-bg="nuit"] .bible-lg{ color:var(--accent); }
 body[data-bg="nuit"] .bible-versions2 button{ background:#121212; border:1px solid #2B2B2B; }
 body[data-bg="nuit"] .bible-versions2 button.sel{ background:var(--accent); color:#000; border-color:var(--accent); }
 .bible-par .bible-vtext{ padding:0 !important; margin:0 !important; text-align:left !important; }
+/* Réglages en haut de l'Accueil */
+.top-actions{ display:flex; gap:8px; flex:none; }
+/* Sens dans l'hébreu / le grec */
+.orig-intro{ margin:0 0 10px; font-size:13px; color:var(--muted); }
+.orig-l{ padding:10px 0; border-top:1px solid var(--page); }
+.orig-l:first-of-type{ border-top:none; }
+.orig-t{ font-weight:700; font-size:15px; }
+.orig-w{ font-family:"Times New Roman",serif; font-size:1.25rem; font-weight:400; }
+.orig-n{ font-size:14px; line-height:1.5; margin-top:4px; }
+/* Lexique */
+.lex-carte{ background:var(--cream); border-radius:22px; padding:14px 18px; margin:0 0 10px; font-size:14px; line-height:1.5; }
+.lex-carte b{ font-weight:700; }
+.lex-tete{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.lex-mot{ font-family:"Times New Roman",serif; font-size:2rem; }
+.lex-lg{ font:800 10px "Manrope",sans-serif; letter-spacing:.1em; color:var(--muted); }
+.lex-pron{ font-style:italic; color:var(--muted); margin-bottom:6px; }
+.lex-occ{ margin-top:6px; font-size:12px; color:var(--muted); }
+body[data-bg="nuit"] .lex-carte{ background:#121212; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .lex-lg{ color:var(--accent); }

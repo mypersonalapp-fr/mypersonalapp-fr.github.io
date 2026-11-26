@@ -1707,6 +1707,7 @@ function afficherVerset(){
       vh.dir = origLangue(pos.l) === 'heb' ? 'rtl' : 'ltr';
       document.getElementById('accMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(pos.l) === 'heb' ? 'HÉBREU' : 'GREC');
       vh.innerHTML = mots ? hebMotsHtml(pos.l, pos.c, pos.v, mots) : '';
+      origRemplir('acc', pos.l, mots, pos.texte, pos.c, pos.v);
     }).catch(()=>{});
     sensCharger(pos.l).then(d=>{
       const e = d[String(pos.c+1)] && d[String(pos.c+1)][String(pos.v+1)], sb = document.getElementById('verseSens');
@@ -2342,7 +2343,8 @@ function showPage(id){
   if(id !== 'journal-comprehension' && typeof noteFlush === 'function') noteFlush();
   if(id === 'bible') bibleInit();
   if(id === 'objectif') objRendre();
-  document.body.classList.toggle('sur-objectif', id === 'objectif' || id === 'plans');
+  if(id === 'lexique') lexInit();
+  document.body.classList.toggle('sur-objectif', id === 'objectif' || id === 'plans' || id === 'lexique');
   if(id === 'en-groupe') afficherVueListeGroupes();
   if(id === 'admin'){ renderAvisAdmin(); renderUsersAdmin(); renderSuggestionsAdmin(); }
   if(id === 'vision-board') renderVisionBoard();
@@ -3810,6 +3812,7 @@ function bibleRendre(){
     document.getElementById('bibleHebMots').dir = origLangue(livre) === 'heb' ? 'rtl' : 'ltr';
     document.getElementById('bibleMotsTitre').textContent = 'MOT À MOT · ' + (origLangue(livre) === 'heb' ? 'HÉBREU' : 'GREC');
     document.getElementById('bibleHebMots').innerHTML = mots ? hebMotsHtml(livre, chap-1, vers-1, mots) : '';
+    origRemplir('bible', livre, mots, versets[vers-1] || '', chap-1, vers-1);
     const sens = r[1] && r[1][String(chap)] && r[1][String(chap)][String(vers)];
     const sb = document.getElementById('bibleSens');
     sb.hidden = !sens; document.getElementById('dcbSens').hidden = !sens;
@@ -4003,4 +4006,114 @@ function readerEtude(ref){
     box.innerHTML = html.join('');
     mb.hidden = false;
   }).catch(()=>{});
+}
+
+
+/* =========================================================================
+   SENS DANS L'HÉBREU / LE GREC — pour chaque verbe du verset : le mot
+   d'origine, sa forme (radical hébreu, voix et mode grecs) et son temps,
+   expliqués en français. Le mot français correspondant est retrouvé grâce
+   aux traductions de Segond associées à chaque numéro Strong (lex[4]).
+   ========================================================================= */
+const RADICAL_AIDE = {
+  'Qal':"forme simple de l'action", 'Niphal':"forme passive ou réfléchie : l'action est subie ou faite sur soi",
+  'Piel':"forme intensive : l'action est accomplie avec force ou de façon répétée", 'Pual':"passif de la forme intensive",
+  'Hiphil':"forme causative : faire faire, faire arriver", 'Hophal':"passif de la forme causative",
+  'Hithpael':"forme réfléchie : agir sur soi-même ou les uns envers les autres",
+  'Peal':"forme simple (araméen)", 'Pael':"forme intensive (araméen)", 'Haphel':"forme causative (araméen)", 'Aphel':"forme causative (araméen)"
+};
+const VOIX_AIDE = { 'actif':"le sujet fait l'action", 'moyen':"le sujet agit pour lui-même ou est engagé dans l'action", 'passif':"le sujet subit l'action, souvent de la part de Dieu", 'moyen ou passif':"le sujet est engagé dans l'action ou la subit" };
+const MODE_AIDE = { 'impératif':"un ordre", 'subjonctif':"une action possible ou voulue", 'optatif':"un souhait", 'participe':"une action en cours, vue comme une description", 'infinitif':"l'action elle-même, sans personne" };
+function frTokens(t){ return (t || '').toLowerCase().replace(/’/g,"'").match(/[a-zàâäçéèêëîïôöûùüÿœæ]+/g) || []; }
+function origMotFr(lx, toks, livre, c, v, i, pris){
+  const fr = ((hebFrCache[livre] || {})[c+':'+v]) || [];
+  if(fr[i]) return fr[i];
+  const rendus = (lx && lx[4]) || [];
+  for(const r of rendus){
+    if(pris[r]) continue;   // mot français qui traduit déjà un autre mot du verset
+    const t = toks.find(x=>x === r || (r.length > 4 && x.startsWith(r.slice(0, r.length-1))));
+    if(t) return t;
+  }
+  return '';
+}
+function origRemplir(ou, livre, mots, texteFr, c, v){
+  const carte = document.getElementById(ou === 'bible' ? 'dcbOrig' : 'dcOrig');
+  const box = document.getElementById(ou === 'bible' ? 'bibleOrig' : 'accOrig');
+  const lg = origLangue(livre), lex = origLex[lg] || {};
+  document.getElementById(ou === 'bible' ? 'bibleOrigTitre' : 'accOrigTitre').textContent = lg === 'heb' ? "SENS DANS L'HÉBREU" : 'SENS DANS LE GREC';
+  if(!mots || !mots.length){ carte.hidden = true; return; }
+  const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const toks = frTokens(texteFr);
+  const lignes = [];
+  // Mot français principal de chaque mot non verbal du verset (ex. « daniel ») :
+  // il ne peut pas servir de traduction à un verbe.
+  const pris = {};
+  mots.forEach(m=>{ const isV = lg === 'heb' ? /(^|\/)V/.test((m[3]||'').slice(1)) : /^V-/.test(m[3]||''); const lx = lex[m[1]]; if(!isV && lx && lx[4] && lx[4][0]) pris[lx[4][0]] = 1; });
+  mots.forEach((m,i)=>{
+    const isVerbe = lg === 'heb' ? /(^|\/)V/.test((m[3]||'').slice(1)) : /^V-/.test(m[3]||'');
+    if(!isVerbe) return;
+    const lx = lex[m[1]], mf = morphFr(m[3], lg);
+    const fr = origMotFr(lx, toks, livre, c, v, i, pris);
+    const base = lx ? (lx[3] ? lx[3] + ' (' + lx[0] + ')' : lx[0]) : m[0];
+    const parts = mf.txt.split(' + ').find(x=>x.indexOf('verbe') >= 0) || mf.txt;
+    const p = parts.split(' · ');
+    let nuance = [];
+    if(lg === 'heb'){ const rad = p[p.indexOf('verbe')+1]; if(RADICAL_AIDE[rad]) nuance.push('<b>'+esc(rad)+'</b> : '+RADICAL_AIDE[rad]); }
+    else { const voix = p.find(x=>VOIX_AIDE[x]); if(voix && voix !== 'actif') nuance.push('<b>'+esc(voix)+'</b> : '+VOIX_AIDE[voix]);
+           const mode = p.find(x=>MODE_AIDE[x]); if(mode) nuance.push('<b>'+esc(mode)+'</b> : '+MODE_AIDE[mode]); }
+    if(mf.temps) nuance.unshift('<b>'+esc(mf.temps)+'</b> : '+esc(TEMPS_AIDE[mf.temps] || ''));
+    lignes.push('<div class="orig-l"><div class="orig-t">'+(fr ? '« '+esc(fr)+' » — ' : '')+'<span class="orig-w"'+(lg==='heb'?' dir="rtl"':'')+'>'+m[0]+'</span> · '+esc(base)+'</div>'
+      + (nuance.length ? '<div class="orig-n">'+nuance.join('<br>')+'</div>' : '') + '</div>');
+  });
+  carte.hidden = !lignes.length;
+  box.innerHTML = '<p class="orig-intro">'+(lg==='heb' ? "Comment les verbes sont écrits dans l'hébreu, et ce que leur forme ajoute au sens :" : "Comment les verbes sont écrits dans le grec, et ce que leur forme ajoute au sens :")+'</p>' + lignes.join('');
+}
+
+/* =========================================================================
+   LEXIQUE — un mot français -> mots hébreux/grecs qu'il traduit le plus
+   souvent dans la Bible (index calculé sur les 31 102 versets de Segond
+   alignés avec le texte original : bible/lexique/fr.json).
+   ========================================================================= */
+let lexIndex = null, lexTimer = null;
+function lexInit(){
+  if(!lexIndex) Promise.all([
+    fetch('bible/lexique/fr.json').then(r=>r.json()).then(x=>(lexIndex=x)),
+    hebCharger(0), hebCharger(39)
+  ]).then(()=>lexChercher()).catch(()=>{ document.getElementById('lexResultats').innerHTML = '<div class="empty">Impossible de charger le lexique. Vérifie ta connexion.</div>'; });
+  setTimeout(()=>{ const i = document.getElementById('lexRecherche'); if(i) i.focus(); }, 100);
+}
+function lexNormal(s){ return (s||'').toLowerCase().trim().replace(/’/g,"'").replace(/^(l|d|qu|n|s|j|m|t)'/,''); }
+function lexChercher(){
+  clearTimeout(lexTimer);
+  lexTimer = setTimeout(lexAfficher, 200);
+}
+function lexAfficher(){
+  const box = document.getElementById('lexResultats');
+  const q = lexNormal(document.getElementById('lexRecherche').value);
+  if(!lexIndex){ return; }
+  if(q.length < 2){ box.innerHTML = ''; return; }
+  const scores = {};
+  const ajouter = (tok, poids) => (lexIndex[tok] || []).forEach(([s,d])=>{ scores[s] = Math.max(scores[s] || 0, d * poids); });
+  ajouter(q, 1);
+  // Formes proches : pluriel, conjugaisons et mots de la même famille.
+  const FINS = ['','s','x','e','es','é','ée','és','ées','a','ai','ais','ait','aient','as','èrent','era','eras','erai','eront','erez','erons','ent','ons','ez','ant','ent','i','ie','is','it','irent','ira','iront','issent','issant','u','ue','us','ues','ation','ations','ateur','ateurs','atrice','ature','atures','eur','eurs','euse','ment','ments','ité','ités','ance','ances'];
+  const racines = new Set([q]);
+  const m = q.match(/^(.{3,}?)(er|ir|re|oir|s|x|e|é)$/); if(m) racines.add(m[1]);
+  if(q.length >= 6) racines.add(q.slice(0, -1));
+  racines.forEach(r=>FINS.forEach(f=>{ const t = r + f; if(t !== q && lexIndex[t]) ajouter(t, 0.9); }));
+  const liste = Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0, 8);
+  if(!liste.length){ box.innerHTML = '<div class="empty">Aucun mot trouvé. Essaie une autre forme (ex. « aimer » ou « amour »).</div>'; return; }
+  const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  box.innerHTML = liste.map(([s])=>{
+    const lg = s[0] === 'H' ? 'heb' : 'grc', n = s.slice(1), lx = (origLex[lg] || {})[n];
+    if(!lx) return '';
+    const defFr = lg === 'heb' && hebLexFr && hebLexFr[n];
+    return '<div class="lex-carte">'
+      + '<div class="lex-tete"><span class="lex-mot"'+(lg==='heb'?' dir="rtl"':'')+'>'+esc(lx[3] || '')+'</span><span class="lex-lg">'+(lg==='heb'?'HÉBREU':'GREC')+' · '+s+'</span></div>'
+      + '<div class="lex-pron">'+esc(lx[0])+'</div>'
+      + (lx[4] && lx[4].length ? '<div><b>Traduit dans Segond par :</b> '+esc(lx[4].join(', '))+'</div>' : '')
+      + (defFr ? '<div><b>Signification :</b> '+esc(defFr)+'</div>' : (lx[1] ? '<div><b>Signification (Strong, anglais) :</b> '+esc(lx[1])+'</div>' : ''))
+      + (lx[5] ? '<div class="lex-occ">Employé '+lx[5]+' fois dans '+(lg==='heb'?"l'Ancien":'le Nouveau')+' Testament</div>' : '')
+      + '</div>';
+  }).join('');
 }

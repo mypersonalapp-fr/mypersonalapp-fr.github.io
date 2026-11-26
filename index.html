@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=61">
+<link rel="stylesheet" href="style.css?v=62">
 </head>
 <body>
 
@@ -157,7 +157,10 @@
     <h1 id="topGreeting" class="top-greeting">Bonjour</h1>
     <div id="topDate" class="top-date"></div>
   </div>
-  <button id="themeToggle" class="theme-toggle" type="button" onclick="basculerJourNuit()" aria-label="Basculer entre jour et nuit">Nuit</button>
+  <div class="top-actions">
+    <button id="themeToggle" class="theme-toggle" type="button" onclick="basculerJourNuit()" aria-label="Basculer entre jour et nuit">Nuit</button>
+    <button class="theme-toggle" type="button" onclick="showPage('parametres')" aria-label="Réglages">Réglages</button>
+  </div>
 </div>
 
 <nav id="bottomNav" class="bottom-nav no-print">
@@ -166,7 +169,7 @@
   <button data-page="objectif" onclick="showPage('objectif')" aria-label="Objectif">Objectif</button>
   <button data-page="plans" onclick="showPage('plans')" aria-label="Thème">Thème</button>
   <button data-page="journal-comprehension" onclick="showPage('journal-comprehension')" aria-label="Notes">Notes</button>
-  <button data-page="parametres" onclick="showPage('parametres')" aria-label="Paramètres">Paramètres</button>
+  <button data-page="lexique" onclick="showPage('lexique')" aria-label="Lexique">Lexique</button>
 </nav>
 
 <!-- Proposé une seule fois, à la toute première ouverture (ou tant qu'on n'a
@@ -230,6 +233,10 @@
   <div class="dcard" id="dcMots" data-groupe="acc">
     <button type="button" class="dcard-tete" onclick="dcToggle('dcMots')"><span id="accMotsTitre">MOT À MOT</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps"><div class="heb-panel verse-heb"><div class="heb-mots" id="verseHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
+  </div>
+  <div class="dcard ferme" id="dcOrig" data-groupe="acc" hidden>
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcOrig')"><span id="accOrigTitre">SENS DANS L'HÉBREU</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="orig-box" id="accOrig"></div></div>
   </div>
   <div class="dcard ferme" id="dcSens" data-groupe="acc">
     <button type="button" class="dcard-tete" onclick="dcToggle('dcSens')"><span>SENS DU VERSET</span><span class="dcard-fl">▾</span></button>
@@ -299,6 +306,10 @@
     <button type="button" class="dcard-tete" onclick="dcToggle('dcbMots')"><span id="bibleMotsTitre">MOT À MOT</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps"><div class="heb-panel" id="bibleHebPanel"><div class="heb-mots" id="bibleHebMots" dir="rtl"></div><div class="heb-detail"></div></div></div>
   </div>
+  <div class="dcard ferme" id="dcbOrig" data-groupe="bib" hidden>
+    <button type="button" class="dcard-tete" onclick="dcToggle('dcbOrig')"><span id="bibleOrigTitre">SENS DANS L'HÉBREU</span><span class="dcard-fl">▾</span></button>
+    <div class="dcard-corps"><div class="orig-box" id="bibleOrig"></div></div>
+  </div>
   <div class="dcard ferme" id="dcbSens" data-groupe="bib">
     <button type="button" class="dcard-tete" onclick="dcToggle('dcbSens')"><span>SENS DU VERSET</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps"><div class="sens-box" id="bibleSens" hidden></div></div>
@@ -334,6 +345,14 @@
     <button type="button" class="dcard-tete" onclick="dcToggle('objHistCard')"><span>VERSETS DÉJÀ APPRIS</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps" id="objHist"></div>
   </div>
+</section>
+
+<!-- LEXIQUE : un mot français -> les mots hébreux / grecs qu'il traduit -->
+<section id="page-lexique" class="page" hidden>
+  <div class="notes-head"><h2 class="notes-titre">Lexique</h2></div>
+  <p class="obj-intro">Cherche un mot français de la Bible : l'appli te montre le mot hébreu ou grec d'origine et sa signification.</p>
+  <input id="lexRecherche" class="notes-search" type="search" placeholder="Ex. amour, créer, paix, grâce…" oninput="lexChercher()" autocomplete="off">
+  <div id="lexResultats"></div>
 </section>
 
 <section id="page-plans" class="page" hidden>
@@ -709,9 +728,9 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="objectif-data.js?v=61"></script>
-<script src="themes-etude.js?v=61"></script>
-<script src="script.js?v=61"></script>
+<script src="objectif-data.js?v=62"></script>
+<script src="themes-etude.js?v=62"></script>
+<script src="script.js?v=62"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

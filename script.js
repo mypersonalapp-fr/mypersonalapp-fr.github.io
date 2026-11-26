@@ -85,7 +85,7 @@ function verseVersionLinks(ref){
     { label:'Parole de Vie', url:'https://www.bible.com/bible/133/'+loc+'.PDV2017' },
     { label:'Amplified (EN)', url:'https://www.bible.com/bible/1588/'+loc+'.AMP' }
   ];
-  return links;
+  return []; // liens vers des Bibles hors de l'appli retirés
 }
 const TOTAL_CHAPTERS = Object.values(chapters).reduce((a,b)=>a+b,0); // 1189
 

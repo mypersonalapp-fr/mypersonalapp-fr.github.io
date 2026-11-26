@@ -4175,7 +4175,7 @@ function lexAfficher(){
   racines.forEach(r=>FINS.forEach(f=>{ const t = r + f; if(t !== q && lexIndex[t]) ajouter(t, 0.9); }));
   const liste = Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0, 8);
   if(!liste.length){ box.innerHTML = '<div class="empty">Aucun mot trouvé. Essaie une autre forme (ex. « aimer » ou « amour »).</div>'; return; }
-  box.innerHTML = '<div class="lex-sous">Mots hébreux et grecs traduits par « '+lexEsc(q)+' »</div>' + liste.map(([s])=>lexCarteHtml(s)).join('');
+  box.innerHTML = lexCompteHtml(q, racines, FINS) + '<div class="lex-sous">Mots hébreux et grecs traduits par « '+lexEsc(q)+' »</div>' + liste.map(([s])=>lexCarteHtml(s)).join('');
 }
 function lexEsc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 function lexCarteHtml(s, avant){
@@ -4190,6 +4190,7 @@ function lexCarteHtml(s, avant){
       + (lx[4] && lx[4].length ? '<div><b>Traduit dans Segond par :</b> '+esc(lx[4].join(', '))+'</div>' : '')
       + (defFr ? '<div><b>Signification :</b> '+esc(defFr)+'</div>' : (lx[1] ? '<div><b>Signification (Strong, anglais) :</b> '+esc(lx[1])+'</div>' : ''))
       + (lx[5] ? '<div class="lex-occ">Employé '+lx[5]+' fois dans '+(lg==='heb'?"l'Ancien":'le Nouveau')+' Testament</div>' : '')
+      + '<button type="button" class="lex-refs-btn" onclick="lexVoirRefs(this,\''+s+'\')">Voir les passages ▾</button><div class="lex-refs" hidden></div>'
       + '</div>';
   }
 }
@@ -4259,3 +4260,67 @@ function lexAfficherContexte(){
   box.hidden = false;
 }
 function lexRetour(){ lexContexte = null; showPage(lexPageRetour || 'bible'); }
+
+
+/* =========================================================================
+   LEXIQUE — nombre d'emplois d'un mot français dans Segond, et liste des
+   passages où se trouve chaque mot hébreu/grec (bible/heb|grc/refs.json :
+   numéro Strong -> index des versets en base 36 ; bible/lexique/base.json :
+   index du premier verset de chaque chapitre).
+   ========================================================================= */
+let lexCompte = null, lexBase = null; const lexRefs = {};
+function lexCompteHtml(q, racines, FINS){
+  if(!lexCompte){ fetch('bible/lexique/fr-compte.json').then(r=>r.json()).then(x=>{ lexCompte = x; lexAfficher(); }).catch(()=>{}); return ''; }
+  const exact = lexCompte[q] || 0;
+  const proches = [];
+  racines.forEach(r=>FINS.forEach(f=>{ const t = r + f; if(t !== q && lexCompte[t] && !proches.find(x=>x[0]===t)) proches.push([t, lexCompte[t]]); }));
+  proches.sort((a,b)=>b[1]-a[1]);
+  if(!exact && !proches.length) return '';
+  return '<div class="lex-compte"><b>« '+lexEsc(q)+' »</b> apparaît <b>'+exact+' fois</b> dans la Bible (Segond)'
+    + (proches.length ? '<div class="lex-proches">Formes proches : '+proches.slice(0,6).map(x=>lexEsc(x[0])+' ('+x[1]+')').join(', ')+'</div>' : '') + '</div>';
+}
+function lexPosition(g){
+  // index global -> [livre, chapitre, verset] (1-based pour chapitre et verset)
+  for(let l = lexBase.length - 1; l >= 0; l--){
+    if(g >= lexBase[l][0]){
+      const ch = lexBase[l]; let c = ch.length - 1;
+      while(c > 0 && ch[c] > g) c--;
+      return [l, c+1, g - ch[c] + 1];
+    }
+  }
+  return [0,1,1];
+}
+function lexVoirRefs(btn, s){
+  const box = btn.nextElementSibling;
+  if(!box.hidden){ box.hidden = true; btn.textContent = 'Voir les passages ▾'; return; }
+  const lg = s[0] === 'H' ? 'heb' : 'grc', n = s.slice(1);
+  btn.textContent = 'Chargement…';
+  Promise.all([
+    lexBase ? Promise.resolve(1) : fetch('bible/lexique/base.json').then(r=>r.json()).then(x=>{ lexBase = x; }),
+    lexRefs[lg] ? Promise.resolve(1) : fetch('bible/'+lg+'/refs.json').then(r=>r.json()).then(x=>{ lexRefs[lg] = x; })
+  ]).then(()=>{
+    const liste = (lexRefs[lg][n] || '').split(' ').filter(Boolean).map(x=>lexPosition(parseInt(x,36)));
+    box.dataset.max = 60;
+    box._liste = liste;
+    lexRendreRefs(box);
+    box.hidden = false;
+    btn.textContent = 'Masquer les ' + liste.length + ' passages ▴';
+  }).catch(()=>{ btn.textContent = 'Voir les passages ▾'; });
+}
+function lexRendreRefs(box){
+  const liste = box._liste || [], max = parseInt(box.dataset.max, 10);
+  const groupes = [];
+  liste.slice(0, max).forEach(([l,c,v])=>{
+    let g = groupes[groupes.length-1];
+    if(!g || g.l !== l){ g = { l, refs: [] }; groupes.push(g); }
+    g.refs.push('<a href="#" onclick="lexAllerVerset('+l+','+c+','+v+');return false;">'+c+':'+v+'</a>');
+  });
+  box.innerHTML = '<div class="lex-refs-total">'+liste.length+' verset'+(liste.length>1?'s':'')+'</div>'
+    + groupes.map(g=>'<div class="lex-refs-livre"><b>'+lexEsc(BIBLE_LIVRES[g.l])+'</b> '+g.refs.join(' · ')+'</div>').join('')
+    + (liste.length > max ? '<button type="button" class="lex-refs-plus" onclick="this.parentNode.dataset.max = parseInt(this.parentNode.dataset.max,10) + 100; lexRendreRefs(this.parentNode)">Voir plus ('+(liste.length - max)+' restants)</button>' : '');
+}
+function lexAllerVerset(l, c, v){
+  lexPageRetour = 'lexique';
+  showPage('bible');
+  bibleL = l; bibleC = c; bibleV = v; bibleRendre();
+}

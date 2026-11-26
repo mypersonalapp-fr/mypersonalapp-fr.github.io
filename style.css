@@ -1392,3 +1392,14 @@ body[data-bg="nuit"] .lx sup{ color:var(--accent); }
 .bible-fleches button:disabled{ opacity:.35; cursor:default; }
 .bible-fleches span{ flex:none; min-width:84px; text-align:center; font:700 12px "Manrope",sans-serif; color:var(--muted); }
 body[data-bg="nuit"] .bible-fleches button{ background:var(--accent); color:#000; }
+/* Lexique : compteur et passages */
+.lex-compte{ background:var(--cream); border-radius:18px; padding:12px 16px; margin:8px 0 10px; font-size:15px; }
+.lex-proches{ font-size:13px; color:var(--muted); margin-top:4px; }
+.lex-refs-btn, .lex-refs-plus{ margin-top:10px; border:none; background:var(--page); color:var(--text-dark); border-radius:16px; height:34px; padding:0 14px; font:700 13px "Manrope",sans-serif; cursor:pointer; }
+.lex-refs{ margin-top:10px; font-size:14px; line-height:1.7; }
+.lex-refs-total{ font:800 11px "Manrope",sans-serif; letter-spacing:.08em; color:var(--muted); text-transform:uppercase; margin-bottom:4px; }
+.lex-refs-livre{ margin-bottom:6px; }
+.lex-refs a{ color:var(--text-dark); text-decoration:underline dotted; }
+body[data-bg="nuit"] .lex-compte{ background:#121212; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .lex-refs-btn, body[data-bg="nuit"] .lex-refs-plus{ background:#1D1D1D; border:1px solid #2B2B2B; }
+body[data-bg="nuit"] .lex-refs a{ color:var(--accent); }

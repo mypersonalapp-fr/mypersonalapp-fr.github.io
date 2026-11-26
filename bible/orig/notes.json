@@ -1,69 +1,1004 @@
 {
 "17:1:1": [
- {"fr":"intègre","heb":"תָּם","tr":"tam","note":"Le mot ne veut pas dire « sans péché », mais complet, entier, d'une seule pièce : Job n'a pas deux visages, il est le même devant Dieu, devant les hommes et en privé. C'est la même racine que Dieu emploie avec Abraham : « Marche devant ma face, et sois intègre (tamim) » (Genèse 17:1), et pour Noé, « juste et intègre dans son temps » (Genèse 6:9). Job lui-même reconnaîtra plus loin qu'il est pécheur (Job 7:21) : son intégrité est un cœur entier tourné vers Dieu."},
- {"fr":"droit","heb":"יָשָׁר","tr":"yashar","note":"Droit comme une ligne tendue, sans détour. Le mot décrit une conduite qui ne dévie pas : ce que Job fait correspond à ce que Dieu dit. C'est l'opposé de « tortueux » (Proverbes 2:13-15). Le livre du Juste (Josué 10:13) porte le même nom : « Yashar »."},
- {"fr":"craignait Dieu","heb":"וִירֵא אֱלֹהִים","tr":"wiyre Elohim","note":"En hébreu, c'est un participe : « craignant Dieu ». Ce n'est pas une crainte d'un jour, c'est l'état permanent de sa vie. La crainte de Dieu n'est pas la peur qui fuit, mais le respect profond qui fait prendre Dieu au sérieux en tout. La Bible en fait le point de départ de la sagesse : « La crainte de l'Éternel est le commencement de la sagesse » (Proverbes 9:10), et le livre de Job le redit : « Voici, la crainte du Seigneur, c'est la sagesse » (Job 28:28)."},
- {"fr":"se détournait du mal","heb":"וְסָר מֵרָע","tr":"wesar mera","note":"Encore un participe : « se détournant du mal », une habitude constante, pas un acte isolé. Le verbe sur veut dire s'écarter, faire un pas de côté : Job ne flirte pas avec le mal, il s'en éloigne dès qu'il le voit. Les deux vont ensemble, comme dans Proverbes 3:7 : « Crains l'Éternel, et détourne-toi du mal. » La crainte de Dieu se voit dans ce qu'on fuit."},
- {"fr":"ensemble","heb":"","tr":"","note":"Dieu reprend exactement ces quatre qualités pour décrire Job au ciel (Job 1:8 ; 2:3). C'est le témoignage de Dieu lui-même sur cet homme : c'est pour cela que Satan va l'attaquer, et que sa fidélité dans l'épreuve aura tant de poids."}
+{
+"fr": "intègre",
+"heb": "תָּם",
+"tr": "tam",
+"note": "Le mot ne veut pas dire « sans péché », mais complet, entier, d'une seule pièce : Job n'a pas deux visages, il est le même devant Dieu, devant les hommes et en privé. C'est la même racine que Dieu emploie avec Abraham : « Marche devant ma face, et sois intègre (tamim) » (Genèse 17:1), et pour Noé, « juste et intègre dans son temps » (Genèse 6:9). Job lui-même reconnaîtra plus loin qu'il est pécheur (Job 7:21) : son intégrité est un cœur entier tourné vers Dieu."
+},
+{
+"fr": "droit",
+"heb": "יָשָׁר",
+"tr": "yashar",
+"note": "Droit comme une ligne tendue, sans détour. Le mot décrit une conduite qui ne dévie pas : ce que Job fait correspond à ce que Dieu dit. C'est l'opposé de « tortueux » (Proverbes 2:13-15). Le livre du Juste (Josué 10:13) porte le même nom : « Yashar »."
+},
+{
+"fr": "craignait Dieu",
+"heb": "וִירֵא אֱלֹהִים",
+"tr": "wiyre Elohim",
+"note": "En hébreu, c'est un participe : « craignant Dieu ». Ce n'est pas une crainte d'un jour, c'est l'état permanent de sa vie. La crainte de Dieu n'est pas la peur qui fuit, mais le respect profond qui fait prendre Dieu au sérieux en tout. La Bible en fait le point de départ de la sagesse : « La crainte de l'Éternel est le commencement de la sagesse » (Proverbes 9:10), et le livre de Job le redit : « Voici, la crainte du Seigneur, c'est la sagesse » (Job 28:28)."
+},
+{
+"fr": "se détournait du mal",
+"heb": "וְסָר מֵרָע",
+"tr": "wesar mera",
+"note": "Encore un participe : « se détournant du mal », une habitude constante, pas un acte isolé. Le verbe sur veut dire s'écarter, faire un pas de côté : Job ne flirte pas avec le mal, il s'en éloigne dès qu'il le voit. Les deux vont ensemble, comme dans Proverbes 3:7 : « Crains l'Éternel, et détourne-toi du mal. » La crainte de Dieu se voit dans ce qu'on fuit."
+},
+{
+"fr": "ensemble",
+"heb": "",
+"tr": "",
+"note": "Dieu reprend exactement ces quatre qualités pour décrire Job au ciel (Job 1:8 ; 2:3). C'est le témoignage de Dieu lui-même sur cet homme : c'est pour cela que Satan va l'attaquer, et que sa fidélité dans l'épreuve aura tant de poids."
+}
 ],
 "0:1:1": [
- {"fr":"Au commencement","heb":"בְּרֵאשִׁית","tr":"bereshit","note":"Le premier mot de la Bible. Il n'y a pas d'article : littéralement « en commencement ». Le temps lui-même commence ici, Dieu est déjà là. Le mot vient de rosh, la tête : ce qui vient en premier. Jean ouvre son Évangile par les mêmes mots (Jean 1:1)."},
- {"fr":"créa","heb":"בָּרָא","tr":"bara","note":"Ce verbe est employé seulement pour Dieu dans toute la Bible hébraïque : jamais un homme ne « bara ». L'homme fabrique avec ce qui existe ; Dieu fait exister ce qui n'existait pas (Hébreux 11:3)."},
- {"fr":"Dieu","heb":"אֱלֹהִים","tr":"Elohim","note":"La forme du mot est un pluriel, mais le verbe « créa » est au singulier : un seul Dieu, dont la plénitude dépasse ce qu'un singulier peut dire. Le Nouveau Testament révèle ce Dieu unique Père, Fils et Saint-Esprit, tous présents à la création (Jean 1:3 ; Genèse 1:2)."},
- {"fr":"les cieux et la terre","heb":"אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ","tr":"et hashamayim we'et ha'arets","note":"En hébreu, nommer les deux extrêmes veut dire « tout » : le ciel, la terre et tout ce qu'il y a entre eux. Rien n'échappe à l'œuvre de Dieu."}
+{
+"fr": "Au commencement",
+"heb": "בְּרֵאשִׁית",
+"tr": "bereshit",
+"note": "Le premier mot de la Bible. Il n'y a pas d'article : littéralement « en commencement ». Le temps lui-même commence ici, Dieu est déjà là. Le mot vient de rosh, la tête : ce qui vient en premier. Jean ouvre son Évangile par les mêmes mots (Jean 1:1)."
+},
+{
+"fr": "créa",
+"heb": "בָּרָא",
+"tr": "bara",
+"note": "Ce verbe est employé seulement pour Dieu dans toute la Bible hébraïque : jamais un homme ne « bara ». L'homme fabrique avec ce qui existe ; Dieu fait exister ce qui n'existait pas (Hébreux 11:3)."
+},
+{
+"fr": "Dieu",
+"heb": "אֱלֹהִים",
+"tr": "Elohim",
+"note": "La forme du mot est un pluriel, mais le verbe « créa » est au singulier : un seul Dieu, dont la plénitude dépasse ce qu'un singulier peut dire. Le Nouveau Testament révèle ce Dieu unique Père, Fils et Saint-Esprit, tous présents à la création (Jean 1:3 ; Genèse 1:2)."
+},
+{
+"fr": "les cieux et la terre",
+"heb": "אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ",
+"tr": "et hashamayim we'et ha'arets",
+"note": "En hébreu, nommer les deux extrêmes veut dire « tout » : le ciel, la terre et tout ce qu'il y a entre eux. Rien n'échappe à l'œuvre de Dieu."
+}
 ],
 "0:1:2": [
- {"fr":"informe et vide","heb":"תֹהוּ וָבֹהוּ","tr":"tohu wavohu","note":"Deux mots qui riment : tohu, le désert, ce qui n'a pas de forme ; bohu, le vide. Avant que Dieu parle, il n'y a ni forme ni contenu. Les jours suivants répondent exactement : les jours 1 à 3 donnent la forme (lumière, ciel, mer, terre), les jours 4 à 6 remplissent (astres, poissons, oiseaux, animaux, homme)."},
- {"fr":"l'esprit de Dieu","heb":"רוּחַ אֱלֹהִים","tr":"rouach Elohim","note":"Rouach veut dire à la fois souffle, vent et esprit. C'est l'Esprit de Dieu, déjà présent et actif avant la première parole."},
- {"fr":"se mouvait","heb":"מְרַחֶפֶת","tr":"merahephet","note":"Le même verbe décrit l'aigle qui « voltige sur ses petits » pour les protéger et leur apprendre à voler (Deutéronome 32:11). L'Esprit couve la création comme une mère oiseau, prêt à donner la vie."}
+{
+"fr": "informe et vide",
+"heb": "תֹהוּ וָבֹהוּ",
+"tr": "tohu wavohu",
+"note": "Deux mots qui riment : tohu, le désert, ce qui n'a pas de forme ; bohu, le vide. Avant que Dieu parle, il n'y a ni forme ni contenu. Les jours suivants répondent exactement : les jours 1 à 3 donnent la forme (lumière, ciel, mer, terre), les jours 4 à 6 remplissent (astres, poissons, oiseaux, animaux, homme)."
+},
+{
+"fr": "l'esprit de Dieu",
+"heb": "רוּחַ אֱלֹהִים",
+"tr": "rouach Elohim",
+"note": "Rouach veut dire à la fois souffle, vent et esprit. C'est l'Esprit de Dieu, déjà présent et actif avant la première parole."
+},
+{
+"fr": "se mouvait",
+"heb": "מְרַחֶפֶת",
+"tr": "merahephet",
+"note": "Le même verbe décrit l'aigle qui « voltige sur ses petits » pour les protéger et leur apprendre à voler (Deutéronome 32:11). L'Esprit couve la création comme une mère oiseau, prêt à donner la vie."
+}
 ],
 "0:1:3": [
- {"fr":"Que la lumière soit","heb":"יְהִי אוֹר","tr":"yehi or","note":"Deux mots seulement en hébreu. Le verbe est à la forme du commandement (jussif) : « qu'il soit ». Et aussitôt : « et la lumière fut » (wayehi or), les mêmes mots. Ce que Dieu dit et ce qui arrive sont identiques : rien ne résiste à sa parole (Psaume 33:9)."}
+{
+"fr": "Que la lumière soit",
+"heb": "יְהִי אוֹר",
+"tr": "yehi or",
+"note": "Deux mots seulement en hébreu. Le verbe est à la forme du commandement (jussif) : « qu'il soit ». Et aussitôt : « et la lumière fut » (wayehi or), les mêmes mots. Ce que Dieu dit et ce qui arrive sont identiques : rien ne résiste à sa parole (Psaume 33:9)."
+}
 ],
 "0:1:4": [
- {"fr":"bonne","heb":"טוֹב","tr":"tov","note":"Tov ne veut pas seulement dire « agréable », mais bon, réussi, conforme au but voulu. Dieu évalue son œuvre et l'approuve. Ce mot revient sept fois dans le chapitre, la septième fois avec « très » (verset 31)."},
- {"fr":"sépara","heb":"וַיַּבְדֵּל","tr":"wayavdel","note":"Séparer est l'action clé de la création : lumière et ténèbres, eaux d'en haut et d'en bas, jour et nuit. Plus tard, Dieu appellera son peuple à séparer le pur de l'impur, le saint du profane (Lévitique 10:10). La sainteté commence par cette distinction voulue par Dieu."}
+{
+"fr": "bonne",
+"heb": "טוֹב",
+"tr": "tov",
+"note": "Tov ne veut pas seulement dire « agréable », mais bon, réussi, conforme au but voulu. Dieu évalue son œuvre et l'approuve. Ce mot revient sept fois dans le chapitre, la septième fois avec « très » (verset 31)."
+},
+{
+"fr": "sépara",
+"heb": "וַיַּבְדֵּל",
+"tr": "wayavdel",
+"note": "Séparer est l'action clé de la création : lumière et ténèbres, eaux d'en haut et d'en bas, jour et nuit. Plus tard, Dieu appellera son peuple à séparer le pur de l'impur, le saint du profane (Lévitique 10:10). La sainteté commence par cette distinction voulue par Dieu."
+}
 ],
 "0:1:5": [
- {"fr":"appela","heb":"וַיִּקְרָא","tr":"wayiqra","note":"Donner un nom, c'est exercer son autorité sur ce qu'on nomme. Dieu nomme le jour, la nuit, le ciel, la terre, la mer : ils lui appartiennent. Plus tard, il confiera à Adam de nommer les animaux (Genèse 2:19)."},
- {"fr":"un soir, un matin","heb":"עֶרֶב וּבֹקֶר","tr":"erev uvoqer","note":"La journée biblique commence le soir : d'abord l'obscurité, puis la lumière. C'est pourquoi le sabbat juif commence le vendredi soir. Avec Dieu, l'histoire va toujours des ténèbres vers la lumière."}
+{
+"fr": "appela",
+"heb": "וַיִּקְרָא",
+"tr": "wayiqra",
+"note": "Donner un nom, c'est exercer son autorité sur ce qu'on nomme. Dieu nomme le jour, la nuit, le ciel, la terre, la mer : ils lui appartiennent. Plus tard, il confiera à Adam de nommer les animaux (Genèse 2:19)."
+},
+{
+"fr": "un soir, un matin",
+"heb": "עֶרֶב וּבֹקֶר",
+"tr": "erev uvoqer",
+"note": "La journée biblique commence le soir : d'abord l'obscurité, puis la lumière. C'est pourquoi le sabbat juif commence le vendredi soir. Avec Dieu, l'histoire va toujours des ténèbres vers la lumière."
+}
 ],
 "0:1:6": [
- {"fr":"étendue","heb":"רָקִיעַ","tr":"raqia","note":"Le mot vient d'un verbe qui veut dire battre, étendre en frappant, comme un métal martelé en feuille fine (Exode 39:3). Dieu étend le ciel comme un artisan étend son ouvrage (Ésaïe 40:22)."}
+{
+"fr": "étendue",
+"heb": "רָקִיעַ",
+"tr": "raqia",
+"note": "Le mot vient d'un verbe qui veut dire battre, étendre en frappant, comme un métal martelé en feuille fine (Exode 39:3). Dieu étend le ciel comme un artisan étend son ouvrage (Ésaïe 40:22)."
+}
 ],
 "0:1:11": [
- {"fr":"selon son espèce","heb":"לְמִינוֹ","tr":"lemino","note":"Expression répétée dix fois dans le chapitre. Chaque être vivant porte en lui la semence de sa propre espèce : Dieu a mis un ordre stable dans la vie. Jésus reprend ce principe : « on reconnaît l'arbre à son fruit » (Matthieu 12:33)."}
+{
+"fr": "selon son espèce",
+"heb": "לְמִינוֹ",
+"tr": "lemino",
+"note": "Expression répétée dix fois dans le chapitre. Chaque être vivant porte en lui la semence de sa propre espèce : Dieu a mis un ordre stable dans la vie. Jésus reprend ce principe : « on reconnaît l'arbre à son fruit » (Matthieu 12:33)."
+}
 ],
 "0:1:14": [
- {"fr":"luminaires","heb":"מְאֹרֹת","tr":"me'orot","note":"Littéralement « porteurs de lumière ». Le texte évite volontairement les mots « soleil » et « lune », qui étaient aussi des noms de dieux chez les peuples voisins. Ici, ce ne sont que des lampes placées par Dieu."},
- {"fr":"les époques","heb":"מוֹעֲדִים","tr":"mo'adim","note":"Le même mot désigne les fêtes de l'Éternel, les rendez-vous fixés par Dieu (Lévitique 23:2). Dès la création, Dieu prévoit des temps pour rencontrer son peuple."}
+{
+"fr": "luminaires",
+"heb": "מְאֹרֹת",
+"tr": "me'orot",
+"note": "Littéralement « porteurs de lumière ». Le texte évite volontairement les mots « soleil » et « lune », qui étaient aussi des noms de dieux chez les peuples voisins. Ici, ce ne sont que des lampes placées par Dieu."
+},
+{
+"fr": "les époques",
+"heb": "מוֹעֲדִים",
+"tr": "mo'adim",
+"note": "Le même mot désigne les fêtes de l'Éternel, les rendez-vous fixés par Dieu (Lévitique 23:2). Dès la création, Dieu prévoit des temps pour rencontrer son peuple."
+}
 ],
 "0:1:16": [
- {"fr":"le plus grand luminaire","heb":"הַמָּאוֹר הַגָּדֹל","tr":"hamma'or haggadol","note":"Le soleil n'est même pas nommé : il est simplement « le grand luminaire ». Ce que les nations adoraient n'est qu'une lampe dans la main de Dieu. Et les étoiles sont mentionnées en passant, presque en un mot : « et les étoiles »."}
+{
+"fr": "le plus grand luminaire",
+"heb": "הַמָּאוֹר הַגָּדֹל",
+"tr": "hamma'or haggadol",
+"note": "Le soleil n'est même pas nommé : il est simplement « le grand luminaire ». Ce que les nations adoraient n'est qu'une lampe dans la main de Dieu. Et les étoiles sont mentionnées en passant, presque en un mot : « et les étoiles »."
+}
 ],
 "0:1:20": [
- {"fr":"êtres vivants","heb":"נֶפֶשׁ חַיָּה","tr":"nephesh hayyah","note":"Nephesh, souvent traduit « âme », désigne un être qui respire et qui vit. C'est la première fois que la Bible parle d'êtres animés. Le même mot sera employé pour l'homme quand Dieu soufflera en lui (Genèse 2:7)."}
+{
+"fr": "êtres vivants",
+"heb": "נֶפֶשׁ חַיָּה",
+"tr": "nephesh hayyah",
+"note": "Nephesh, souvent traduit « âme », désigne un être qui respire et qui vit. C'est la première fois que la Bible parle d'êtres animés. Le même mot sera employé pour l'homme quand Dieu soufflera en lui (Genèse 2:7)."
+}
 ],
 "0:1:21": [
- {"fr":"créa","heb":"בָּרָא","tr":"bara","note":"Le verbe bara revient ici pour la deuxième fois : avec la vie animale, quelque chose de vraiment nouveau apparaît. Il reviendra une troisième fois pour l'homme (verset 27)."},
- {"fr":"grands poissons","heb":"הַתַּנִּינִם","tr":"hattanninim","note":"Ces « monstres marins » étaient vus par les peuples anciens comme des puissances du chaos. La Bible les présente comme de simples créatures de Dieu, faites par lui et sous son autorité (Psaume 104:26)."}
+{
+"fr": "créa",
+"heb": "בָּרָא",
+"tr": "bara",
+"note": "Le verbe bara revient ici pour la deuxième fois : avec la vie animale, quelque chose de vraiment nouveau apparaît. Il reviendra une troisième fois pour l'homme (verset 27)."
+},
+{
+"fr": "grands poissons",
+"heb": "הַתַּנִּינִם",
+"tr": "hattanninim",
+"note": "Ces « monstres marins » étaient vus par les peuples anciens comme des puissances du chaos. La Bible les présente comme de simples créatures de Dieu, faites par lui et sous son autorité (Psaume 104:26)."
+}
 ],
 "0:1:22": [
- {"fr":"bénit","heb":"וַיְבָרֶךְ","tr":"wayvarekh","note":"Première bénédiction de la Bible. Bénir (barakh), c'est donner la capacité de vivre et de porter du fruit. Dieu ne se contente pas de créer : il donne à la vie le pouvoir de se transmettre."}
+{
+"fr": "bénit",
+"heb": "וַיְבָרֶךְ",
+"tr": "wayvarekh",
+"note": "Première bénédiction de la Bible. Bénir (barakh), c'est donner la capacité de vivre et de porter du fruit. Dieu ne se contente pas de créer : il donne à la vie le pouvoir de se transmettre."
+}
 ],
 "0:1:26": [
- {"fr":"Faisons","heb":"נַעֲשֶׂה","tr":"na'aseh","note":"Pour la première fois, Dieu se parle au pluriel avant d'agir. Jusque-là, il disait « qu'il y ait » ; ici, il délibère. La création de l'homme est solennelle. Le Nouveau Testament révèle le Dieu unique Père, Fils et Saint-Esprit."},
- {"fr":"image… ressemblance","heb":"צֶלֶם … דְּמוּת","tr":"tselem… demout","note":"Tselem désigne une image, une statue qui représente : dans l'Antiquité, un roi plaçait sa statue dans les territoires qu'il gouvernait. L'homme est placé sur la terre comme le représentant de Dieu. Demout ajoute l'idée de ressemblance. Christ est « l'image du Dieu invisible » (Colossiens 1:15)."},
- {"fr":"qu'il domine","heb":"וְיִרְדּוּ","tr":"weyirdou","note":"Radah veut dire gouverner, avoir autorité. C'est un pouvoir délégué : l'homme gouverne au nom de Dieu et lui rend des comptes."}
+{
+"fr": "Faisons",
+"heb": "נַעֲשֶׂה",
+"tr": "na'aseh",
+"note": "Pour la première fois, Dieu se parle au pluriel avant d'agir. Jusque-là, il disait « qu'il y ait » ; ici, il délibère. La création de l'homme est solennelle. Le Nouveau Testament révèle le Dieu unique Père, Fils et Saint-Esprit."
+},
+{
+"fr": "image… ressemblance",
+"heb": "צֶלֶם … דְּמוּת",
+"tr": "tselem… demout",
+"note": "Tselem désigne une image, une statue qui représente : dans l'Antiquité, un roi plaçait sa statue dans les territoires qu'il gouvernait. L'homme est placé sur la terre comme le représentant de Dieu. Demout ajoute l'idée de ressemblance. Christ est « l'image du Dieu invisible » (Colossiens 1:15)."
+},
+{
+"fr": "qu'il domine",
+"heb": "וְיִרְדּוּ",
+"tr": "weyirdou",
+"note": "Radah veut dire gouverner, avoir autorité. C'est un pouvoir délégué : l'homme gouverne au nom de Dieu et lui rend des comptes."
+}
 ],
 "0:1:27": [
- {"fr":"créa","heb":"בָּרָא","tr":"bara","note":"Trois fois dans ce seul verset : la création de l'homme est le sommet de l'œuvre de Dieu, le seul endroit où le texte devient poème."},
- {"fr":"l'homme et la femme","heb":"זָכָר וּנְקֵבָה","tr":"zakhar ouneqevah","note":"Littéralement « mâle et femelle ». Les deux ensemble portent l'image de Dieu. Jésus cite ce verset pour fonder le mariage (Matthieu 19:4)."}
+{
+"fr": "créa",
+"heb": "בָּרָא",
+"tr": "bara",
+"note": "Trois fois dans ce seul verset : la création de l'homme est le sommet de l'œuvre de Dieu, le seul endroit où le texte devient poème."
+},
+{
+"fr": "l'homme et la femme",
+"heb": "זָכָר וּנְקֵבָה",
+"tr": "zakhar ouneqevah",
+"note": "Littéralement « mâle et femelle ». Les deux ensemble portent l'image de Dieu. Jésus cite ce verset pour fonder le mariage (Matthieu 19:4)."
+}
 ],
 "0:1:28": [
- {"fr":"assujettissez","heb":"וְכִבְשֻׁהָ","tr":"wekhivshouha","note":"Kavash veut dire soumettre, mettre en ordre. La mission confiée à l'homme est de mettre en valeur la terre que Dieu lui donne, comme un intendant fidèle (Psaume 8:6-8)."}
+{
+"fr": "assujettissez",
+"heb": "וְכִבְשֻׁהָ",
+"tr": "wekhivshouha",
+"note": "Kavash veut dire soumettre, mettre en ordre. La mission confiée à l'homme est de mettre en valeur la terre que Dieu lui donne, comme un intendant fidèle (Psaume 8:6-8)."
+}
 ],
 "0:1:31": [
- {"fr":"très bon","heb":"טוֹב מְאֹד","tr":"tov me'od","note":"Après six « c'était bon », le septième jugement est « très bon ». Quand l'homme est là et que tout est en place, l'œuvre est complète. Le mal n'est pas sorti de la main de Dieu : il entrera par la désobéissance (Genèse 3)."}
+{
+"fr": "très bon",
+"heb": "טוֹב מְאֹד",
+"tr": "tov me'od",
+"note": "Après six « c'était bon », le septième jugement est « très bon ». Quand l'homme est là et que tout est en place, l'œuvre est complète. Le mal n'est pas sorti de la main de Dieu : il entrera par la désobéissance (Genèse 3)."
+}
+],
+"0:2:2": [
+{
+"fr": "se reposa",
+"heb": "וַיִּשְׁבֹּת",
+"tr": "wayyishbot",
+"note": "Le verbe shavat veut dire cesser, s'arrêter : c'est de lui que vient le mot « sabbat ». Dieu ne se repose pas parce qu'il est fatigué (Ésaïe 40:28), mais parce que son œuvre est achevée. Le repos de Dieu est celui de l'œuvre finie, et Hébreux 4:9-10 l'annonce pour le peuple de Dieu : entrer dans son repos, c'est se reposer de ses œuvres, comme Dieu des siennes."
+}
+],
+"0:2:3": [
+{
+"fr": "sanctifia",
+"heb": "וַיְקַדֵּשׁ",
+"tr": "wayqaddesh",
+"note": "Qadash veut dire mettre à part pour Dieu. La première chose que Dieu sanctifie dans la Bible n'est ni un lieu ni un objet, mais un temps : le septième jour. Dieu réserve du temps pour la relation avec lui avant même de donner un temple."
+}
+],
+"0:2:4": [
+{
+"fr": "l'Éternel Dieu",
+"heb": "יְהוָה אֱלֹהִים",
+"tr": "YHWH Elohim",
+"note": "Ici apparaît pour la première fois le nom propre de Dieu, YHWH, que Segond rend par « l'Éternel ». Il est lié au verbe « être » : « Je suis celui qui suis » (Exode 3:14). Elohim dit le Créateur tout-puissant ; YHWH dit le Dieu qui entre en relation et fait alliance. Les deux ensemble : le Créateur de l'univers est aussi le Dieu personnel de l'homme."
+}
+],
+"0:2:7": [
+{
+"fr": "forma",
+"heb": "וַיִּיצֶר",
+"tr": "wayyitser",
+"note": "Yatsar est le verbe du potier qui façonne l'argile de ses mains (Jérémie 18:4-6). Dieu ne crée pas l'homme d'une parole à distance, comme la lumière : il le façonne avec soin, de près."
+},
+{
+"fr": "homme… poussière… terre",
+"heb": "אָדָם … עָפָר … אֲדָמָה",
+"tr": "adam… afar… adamah",
+"note": "Jeu de mots : adam (l'homme) est tiré de l'adamah (le sol). Son nom rappelle d'où il vient et à quoi il retournera : « tu es poussière, et tu retourneras dans la poussière » (Genèse 3:19)."
+},
+{
+"fr": "souffle de vie",
+"heb": "נִשְׁמַת חַיִּים",
+"tr": "nishmat hayyim",
+"note": "Dieu souffle lui-même dans les narines de l'homme. L'homme n'est pas seulement de la terre animée : il vit du souffle de Dieu. Job dira : « L'esprit de Dieu m'a créé, et le souffle du Tout-Puissant m'anime » (Job 33:4). Jésus ressuscité soufflera sur ses disciples en disant : « Recevez le Saint-Esprit » (Jean 20:22)."
+},
+{
+"fr": "un être vivant",
+"heb": "לְנֶפֶשׁ חַיָּה",
+"tr": "lenephesh hayyah",
+"note": "L'homme ne reçoit pas une âme comme un objet : il devient une âme vivante, une personne entière, corps et souffle unis."
+}
+],
+"0:2:8": [
+{
+"fr": "jardin en Éden",
+"heb": "גַּן בְּעֵדֶן",
+"tr": "gan be'Eden",
+"note": "Éden veut dire délice. Le jardin (gan, un lieu clos et protégé) est le lieu où Dieu se promène et rencontre l'homme (Genèse 3:8). La traduction grecque a rendu « jardin » par paradeisos, d'où vient « paradis » (Luc 23:43)."
+}
+],
+"0:2:9": [
+{
+"fr": "l'arbre de vie",
+"heb": "עֵץ הַחַיִּים",
+"tr": "ets hahayyim",
+"note": "L'arbre de vie représente la vie donnée par Dieu, en communion avec lui. L'homme en sera éloigné après la chute (Genèse 3:22-24), et il réapparaît à la dernière page de la Bible, dans la cité de Dieu, accessible de nouveau (Apocalypse 22:2)."
+},
+{
+"fr": "la connaissance du bien et du mal",
+"heb": "הַדַּעַת טוֹב וָרָע",
+"tr": "hadda'at tov wara",
+"note": "En hébreu, « connaître » veut aussi dire faire l'expérience, et « bien et mal » peut désigner tout. Manger de cet arbre, c'était prétendre décider soi-même ce qui est bien et ce qui est mal, à la place de Dieu."
+}
+],
+"0:2:15": [
+{
+"fr": "cultiver et garder",
+"heb": "לְעָבְדָהּ וּלְשָׁמְרָהּ",
+"tr": "le'ovdah oulshomrah",
+"note": "Avad veut dire travailler, servir, et aussi rendre un culte ; shamar veut dire garder, veiller, et aussi observer les commandements. Ce sont les deux verbes du service des Lévites au tabernacle (Nombres 3:7-8). Le travail de l'homme dans le jardin est déjà un service rendu à Dieu, avant la chute."
+}
+],
+"0:2:17": [
+{
+"fr": "tu mourras",
+"heb": "מוֹת תָּמוּת",
+"tr": "mot tamout",
+"note": "Littéralement « mourir, tu mourras » : la répétition marque la certitude. Le jour de la désobéissance, l'homme n'est pas tombé mort physiquement, mais la mort est entrée : la rupture avec Dieu, la source de la vie, puis la mort du corps (Romains 5:12 ; Éphésiens 2:1)."
+}
+],
+"0:2:18": [
+{
+"fr": "pas bon",
+"heb": "לֹא־טוֹב",
+"tr": "lo tov",
+"note": "Après sept « c'était bon » au chapitre 1, voici le premier « pas bon » de la Bible : que l'homme soit seul. Ce n'est pas encore le péché, c'est un manque dans la création, que Dieu va combler."
+},
+{
+"fr": "une aide semblable à lui",
+"heb": "עֵזֶר כְּנֶגְדּוֹ",
+"tr": "ezer kenegdo",
+"note": "Ezer, l'aide, n'est pas un mot d'infériorité : il est employé surtout pour Dieu lui-même, « mon secours (ezer) vient de l'Éternel » (Psaume 121:2). Kenegdo veut dire littéralement « comme en face de lui » : un vis-à-vis qui lui correspond, égal et différent."
+}
+],
+"0:2:22": [
+{
+"fr": "côte",
+"heb": "צֵלָע",
+"tr": "tsela",
+"note": "Le mot désigne un côté, comme le côté d'un édifice ou de l'arche de l'alliance (Exode 25:12). La femme est tirée du côté de l'homme : ni de sa tête pour dominer, ni de ses pieds pour être foulée, mais de son côté, pour être à ses côtés."
+},
+{
+"fr": "forma",
+"heb": "וַיִּבֶן",
+"tr": "wayyiven",
+"note": "Pour la femme, le texte emploie banah, bâtir, construire, le verbe utilisé pour une maison ou le temple. Dieu « bâtit » la femme avec soin, comme une œuvre d'architecture."
+}
+],
+"0:2:23": [
+{
+"fr": "femme… homme",
+"heb": "אִשָּׁה … אִישׁ",
+"tr": "ishah… ish",
+"note": "Les premiers mots d'homme rapportés par la Bible sont un poème de joie. Jeu de mots : ishah (la femme) vient de ish (l'homme). Ils portent presque le même nom, ils sont faits l'un pour l'autre."
+}
+],
+"0:2:24": [
+{
+"fr": "s'attachera",
+"heb": "וְדָבַק",
+"tr": "wedavaq",
+"note": "Davaq veut dire coller, être soudé. Le même verbe décrit l'attachement à Dieu : « tu t'attacheras à lui » (Deutéronome 10:20), et l'attachement de Ruth à Naomi (Ruth 1:14). Le mariage est une alliance qui soude deux vies."
+},
+{
+"fr": "une seule chair",
+"heb": "לְבָשָׂר אֶחָד",
+"tr": "levasar ehad",
+"note": "Ehad, « un », est le même mot que dans « l'Éternel est un » (Deutéronome 6:4) : une unité faite de deux personnes distinctes. Jésus cite ce verset (Matthieu 19:5) et Paul y voit l'image de Christ et de l'Église (Éphésiens 5:31-32)."
+}
+],
+"0:2:25": [
+{
+"fr": "nus… n'en avaient point honte",
+"heb": "עֲרוּמִּים … וְלֹא יִתְבֹּשָׁשׁוּ",
+"tr": "aroummim… welo yitboshashou",
+"note": "Ils n'avaient rien à cacher, ni à Dieu ni l'un à l'autre. Le mot aroum (nu) prépare le verset suivant, où le serpent est « 'aroum », rusé : en hébreu, les deux mots se ressemblent. L'innocence va rencontrer la ruse."
+}
+],
+"0:3:1": [
+{
+"fr": "rusé",
+"heb": "עָרוּם",
+"tr": "aroum",
+"note": "Le serpent est habile, subtil. Paul dira que le serpent « séduisit Ève par sa ruse » et met en garde contre la même séduction des pensées (2 Corinthiens 11:3). L'Apocalypse l'identifie : « le serpent ancien, appelé le diable et Satan » (Apocalypse 12:9)."
+},
+{
+"fr": "Dieu a-t-il réellement dit",
+"heb": "אַף כִּי־אָמַר אֱלֹהִים",
+"tr": "af ki amar Elohim",
+"note": "La première attaque n'est pas un ordre de pécher, mais une question qui sème le doute sur la parole de Dieu. Remarque : le serpent ne dit pas « l'Éternel » (YHWH, le Dieu de la relation), il dit seulement « Dieu ». Il déforme aussi le commandement : Dieu avait donné tous les arbres sauf un, le serpent parle comme si Dieu avait tout interdit."
+}
+],
+"0:3:4": [
+{
+"fr": "vous ne mourrez point",
+"heb": "לֹא־מוֹת תְּמֻתוּן",
+"tr": "lo mot temoutoun",
+"note": "Le serpent reprend exactement les mots de Dieu, « mourir, tu mourras » (2:17), en y ajoutant « non ». C'est le premier mensonge de l'histoire. Jésus appelle le diable « menteur et le père du mensonge » (Jean 8:44)."
+}
+],
+"0:3:5": [
+{
+"fr": "comme des dieux",
+"heb": "כֵּאלֹהִים",
+"tr": "kelohim",
+"note": "L'homme était déjà fait à l'image de Dieu (1:27). La tentation propose d'être comme Dieu sans Dieu, en décidant soi-même du bien et du mal. Christ fait l'inverse : lui qui était Dieu « s'est dépouillé lui-même » et s'est fait serviteur (Philippiens 2:6-7)."
+}
+],
+"0:3:6": [
+{
+"fr": "vit… agréable… précieux",
+"heb": "",
+"tr": "",
+"note": "Trois étapes : l'arbre est bon à manger (le corps), agréable à la vue (les yeux), précieux pour ouvrir l'intelligence (l'orgueil). Jean les nommera « la convoitise de la chair, la convoitise des yeux et l'orgueil de la vie » (1 Jean 2:16). Jésus a été tenté au désert sur ces trois mêmes terrains, et il a vaincu par la Parole (Matthieu 4:1-11)."
+},
+{
+"fr": "qui était auprès d'elle",
+"heb": "עִמָּהּ",
+"tr": "immah",
+"note": "Le mot est court mais important : l'homme était « avec elle ». Il était présent, il a tout entendu, et il n'a rien dit. C'est pourquoi la Bible dit que le péché est entré « par un seul homme » (Romains 5:12)."
+}
+],
+"0:3:7": [
+{
+"fr": "leurs yeux s'ouvrirent",
+"heb": "וַתִּפָּקַחְנָה",
+"tr": "wattippaqahnah",
+"note": "Le serpent avait promis que leurs yeux s'ouvriraient (3:5). Ils s'ouvrent, mais sur leur nudité et leur honte, pas sur la grandeur promise. Le péché tient ce qu'il promet de façon tordue."
+},
+{
+"fr": "des ceintures",
+"heb": "חֲגֹרֹת",
+"tr": "hagorot",
+"note": "Les feuilles de figuier sont la première tentative humaine pour couvrir sa honte par ses propres moyens. Elles ne suffiront pas : c'est Dieu qui leur fera des habits de peau (3:21)."
+}
+],
+"0:3:8": [
+{
+"fr": "marchait dans le jardin",
+"heb": "מִתְהַלֵּךְ בַּגָּן",
+"tr": "mithallekh baggan",
+"note": "La forme hébraïque (hithpael) décrit une promenade, une habitude : Dieu venait marcher avec l'homme. Le même verbe est employé pour la présence de Dieu au milieu de son peuple dans le camp d'Israël (Lévitique 26:12)."
+},
+{
+"fr": "se cachèrent",
+"heb": "וַיִּתְחַבֵּא",
+"tr": "wayyithabbe",
+"note": "Le premier effet du péché n'est pas d'abord un remords, c'est la fuite devant Dieu. L'homme qui marchait avec Dieu se cache maintenant de lui."
+}
+],
+"0:3:9": [
+{
+"fr": "Où es-tu ?",
+"heb": "אַיֶּכָּה",
+"tr": "ayyekkah",
+"note": "Un seul mot en hébreu. Dieu sait où est l'homme : la question est un appel, pas une enquête. C'est Dieu qui cherche le pécheur. Jésus résumera sa mission ainsi : « Le Fils de l'homme est venu chercher et sauver ce qui était perdu » (Luc 19:10)."
+}
+],
+"0:3:15": [
+{
+"fr": "inimitié",
+"heb": "אֵיבָה",
+"tr": "eyvah",
+"note": "Dieu met lui-même une hostilité entre le serpent et la femme, entre leurs descendances. Ce n'est pas un conflit que l'homme a choisi, c'est un combat que Dieu engage contre le mal."
+},
+{
+"fr": "postérité",
+"heb": "זֶרַע",
+"tr": "zera",
+"note": "Littéralement « semence » : la descendance. Le texte passe ensuite au singulier : « celle-ci (ou lui) t'écrasera la tête ». Paul souligne ce singulier à propos de la descendance d'Abraham : « il ne dit pas : et aux postérités, mais : à ta postérité, c'est-à-dire à Christ » (Galates 3:16)."
+},
+{
+"fr": "écrasera… blesseras",
+"heb": "יְשׁוּפְךָ … תְּשׁוּפֶנּוּ",
+"tr": "yeshouphekha… teshouphennou",
+"note": "Le même verbe shouf est employé deux fois, mais pas au même endroit : la tête du serpent, blessure mortelle ; le talon du descendant, blessure réelle mais non mortelle. C'est la première annonce de l'Évangile : à la croix, Christ a été blessé, mais il a détruit « celui qui avait la puissance de la mort, c'est-à-dire le diable » (Hébreux 2:14)."
+}
+],
+"0:3:20": [
+{
+"fr": "Ève",
+"heb": "חַוָּה",
+"tr": "Havvah",
+"note": "Le nom vient de hayah, vivre : « la vivante ». Juste après avoir entendu la sentence de mort, Adam donne à sa femme un nom de vie. C'est un acte de foi dans la promesse du verset 15 : la vie continuera, et de sa descendance viendra le vainqueur."
+}
+],
+"0:3:21": [
+{
+"fr": "habits de peau",
+"heb": "כָּתְנוֹת עוֹר",
+"tr": "kotnot or",
+"note": "Pour couvrir leur nudité, il a fallu qu'un animal meure. C'est la première fois que la mort apparaît dans la Bible, et c'est Dieu qui revêt l'homme. Toute la suite le confirme : « sans effusion de sang il n'y a pas de pardon » (Hébreux 9:22), jusqu'à Christ qui nous revêt de sa justice (Ésaïe 61:10 ; Galates 3:27)."
+}
+],
+"0:3:24": [
+{
+"fr": "chérubins",
+"heb": "הַכְּרֻבִים",
+"tr": "hakkerouvim",
+"note": "Les chérubins gardent le chemin de l'arbre de vie. On les retrouvera brodés sur le voile du tabernacle qui fermait l'accès au lieu très saint (Exode 26:31). À la mort de Jésus, ce voile s'est déchiré de haut en bas (Matthieu 27:51) : le chemin vers la présence de Dieu est rouvert."
+}
+],
+"0:4:1": [
+{
+"fr": "connut",
+"heb": "יָדַע",
+"tr": "yada",
+"note": "Le verbe « connaître » désigne ici l'union intime du couple. Pour la Bible, l'union de l'homme et de la femme est une connaissance profonde de la personne, pas seulement un acte physique. Le même verbe dit la relation de Dieu avec les siens : « l'Éternel connaît la voie des justes » (Psaume 1:6)."
+},
+{
+"fr": "Caïn… j'ai formé",
+"heb": "קַיִן … קָנִיתִי",
+"tr": "Qayin… qaniti",
+"note": "Jeu de mots : Caïn sonne comme qanah, acquérir. Ève dit : « J'ai acquis un homme avec l'aide de l'Éternel. » Peut-être espérait-elle que ce premier fils serait le vainqueur promis en 3:15. Mais c'est lui qui deviendra le premier meurtrier."
+}
+],
+"0:4:2": [
+{
+"fr": "Abel",
+"heb": "הֶבֶל",
+"tr": "Hevel",
+"note": "Hevel veut dire souffle, vapeur, buée : c'est le mot de l'Ecclésiaste, « vanité des vanités » (Ecclésiaste 1:2). Son nom annonce une vie courte, comme un souffle. Pourtant, Hébreux dit qu'« il parle encore, quoique mort » (Hébreux 11:4)."
+}
+],
+"0:4:4": [
+{
+"fr": "premiers-nés… graisse",
+"heb": "מִבְּכֹרוֹת … וּמֵחֶלְבֵהֶן",
+"tr": "mibbekhorot… oumehelvehen",
+"note": "Abel donne le premier et le meilleur : les premiers-nés de son troupeau et leur graisse, la part que la loi réservera à Dieu (Lévitique 3:16). Pour Caïn, le texte dit seulement « des fruits de la terre », sans « prémices ». La différence n'est pas d'abord ce qu'ils apportent, mais le cœur : « C'est par la foi qu'Abel offrit un sacrifice plus excellent » (Hébreux 11:4)."
+},
+{
+"fr": "porta un regard favorable",
+"heb": "וַיִּשַׁע",
+"tr": "wayyisha",
+"note": "Shaah veut dire regarder avec attention, se tourner vers. Dieu regarde d'abord la personne (« Abel ») puis son offrande : il agrée l'adorateur avant le don."
+}
+],
+"0:4:7": [
+{
+"fr": "le péché se couche à la porte",
+"heb": "לַפֶּתַח חַטָּאת רֹבֵץ",
+"tr": "lappetah hattat rovets",
+"note": "Première mention du mot « péché » (hattat, manquer la cible) dans la Bible. Il est décrit comme un animal sauvage tapi à l'entrée, prêt à bondir. Le verbe ravats est celui du lion couché qui guette."
+},
+{
+"fr": "ses désirs se portent vers toi, mais toi, domine sur lui",
+"heb": "וְאֵלֶיךָ תְּשׁוּקָתוֹ וְאַתָּה תִּמְשָׁל־בּוֹ",
+"tr": "we'eleykha teshouqato we'attah timshol bo",
+"note": "Le péché veut s'emparer de Caïn, mais Dieu lui dit qu'il peut et doit le dominer. Le péché n'est pas une fatalité. C'est exactement ce que Paul dira : « Que le péché ne règne donc point dans votre corps mortel » (Romains 6:12)."
+}
+],
+"0:4:9": [
+{
+"fr": "Où est ton frère ?",
+"heb": "אֵי הֶבֶל אָחִיךָ",
+"tr": "ey Hevel ahikha",
+"note": "Comme avec Adam (« Où es-tu ? »), Dieu pose une question pour offrir la possibilité de l'aveu. Le mot « frère » revient sept fois dans le récit : le meurtre est d'abord la négation du lien fraternel."
+},
+{
+"fr": "le gardien",
+"heb": "הֲשֹׁמֵר",
+"tr": "hashomer",
+"note": "Caïn emploie le verbe shamar, garder, le même que pour la mission d'Adam de « garder » le jardin (2:15). Sa réponse insolente nie justement la responsabilité que Dieu donne à l'homme : prendre soin des autres. Jean la reprend : « Celui qui n'aime pas son frère demeure dans la mort » (1 Jean 3:14)."
+}
+],
+"0:4:10": [
+{
+"fr": "crie",
+"heb": "צֹעֲקִים",
+"tr": "tso'aqim",
+"note": "Le sang d'Abel « crie » (le même verbe que le cri des opprimés en Égypte, Exode 3:7). Dieu entend la voix de la victime innocente. Hébreux compare ce sang à celui de Jésus, « qui parle mieux que celui d'Abel » (Hébreux 12:24) : le sang d'Abel crie vengeance, celui de Christ crie pardon."
+}
+],
+"0:4:16": [
+{
+"fr": "loin de la face de l'Éternel… Nod",
+"heb": "מִלִּפְנֵי יְהוָה … נוֹד",
+"tr": "millifney YHWH… Nod",
+"note": "Nod veut dire errance, du même mot que « errant » au verset 12. Caïn habite littéralement au pays de l'Errance. S'éloigner de la face de Dieu, c'est entrer dans une vie sans repos."
+}
+],
+"0:4:23": [
+{
+"fr": "chant de Lémec",
+"heb": "",
+"tr": "",
+"note": "C'est le premier poème après la chute, et c'est un chant de vengeance : « J'ai tué un homme pour ma blessure. » Lémec se vante de se venger 77 fois. Jésus prendra le contre-pied exact : pardonner « non pas sept fois, mais soixante-dix fois sept fois » (Matthieu 18:22)."
+}
+],
+"0:4:26": [
+{
+"fr": "invoquer le nom de l'Éternel",
+"heb": "לִקְרֹא בְּשֵׁם יְהוָה",
+"tr": "liqro beshem YHWH",
+"note": "Pendant que la lignée de Caïn s'éloigne de Dieu, la lignée de Seth se tourne vers lui. Enosch veut dire « homme fragile, mortel » : c'est quand l'homme reconnaît sa faiblesse qu'il commence à invoquer Dieu. Abraham « invoquera le nom de l'Éternel » (Genèse 12:8), et Paul : « quiconque invoquera le nom du Seigneur sera sauvé » (Romains 10:13)."
+}
+],
+"0:5:1": [
+{
+"fr": "livre de la postérité",
+"heb": "סֵפֶר תּוֹלְדֹת",
+"tr": "sefer toledot",
+"note": "Toledot (générations, histoire) est le mot qui structure toute la Genèse. Matthieu ouvre son Évangile avec la même formule en grec : « Livre de la généalogie de Jésus-Christ » (Matthieu 1:1), comme pour dire qu'une nouvelle histoire commence."
+}
+],
+"0:5:3": [
+{
+"fr": "à sa ressemblance, selon son image",
+"heb": "בִּדְמוּתוֹ כְּצַלְמוֹ",
+"tr": "bidmouto ketsalmo",
+"note": "Les mêmes mots que pour la création de l'homme à l'image de Dieu (1:26), mais retournés : Seth est à l'image d'Adam. Adam transmet l'image de Dieu, mais aussi sa nature déchue. C'est pourquoi il faudra un nouvel Adam (1 Corinthiens 15:45-49)."
+}
+],
+"0:5:5": [
+{
+"fr": "puis il mourut",
+"heb": "וַיָּמֹת",
+"tr": "wayyamot",
+"note": "Ce refrain revient huit fois dans le chapitre. Les vies sont très longues, mais chacune se termine par ces mots. La sentence de 2:17 s'accomplit : « Il est réservé aux hommes de mourir une seule fois » (Hébreux 9:27)."
+}
+],
+"0:5:24": [
+{
+"fr": "marcha avec Dieu",
+"heb": "וַיִּתְהַלֵּךְ … אֶת־הָאֱלֹהִים",
+"tr": "wayyithallekh et ha'Elohim",
+"note": "La forme du verbe (hithpael) décrit une marche habituelle, une compagnie de tous les jours. C'est le même verbe que pour Dieu qui « parcourait » le jardin (3:8) : Hénoc retrouve ce qu'Adam avait perdu. Le texte le dit deux fois (versets 22 et 24)."
+},
+{
+"fr": "il ne fut plus, parce que Dieu le prit",
+"heb": "וְאֵינֶנּוּ כִּי־לָקַח אֹתוֹ אֱלֹהִים",
+"tr": "we'enennou ki laqah oto Elohim",
+"note": "Dans un chapitre où chacun « mourut », Hénoc est le seul dont la vie ne se termine pas ainsi. Hébreux 11:5 : « C'est par la foi qu'Hénoc fut enlevé pour qu'il ne vît point la mort. » Le même verbe laqah sera employé pour l'enlèvement d'Élie (2 Rois 2:10)."
+}
+],
+"0:5:29": [
+{
+"fr": "Noé… consolera",
+"heb": "נֹחַ … יְנַחֲמֵנוּ",
+"tr": "Noah… yenahamenou",
+"note": "Noé (Noah) sonne comme nouah, se reposer, et Lémec dit : « Celui-ci nous consolera (nahem) de la peine de nos mains, provenant de cette terre que l'Éternel a maudite. » On attend de lui le repos et la consolation après la malédiction. Le vrai repos, c'est Jésus qui le donnera (Matthieu 11:28)."
+}
+],
+"0:6:3": [
+{
+"fr": "ne restera pas",
+"heb": "לֹא־יָדוֹן",
+"tr": "lo yadon",
+"note": "Le mot est rare : il peut vouloir dire « ne contestera pas » ou « ne demeurera pas » avec l'homme. Dieu annonce que sa patience a une limite : 120 ans. Pierre parle de cette patience de Dieu « aux jours de Noé, pendant la construction de l'arche » (1 Pierre 3:20)."
+}
+],
+"0:6:5": [
+{
+"fr": "toutes les pensées de leur cœur… uniquement… chaque jour",
+"heb": "וְכָל־יֵצֶר מַחְשְׁבֹת לִבּוֹ רַק רַע כָּל־הַיּוֹם",
+"tr": "wekhol yetser mahshevot libbo raq ra kol hayyom",
+"note": "Le verset accumule les mots totaux : toutes les pensées, uniquement mauvaises, tout le jour. Yetser (le dessein) vient du verbe yatsar, former, celui du potier en 2:7 : ce que l'homme « façonne » dans son cœur est mauvais. Jésus dira : « Du cœur viennent les mauvaises pensées » (Matthieu 15:19)."
+}
+],
+"0:6:6": [
+{
+"fr": "se repentit… fut affligé",
+"heb": "וַיִּנָּחֶם … וַיִּתְעַצֵּב",
+"tr": "wayyinnahem… wayyit'atstsev",
+"note": "Nahem, « se repentir », est de la même racine que le nom de Noé (consolation). Dieu n'est pas un homme qui change d'avis par erreur (Nombres 23:19) : le texte exprime sa douleur réelle devant le mal. Atsav, « affligé », est le même mot que la « peine » de la femme et de l'homme après la chute (3:16-17) : Dieu souffre du péché de l'homme."
+}
+],
+"0:6:8": [
+{
+"fr": "trouva grâce",
+"heb": "מָצָא חֵן",
+"tr": "matsa hen",
+"note": "Première mention de la grâce (hen, la faveur imméritée) dans la Bible. Noé ne « mérite » pas d'abord : il trouve grâce. En hébreu, « Noé » (נח) et « grâce » (חן) s'écrivent avec les mêmes deux lettres inversées. Le salut commence toujours par la grâce (Éphésiens 2:8)."
+}
+],
+"0:6:9": [
+{
+"fr": "juste… intègre… marchait avec Dieu",
+"heb": "צַדִּיק תָּמִים … הִתְהַלֶּךְ",
+"tr": "tsaddiq tamim… hithallekh",
+"note": "Trois mots : tsaddiq (juste, en règle avec Dieu), tamim (intègre, entier, le même mot que pour Job) et « il marchait avec Dieu », comme Hénoc. La grâce reçue (verset 8) produit une vie juste. « Dans son temps » : au milieu d'une génération corrompue, Noé a vécu autrement."
+}
+],
+"0:6:14": [
+{
+"fr": "arche",
+"heb": "תֵּבָה",
+"tr": "tevah",
+"note": "Tevah ne désigne pas un bateau avec gouvernail, mais un coffre, une caisse. Le même mot n'est utilisé qu'une autre fois dans la Bible : pour la petite corbeille de Moïse sur le Nil (Exode 2:3). Dans les deux cas, Dieu sauve à travers les eaux de mort celui qui est dans la « tevah »."
+},
+{
+"fr": "enduiras de poix",
+"heb": "וְכָפַרְתָּ … בַּכֹּפֶר",
+"tr": "wekhafarta… bakkofer",
+"note": "Kafar veut dire couvrir. C'est le verbe qui deviendra le mot de l'expiation (kippour) : couvrir le péché par le sang du sacrifice (Lévitique 17:11). L'arche couverte protège ceux qui sont dedans du jugement des eaux, comme Christ couvre ceux qui sont en lui."
+}
+],
+"0:6:18": [
+{
+"fr": "mon alliance",
+"heb": "בְרִיתִי",
+"tr": "beriti",
+"note": "Première mention de l'alliance (berit) dans la Bible. Avant le jugement, Dieu s'engage envers Noé. Toute l'histoire du salut sera une histoire d'alliances, jusqu'à la nouvelle alliance dans le sang de Jésus (Luc 22:20)."
+}
+],
+"0:6:22": [
+{
+"fr": "exécuta tout",
+"heb": "כְּכֹל אֲשֶׁר צִוָּה … כֵּן עָשָׂה",
+"tr": "kekhol asher tsiwwah… ken asah",
+"note": "« Selon tout ce que Dieu lui avait ordonné, ainsi il fit. » La formule revient plusieurs fois dans le récit (7:5, 7:9, 7:16). La foi de Noé se voit dans une obéissance complète, sur des années, pour un déluge qu'il n'avait jamais vu (Hébreux 11:7)."
+}
+],
+"0:7:1": [
+{
+"fr": "Entre dans l'arche",
+"heb": "בֹּא",
+"tr": "bo",
+"note": "Le verbe bo veut dire « viens » autant que « entre » : Dieu n'envoie pas Noé dans l'arche, il l'invite à y entrer avec lui. Le verset dit aussi : « je t'ai vu juste devant moi ». Le salut est une invitation de Dieu."
+}
+],
+"0:7:11": [
+{
+"fr": "les sources du grand abîme… les écluses des cieux",
+"heb": "מַעְיְנֹת תְּהוֹם רַבָּה … וַאֲרֻבֹּת הַשָּׁמַיִם",
+"tr": "ma'yenot tehom rabbah… wa'arubbot hashamayim",
+"note": "Tehom, l'abîme, est le mot de Genèse 1:2. Au deuxième jour, Dieu avait séparé les eaux d'en haut et d'en bas ; ici elles se rejoignent. Le déluge est une « dé-création » : le monde revient à l'état d'avant l'ordre. Le jugement défait ce que le péché a corrompu."
+}
+],
+"0:7:16": [
+{
+"fr": "l'Éternel ferma la porte",
+"heb": "וַיִּסְגֹּר יְהוָה בַּעֲדוֹ",
+"tr": "wayyisgor YHWH ba'ado",
+"note": "Ce n'est pas Noé qui ferme, c'est l'Éternel : le salut et sa sécurité viennent de Dieu. Remarque le nom : dans le même verset, « comme Dieu (Elohim) l'avait ordonné », puis « l'Éternel (YHWH) ferma » : le Dieu de l'alliance enferme les siens à l'abri. Jésus dit : « Je suis la porte. Si quelqu'un entre par moi, il sera sauvé » (Jean 10:9), et il parle aussi d'une porte qui sera fermée (Matthieu 25:10)."
+}
+],
+"0:7:23": [
+{
+"fr": "il ne resta que Noé",
+"heb": "וַיִּשָּׁאֶר אַךְ־נֹחַ",
+"tr": "wayyisha'er akh Noah",
+"note": "Le verbe sha'ar donne le mot she'erit, le « reste ». C'est la première fois que la Bible parle du reste que Dieu préserve au milieu du jugement. Ce thème reviendra sans cesse : « un reste reviendra » (Ésaïe 10:21), « il y a un reste, selon l'élection de la grâce » (Romains 11:5)."
+}
+],
+"0:8:1": [
+{
+"fr": "Dieu se souvint",
+"heb": "וַיִּזְכֹּר אֱלֹהִים",
+"tr": "wayyizkor Elohim",
+"note": "Zakhar, se souvenir, ne veut pas dire que Dieu avait oublié. Dans la Bible, quand Dieu « se souvient », il agit en faveur de quelqu'un : il se souvient d'Abraham (19:29), de Rachel (30:22), de son alliance en Égypte (Exode 2:24). C'est le centre exact du récit du déluge : tout bascule ici."
+},
+{
+"fr": "un vent",
+"heb": "רוּחַ",
+"tr": "rouach",
+"note": "Le même mot qu'en Genèse 1:2, où l'Esprit planait sur les eaux. Dieu fait passer son souffle sur la terre couverte d'eau, et une nouvelle création commence."
+}
+],
+"0:8:4": [
+{
+"fr": "s'arrêta",
+"heb": "וַתָּנַח",
+"tr": "wattanah",
+"note": "Le verbe nouah (se reposer) est celui du nom de Noé. L'arche « se reposa » sur les montagnes d'Ararat : la promesse de Lémec, « celui-ci nous consolera » (5:29), commence à s'accomplir."
+}
+],
+"0:8:9": [
+{
+"fr": "ne trouva pas où poser",
+"heb": "מָנוֹחַ",
+"tr": "manoah",
+"note": "Littéralement « un lieu de repos », encore de la même racine que Noé. La colombe ne trouve pas de repos sur une terre encore sous le jugement, et elle revient dans l'arche. Noé « avança la main, la prit » : un geste de tendresse."
+}
+],
+"0:8:11": [
+{
+"fr": "feuille d'olivier",
+"heb": "עֲלֵה־זַיִת טָרָף",
+"tr": "aleh zayit taraf",
+"note": "Une feuille fraîchement arrachée : la vie repousse, le jugement est passé. L'olivier sera ensuite l'arbre de l'huile qui sert à oindre les rois et les prêtres, et le mont des Oliviers sera le lieu où Jésus priera avant la croix."
+}
+],
+"0:8:20": [
+{
+"fr": "autel… holocaustes",
+"heb": "מִזְבֵּחַ … עֹלֹת",
+"tr": "mizbeah… olot",
+"note": "Premier autel de la Bible. Le premier geste de Noé sur la terre purifiée est d'adorer. Olah, l'holocauste, vient du verbe « monter » : l'offrande entière monte vers Dieu en fumée."
+}
+],
+"0:8:21": [
+{
+"fr": "une odeur agréable",
+"heb": "רֵיחַ הַנִּיחֹחַ",
+"tr": "reah hannihoah",
+"note": "Nihoah, « agréable, apaisante », vient encore de la racine de Noé (repos). L'offrande apaise. Paul reprend l'expression pour la croix : « Christ… s'est livré lui-même à Dieu pour nous comme une offrande et un sacrifice de bonne odeur » (Éphésiens 5:2)."
+},
+{
+"fr": "les pensées du cœur de l'homme sont mauvaises",
+"heb": "כִּי יֵצֶר לֵב הָאָדָם רַע",
+"tr": "ki yetser lev ha'adam ra",
+"note": "Surprenant : Dieu donne la même raison qu'en 6:5 pour le jugement, mais cette fois pour ne plus maudire la terre. Le cœur de l'homme n'a pas changé après le déluge. La patience de Dieu ne vient pas de l'amélioration de l'homme, mais de sa grâce, en attendant le vrai remède : un cœur nouveau (Ézéchiel 36:26)."
+}
+],
+"0:8:22": [
+{
+"fr": "tant que la terre subsistera",
+"heb": "עֹד כָּל־יְמֵי הָאָרֶץ",
+"tr": "od kol yemey ha'arets",
+"note": "Huit mots en quatre paires : semailles et moisson, froid et chaleur, été et hiver, jour et nuit. Chaque saison qui revient est un rappel de la fidélité de Dieu (Jérémie 33:20-21)."
+}
+],
+"0:9:1": [
+{
+"fr": "Soyez féconds, multipliez",
+"heb": "פְּרוּ וּרְבוּ",
+"tr": "perou ourevou",
+"note": "Les mêmes mots que la bénédiction d'Adam (1:28). Noé est présenté comme un nouvel Adam : l'humanité recommence avec lui, sous la même bénédiction."
+}
+],
+"0:9:6": [
+{
+"fr": "car Dieu a fait l'homme à son image",
+"heb": "כִּי בְּצֶלֶם אֱלֹהִים עָשָׂה אֶת־הָאָדָם",
+"tr": "ki betselem Elohim asah et ha'adam",
+"note": "La raison de la valeur de la vie humaine n'est pas sociale ou morale, elle est théologique : l'homme porte l'image de Dieu. Le verset est construit en miroir en hébreu : « qui verse le sang de l'homme, par l'homme son sang sera versé ». Même après la chute et le déluge, l'image de Dieu demeure dans chaque homme (Jacques 3:9)."
+}
+],
+"0:9:9": [
+{
+"fr": "j'établis mon alliance",
+"heb": "מֵקִים אֶת־בְּרִיתִי",
+"tr": "meqim et beriti",
+"note": "Le verbe qum (faire tenir debout) au participe : « je suis en train d'établir ». L'alliance avec Noé est faite avec toute l'humanité et même avec tous les animaux (versets 10, 12). C'est une alliance unilatérale : Dieu s'engage, sans condition demandée en retour."
+}
+],
+"0:9:13": [
+{
+"fr": "mon arc",
+"heb": "קַשְׁתִּי",
+"tr": "qashti",
+"note": "Qeshet est le mot ordinaire pour l'arc de guerre. Dieu suspend son arc dans les nuées, tourné vers le ciel et non vers la terre : c'est l'image d'un guerrier qui dépose son arme. Le prophète Ézéchiel voit un arc-en-ciel autour du trône de Dieu (Ézéchiel 1:28), et Jean aussi (Apocalypse 4:3)."
+}
+],
+"0:9:16": [
+{
+"fr": "je me souviendrai",
+"heb": "לִזְכֹּר",
+"tr": "lizkor",
+"note": "L'arc-en-ciel n'est pas d'abord un signe pour l'homme, mais pour Dieu : « je le regarderai pour me souvenir ». Dieu se lie lui-même par un signe visible. C'est la tendresse d'un Dieu qui se donne des rappels de ses propres promesses."
+}
+],
+"0:9:21": [
+{
+"fr": "s'enivra et se découvrit",
+"heb": "וַיִּשְׁכָּר וַיִּתְגַּל",
+"tr": "wayyishkar wayyitgal",
+"note": "Le juste Noé, nouvel Adam, tombe lui aussi, et encore une fois le péché fait apparaître la nudité, comme en Genèse 3. La Bible ne cache pas les fautes de ses héros : aucun homme ne sauve, seul Dieu sauve."
+}
+],
+"0:9:23": [
+{
+"fr": "couvrirent",
+"heb": "וַיְכַסּוּ",
+"tr": "waykhassou",
+"note": "Sem et Japhet marchent à reculons, le visage détourné, pour couvrir leur père. Kasah, couvrir, est un verbe qui revient pour le péché pardonné : « Heureux celui… dont le péché est couvert » (Psaume 32:1). L'amour couvre (1 Pierre 4:8), alors que Cham avait exposé."
+}
+],
+"0:9:26": [
+{
+"fr": "Béni soit l'Éternel, Dieu de Sem",
+"heb": "בָּרוּךְ יְהוָה אֱלֹהֵי שֵׁם",
+"tr": "baroukh YHWH Elohey Shem",
+"note": "Noé ne bénit pas Sem directement : il bénit le Dieu de Sem. La grandeur de Sem, c'est son Dieu. Shem veut dire « nom » : c'est de la lignée de Sem que viendront Abraham, Israël et le Messie (Luc 3:36)."
+}
+],
+"0:10:1": [
+{
+"fr": "la postérité des fils de Noé",
+"heb": "תּוֹלְדֹת בְּנֵי־נֹחַ",
+"tr": "toledot beney Noah",
+"note": "La « table des peuples » compte environ 70 noms. Le chiffre 70 représente la totalité des nations. Toute l'humanité sort d'une seule famille : « Il a fait que tous les hommes, sortis d'un seul sang, habitassent sur toute la surface de la terre » (Actes 17:26). Jésus enverra un jour 70 disciples (Luc 10:1), comme vers toutes les nations."
+}
+],
+"0:10:8": [
+{
+"fr": "Nimrod",
+"heb": "נִמְרֹד",
+"tr": "Nimrod",
+"note": "Son nom sonne comme marad, se révolter : « nous nous révolterons ». Il est le premier « héros » (gibbor, homme puissant) sur la terre, le fondateur de Babel et de Ninive (versets 10-11), les futures capitales de Babylone et d'Assyrie, ennemies du peuple de Dieu. La puissance humaine se construit ici sans Dieu."
+}
+],
+"0:10:9": [
+{
+"fr": "devant l'Éternel",
+"heb": "לִפְנֵי יְהוָה",
+"tr": "lifney YHWH",
+"note": "L'expression peut vouloir dire « aux yeux de l'Éternel » ou « face à l'Éternel », en défi. Dans le contexte de Babel, beaucoup y lisent une puissance qui se dresse contre Dieu."
+}
+],
+"0:10:25": [
+{
+"fr": "Péleg… partagée",
+"heb": "פֶּלֶג … נִפְלְגָה",
+"tr": "Peleg… niflegah",
+"note": "Péleg veut dire division, et son nom est expliqué : « de son temps la terre fut partagée ». C'est un renvoi à la dispersion de Babel, racontée au chapitre suivant. La division des peuples entre dans l'histoire."
+}
+],
+"0:11:1": [
+{
+"fr": "une seule langue et les mêmes mots",
+"heb": "שָׂפָה אֶחָת וּדְבָרִים אֲחָדִים",
+"tr": "safah ehat oudevarim ahadim",
+"note": "Littéralement « une seule lèvre ». L'unité de l'humanité est réelle, mais elle va être utilisée contre Dieu."
+}
+],
+"0:11:2": [
+{
+"fr": "vers l'orient",
+"heb": "מִקֶּדֶם",
+"tr": "miqqedem",
+"note": "Dans la Genèse, aller vers l'orient, c'est souvent s'éloigner de Dieu : Adam est chassé à l'orient d'Éden (3:24), Caïn habite à l'orient (4:16), Lot choisira l'orient vers Sodome (13:11). Le chemin de Babel est un chemin d'éloignement."
+}
+],
+"0:11:3": [
+{
+"fr": "briques… bitume",
+"heb": "לְבֵנִים … הַחֵמָר",
+"tr": "levenim… hahemar",
+"note": "Le texte précise que la brique remplace la pierre et le bitume remplace le ciment. L'homme fabrique ses propres matériaux pour bâtir sa grandeur. En hébreu, il y a un jeu de sons : « faisons des briques » (nilbenah) et plus loin « confondons » (navlah) : ce qu'ils construisent sera défait par les mêmes sons."
+}
+],
+"0:11:4": [
+{
+"fr": "faisons-nous un nom",
+"heb": "וְנַעֲשֶׂה־לָּנוּ שֵׁם",
+"tr": "wena'aseh lanou shem",
+"note": "Le cœur de Babel est là : se faire un nom (shem) par soi-même. Juste après, Dieu promettra à Abram, descendant de Sem (Shem, « nom ») : « je rendrai ton nom grand » (12:2). La grandeur que l'homme cherche à s'attribuer, Dieu la donne gratuitement à celui qui lui obéit."
+},
+{
+"fr": "dont le sommet touche au ciel",
+"heb": "וְרֹאשׁוֹ בַשָּׁמַיִם",
+"tr": "weroshou vashamayim",
+"note": "Babel prétend monter jusqu'à Dieu par l'effort humain. Plus tard, Jacob verra une échelle descendre du ciel (28:12) : le vrai chemin vient de Dieu vers l'homme, et Jésus dit qu'il est cette échelle (Jean 1:51)."
+},
+{
+"fr": "afin que nous ne soyons pas dispersés",
+"heb": "פֶּן־נָפוּץ",
+"tr": "pen nafouts",
+"note": "Dieu avait commandé de « remplir la terre » (9:1). Babel est un refus de cet ordre, motivé par la peur. La dispersion qu'ils voulaient éviter sera précisément le résultat (11:8)."
+}
+],
+"0:11:5": [
+{
+"fr": "l'Éternel descendit",
+"heb": "וַיֵּרֶד יְהוָה",
+"tr": "wayyered YHWH",
+"note": "Ironie du texte : la tour devait monter jusqu'au ciel, et Dieu doit « descendre » pour la voir. Ce que l'homme estime gigantesque est minuscule devant Dieu (Ésaïe 40:22)."
+}
+],
+"0:11:7": [
+{
+"fr": "descendons, confondons",
+"heb": "הָבָה נֵרְדָה וְנָבְלָה",
+"tr": "havah neredah wenavlah",
+"note": "Dieu reprend exactement les mots des hommes : ils avaient dit « Allons ! (havah) faisons des briques… bâtissons », Dieu dit « Allons ! (havah) descendons ». Et encore le pluriel divin, comme en 1:26. Le jugement répond mot pour mot à l'orgueil."
+}
+],
+"0:11:9": [
+{
+"fr": "Babel… confondit",
+"heb": "בָּבֶל … בָּלַל",
+"tr": "Bavel… balal",
+"note": "Les Babyloniens disaient que Bab-ilu signifiait « porte du dieu ». La Bible fait un jeu de mots avec balal, « mélanger, confondre » : Babel n'est pas la porte de Dieu, c'est la confusion. À la Pentecôte, Dieu fera l'inverse : les langues seront données pour que tous entendent « les merveilles de Dieu » dans leur propre langue (Actes 2:6-11)."
+}
+],
+"0:11:10": [
+{
+"fr": "la postérité de Sem",
+"heb": "תּוֹלְדֹת שֵׁם",
+"tr": "toledot Shem",
+"note": "Après la dispersion des nations, le récit se resserre sur une seule lignée, celle de Sem, jusqu'à Abram. Dieu ne répond pas à Babel en abandonnant l'humanité, mais en choisissant un homme par qui « toutes les familles de la terre seront bénies » (12:3)."
+}
+],
+"0:11:30": [
+{
+"fr": "stérile, elle n'avait point d'enfants",
+"heb": "עֲקָרָה אֵין לָהּ וָלָד",
+"tr": "aqarah eyn lah walad",
+"note": "Le texte le dit deux fois, comme pour fermer toute porte : la lignée promise s'arrête humainement ici. C'est précisément à cette famille sans avenir que Dieu va promettre une descendance innombrable (12:2 ; 15:5). Paul dira qu'Abraham a cru au Dieu « qui appelle les choses qui ne sont point comme si elles étaient » (Romains 4:17-19)."
+}
+],
+"0:11:31": [
+{
+"fr": "jusqu'à Charan, et ils y habitèrent",
+"heb": "עַד־חָרָן וַיֵּשְׁבוּ שָׁם",
+"tr": "ad Haran wayyeshvou sham",
+"note": "Térach part d'Ur vers Canaan, mais il s'arrête à mi-chemin et s'installe à Charan, où il meurt (verset 32). Étienne précise que Dieu avait déjà appelé Abram à Ur (Actes 7:2-4). Le chapitre 12 commencera par l'appel à repartir : « Va-t'en de ton pays » (12:1). Il ne suffit pas de partir, il faut aller jusqu'au bout."
+}
 ]
 }

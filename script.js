@@ -318,6 +318,8 @@ function applyAppearance(){
   const bJ = document.getElementById('bgJourBtn'), bN = document.getElementById('bgNuitBtn');
   if(bJ) bJ.classList.toggle('actif', bg === 'jour');
   if(bN) bN.classList.toggle('actif', bg === 'nuit');
+  const tt = document.getElementById('themeToggle');
+  if(tt) tt.textContent = bg === 'nuit' ? 'Jour' : 'Nuit';
 
   const musicBar = document.getElementById('musicCard');
   if(musicBar){
@@ -336,6 +338,9 @@ function setPalette(v){
   // de suite, même si la sauvegarde cloud rencontre un problème.
   applyAppearance();
   try{ persist(); }catch(e){ console.error('Erreur de sauvegarde (palette) :', e); }
+}
+function basculerJourNuit(){
+  setBackground(document.body.getAttribute('data-bg') === 'nuit' ? 'jour' : 'nuit');
 }
 function setBackground(v){
   if(!state.settings) state.settings = { palette:'dore', bg:'dore' };
@@ -1666,6 +1671,7 @@ function renderVerseAndDate(){
   { const pa = document.getElementById('page-accueil'); if(pa) document.body.classList.toggle('sur-accueil', !pa.hidden); }
   const d = new Date();
   let txt = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  txt = txt.charAt(0).toUpperCase() + txt.slice(1);
   const salut = d.getHours() >= 18 || d.getHours() < 4 ? 'Bonsoir' : 'Bonjour';
   const greetEl = document.getElementById('topGreeting');
   const dEl = document.getElementById('topDate');

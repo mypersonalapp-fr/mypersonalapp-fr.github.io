@@ -1203,3 +1203,23 @@ body[data-bg="nuit"] .bottom-nav{ border:1px solid #2A2A2A; box-shadow:0 0 24px 
 body[data-bg="nuit"] .bottom-nav button.active{ background:#1D1D1D !important; color:var(--accent) !important; text-shadow:0 0 10px rgba(255,214,120,.7); }
 body[data-bg="nuit"] .home-sheet{ border-top:1px solid #2B2B2B; box-shadow:0 -8px 40px rgba(255,200,90,.10); }
 #bibleVueVerset{ padding-bottom:170px; }
+
+/* ===== Accueil v51 : en-tête accueillant, bouton jour/nuit, panneau qui s'adapte au texte ===== */
+.sur-accueil .topbar{ display:flex; flex-direction:row; align-items:flex-start; justify-content:space-between; gap:12px; margin:10px 0 0; }
+.sur-accueil .topbar > .top-texte{ display:block; flex-direction:column; text-align:left; }
+.sur-accueil .top-greeting{ font-size:2.1rem !important; font-weight:800 !important; color:var(--text-dark) !important; line-height:1.15; }
+.sur-accueil .top-date::before{ content:none; }
+.sur-accueil .top-date{ font-size:1.05rem; font-weight:600; color:var(--muted); text-transform:none; margin-top:4px; }
+.theme-toggle{ display:none; }
+.sur-accueil .theme-toggle{ display:block; flex:none; height:36px; padding:0 16px; border-radius:18px; border:1px solid var(--gold); background:var(--cream); color:var(--text-dark); font:700 13px "Manrope",sans-serif; cursor:pointer; }
+body[data-bg="nuit"] .theme-toggle{ color:var(--accent); border-color:var(--accent); background:#121212; }
+.home-verse{ padding:5vh 6px 0; }
+.home-verse .verse-text{ font-size:1.55rem; }
+.home-sheet{ height:auto; min-height:34vh; max-height:calc(100dvh - 340px); padding-bottom:100px; }
+.home-sheet .sens-box p{ font-size:15px; line-height:1.5; }
+.sur-accueil .top-greeting{ font-size:1.75rem !important; white-space:nowrap; }
+.sur-accueil #syncBadge{ margin:12px 0 0; }
+.home-verse{ padding:2vh 6px 0; }
+.home-verse .verse-text{ font-size:1.4rem; line-height:1.3; }
+.home-verse .verse-ref{ margin-top:8px; }
+.home-sheet{ max-height:calc(100dvh - 270px); padding-bottom:96px; }

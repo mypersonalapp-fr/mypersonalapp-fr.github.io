@@ -3827,8 +3827,8 @@ function bibleRendre(){
   bibleRemplirChap();
   const txt = document.getElementById('bibleTexte');
   const version = bibleVersion;
-  document.querySelectorAll('#bibleVersions [data-v]').forEach(b=>b.classList.toggle('sel', b.dataset.v === version));
-  document.querySelectorAll('#bibleVersions [data-en]').forEach(b=>b.classList.toggle('sel', b.dataset.en === bibleVersionEn));
+  document.querySelectorAll('#page-bible [data-v]').forEach(b=>b.classList.toggle('sel', b.dataset.v === version));
+  document.querySelectorAll('#page-bible [data-en]').forEach(b=>b.classList.toggle('sel', b.dataset.en === bibleVersionEn));
   document.getElementById('bibleLgEn').textContent = 'ENGLISH · ' + ({kjv:'KJV', asv:'ASV', web:'WEB'})[bibleVersionEn];
   Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null),
                version === 'lsg' ? Promise.resolve(null) : bibleLoadLivre(livre, version).catch(()=>null),

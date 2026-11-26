@@ -1380,3 +1380,9 @@ body[data-bg="nuit"] .lx sup{ color:var(--accent); }
 #readerSens p:last-child{ margin-bottom:0; }
 .reader-retenir .plan-reader-explication{ margin:0; text-align:left; font-style:italic; }
 .reader-retenir[hidden]{ display:none; }
+/* Boutons de version sous chaque colonne */
+.bible-par{ align-items:stretch; }
+.bible-col{ display:flex; flex-direction:column; }
+.bible-col .bible-vtext{ flex:1; }
+.bible-versions2.grp-col{ margin-top:14px; gap:6px; }
+.bible-versions2.grp-col button{ padding:0 10px; font-size:11.5px; }

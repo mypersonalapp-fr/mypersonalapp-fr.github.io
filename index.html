@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=69">
+<link rel="stylesheet" href="style.css?v=70">
 </head>
 <body>
 
@@ -284,22 +284,19 @@
     <button type="button" class="dcard-tete" onclick="dcToggle('dcbVerset')"><span id="bibleVLabel">VERSET 1</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps">
       <div class="bible-par">
-        <div class="bible-col"><div class="bible-lg" id="bibleLgFr">FRANÇAIS · SEGOND</div><div class="bible-vtext"><span id="bibleTexte"></span></div></div>
-        <div class="bible-col"><div class="bible-lg" id="bibleLgEn">ENGLISH · KJV</div><div class="bible-vtext en"><span id="bibleTexteEn"></span></div></div>
+        <div class="bible-col"><div class="bible-lg" id="bibleLgFr">FRANÇAIS · SEGOND</div><div class="bible-vtext"><span id="bibleTexte"></span></div>
+          <div class="bible-versions2 grp-col">
+            <button type="button" data-v="lsg" onclick="bibleChoixVersion('lsg')">Segond</button>
+            <button type="button" data-v="darby" onclick="bibleChoixVersion('darby')">Darby</button>
+          </div></div>
+        <div class="bible-col"><div class="bible-lg" id="bibleLgEn">ENGLISH · KJV</div><div class="bible-vtext en"><span id="bibleTexteEn"></span></div>
+          <div class="bible-versions2 grp-col">
+            <button type="button" data-en="kjv" onclick="bibleChoixEn('kjv')">KJV</button>
+            <button type="button" data-en="asv" onclick="bibleChoixEn('asv')">ASV</button>
+            <button type="button" data-en="web" onclick="bibleChoixEn('web')">WEB</button>
+          </div></div>
       </div>
       <div class="bible-vnote" id="bibleVNote" hidden>Dans ce chapitre, Darby numérote les versets un peu différemment de Segond.</div>
-      <div class="bible-versions2" id="bibleVersions">
-        <div class="grp">
-          <button type="button" data-v="lsg" onclick="bibleChoixVersion('lsg')">Segond</button>
-          <button type="button" data-v="darby" onclick="bibleChoixVersion('darby')">Darby</button>
-        </div>
-        <div class="sep"></div>
-        <div class="grp">
-          <button type="button" data-en="kjv" onclick="bibleChoixEn('kjv')">King James</button>
-          <button type="button" data-en="asv" onclick="bibleChoixEn('asv')">ASV</button>
-          <button type="button" data-en="web" onclick="bibleChoixEn('web')">WEB</button>
-        </div>
-      </div>
     </div>
   </div>
   <div class="dcard" id="dcbMots" data-groupe="bib">
@@ -729,9 +726,9 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="objectif-data.js?v=69"></script>
-<script src="themes-etude.js?v=69"></script>
-<script src="script.js?v=69"></script>
+<script src="objectif-data.js?v=70"></script>
+<script src="themes-etude.js?v=70"></script>
+<script src="script.js?v=70"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

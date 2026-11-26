@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=77">
+<link rel="stylesheet" href="style.css?v=78">
 </head>
 <body>
 
@@ -281,10 +281,15 @@
     <label class="sel-wrap sel-chap"><select id="bibleChap" onchange="bibleChoixChap()" aria-label="Chapitre"></select></label>
   </div>
   <div id="biblePills" class="bible-pills" aria-label="Versets"></div>
+  <div class="bible-mode" id="bibleMode" role="group" aria-label="Langue affichée">
+    <button type="button" data-mode="fr" onclick="bibleChoixMode('fr')">Français</button>
+    <button type="button" data-mode="deux" onclick="bibleChoixMode('deux')">Les deux</button>
+    <button type="button" data-mode="en" onclick="bibleChoixMode('en')">English</button>
+  </div>
   <div class="dcard" id="dcbVerset">
     <button type="button" class="dcard-tete" onclick="dcToggle('dcbVerset')"><span id="bibleVLabel">VERSET 1</span><span class="dcard-fl">▾</span></button>
     <div class="dcard-corps">
-      <div class="bible-par">
+      <div class="bible-par" id="biblePar">
         <div class="bible-col"><div class="bible-lg" id="bibleLgFr">FRANÇAIS · SEGOND</div><div class="bible-vtext"><span id="bibleTexte"></span></div>
           <div class="bible-versions2 grp-col">
             <button type="button" data-v="lsg" onclick="bibleChoixVersion('lsg')">Segond</button>
@@ -732,9 +737,9 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="objectif-data.js?v=77"></script>
-<script src="themes-etude.js?v=77"></script>
-<script src="script.js?v=77"></script>
+<script src="objectif-data.js?v=78"></script>
+<script src="themes-etude.js?v=78"></script>
+<script src="script.js?v=78"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

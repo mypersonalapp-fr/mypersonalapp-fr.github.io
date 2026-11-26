@@ -3767,6 +3767,16 @@ try{ if(localStorage.getItem('bibleVersion') === 'darby') bibleVersion = 'darby'
    Version 1901 ou World English Bible (toutes trois libres de droits). */
 let bibleVersionEn = 'kjv';
 try{ const e = localStorage.getItem('bibleVersionEn'); if(e === 'asv' || e === 'web') bibleVersionEn = e; }catch(e){}
+/* Affichage : français seul, anglais seul, ou les deux côte à côte. */
+let bibleMode = 'deux';
+try{ const m = localStorage.getItem('bibleMode'); if(m === 'fr' || m === 'en') bibleMode = m; }catch(e){}
+function bibleAppliquerMode(){
+  const par = document.getElementById('biblePar'); if(!par) return;
+  par.classList.toggle('mode-fr', bibleMode === 'fr');
+  par.classList.toggle('mode-en', bibleMode === 'en');
+  document.querySelectorAll('#bibleMode [data-mode]').forEach(b=>b.classList.toggle('sel', b.dataset.mode === bibleMode));
+}
+function bibleChoixMode(m){ bibleMode = m; try{ localStorage.setItem('bibleMode', m); }catch(e){} bibleAppliquerMode(); }
 function bibleChoixEn(v){ bibleVersionEn = v; try{ localStorage.setItem('bibleVersionEn', v); }catch(e){} bibleRendre(); }
 /* Versions anglaises sous droits (Amplified, The Message) : ouvertes sur bible.com au bon verset. */
 function bibleOuvrirEn(id, code){
@@ -3854,6 +3864,7 @@ function bibleRendre(){
   const version = bibleVersion;
   document.querySelectorAll('#page-bible [data-v]').forEach(b=>b.classList.toggle('sel', b.dataset.v === version));
   document.querySelectorAll('#page-bible [data-en]').forEach(b=>b.classList.toggle('sel', b.dataset.en === bibleVersionEn));
+  bibleAppliquerMode();
   document.getElementById('bibleLgEn').textContent = 'ENGLISH · ' + ({kjv:'KJV', asv:'ASV', web:'WEB'})[bibleVersionEn];
   Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null),
                version === 'lsg' ? Promise.resolve(null) : bibleLoadLivre(livre, version).catch(()=>null),

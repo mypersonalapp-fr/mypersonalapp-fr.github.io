@@ -3531,12 +3531,13 @@ document.addEventListener('visibilitychange', ()=>{
    ========================================================================= */
 const HEB_DISPO = [0];
 const HEB_PREFIXES = { b:"dans / en", c:"et", d:"le / la / les", k:"comme", l:"à / pour", m:"de / depuis", s:"que / qui", i:"(question)" };
-const hebCache = {}; let hebLex = null;
+const hebCache = {}; let hebLex = null, hebLexFr = null;
 function hebCharger(livre){
   const pLex = hebLex ? Promise.resolve(hebLex) : fetch('bible/heb/lex.json').then(r=>r.json()).then(x=>(hebLex=x));
   const pLivre = hebCache[livre] ? Promise.resolve(hebCache[livre]) : fetch('bible/heb/'+livre+'.json').then(r=>r.json()).then(x=>(hebCache[livre]=x.c));
   const pFr = hebFrCache[livre] ? Promise.resolve(1) : fetch('bible/heb/fr-'+livre+'.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{ hebFrCache[livre]=x; });
-  return Promise.all([pLivre, pLex, pFr]).then(r=>r[0]);
+  const pLexFr = hebLexFr ? Promise.resolve(hebLexFr) : fetch('bible/heb/lex-fr.json').then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>(hebLexFr=x));
+  return Promise.all([pLivre, pLex, pFr, pLexFr]).then(r=>r[0]);
 }
 const hebFrCache = {};
 function hebMotsHtml(livre, chapIdx, vi, mots){
@@ -3558,7 +3559,8 @@ function hebMot(btn, i, livre, chapIdx, versIdx){
     + (lx[0] ? '<div><b>Transcription :</b> '+esc(lx[0])+'</div>' : '')
     + (m[1] ? '<div><b>Strong :</b> H'+m[1]+'</div>' : '')
     + (pref ? '<div><b>Préfixe :</b> '+esc(pref)+'</div>' : '')
-    + (lx[1] ? '<div><b>Sens (anglais) :</b> '+esc(lx[1])+'</div>' : '')
+    + (hebLexFr && hebLexFr[m[1]] ? '<div><b>Définition :</b> '+esc(hebLexFr[m[1]])+'</div>'
+       : (lx[1] ? '<div><b>Sens (anglais) :</b> '+esc(lx[1])+'</div>' : ''))
     + (lx[2] ? '<div class="heb-usage"><b>Rendu dans la KJV :</b> '+esc(lx[2])+'</div>' : '');
 }
 
@@ -3637,7 +3639,12 @@ function bibleRendre(){
     const sens = r[1] && r[1][String(chap)] && r[1][String(chap)][String(vers)];
     const sb = document.getElementById('bibleSens');
     sb.hidden = !sens; document.getElementById('dcbSens').hidden = !sens;
-    if(sens) sb.innerHTML = '<p>'+sens.c.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</p>';
+    if(sens){
+      const e = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      sb.innerHTML = '<p>'+e(sens.c)+'</p>'
+        + (sens.ch ? '<p><b>Pour les chrétiens :</b> '+e(sens.ch)+'</p>' : '')
+        + (sens.auj ? '<p><b>Pour nous aujourd\'hui :</b> '+e(sens.auj)+'</p>' : '');
+    }
     bibleSauver();
   }).catch(()=>{ txt.textContent = "Impossible de charger ce livre. Vérifie ta connexion et réessaie."; });
 }

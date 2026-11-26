@@ -1289,3 +1289,4 @@ body[data-bg="nuit"] .set-groupe{ background:#121212; border:1px solid #2B2B2B; 
 .dcard .bible-vtext{ text-align:left; }
 body[data-bg="nuit"] .set-ligne + .set-ligne{ border-top-color:#2B2B2B; }
 .set-ligne > summary::before, .set-ligne > summary::after{ content:none !important; }
+.sens-box p + p{ margin-top:10px; }

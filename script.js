@@ -54,12 +54,12 @@ function parseRef(ref){
    vers le même site (bible.com — l'appli "YouVersion", la plus connue et
    la plus simple). Louis Segond 1910 reste affiché directement dans
    l'appli (texte inclus, domaine public). Les autres versions (Segond 21,
-   Semeur, Parole de Vie, Darby, Amplified) sont protégées par des droits
+   Semeur, Parole de Vie, Amplified) sont protégées par des droits
    d'auteur : impossible d'en recopier le texte ici sans l'accord de
    l'éditeur, donc on ouvre le bon verset, déjà sélectionné, directement
    sur bible.com dans un nouvel onglet — un seul site pour les 5 versions.
 
-   Pour Segond 21, Semeur et Darby, EMCI TV (emcitv.com) propose une page
+   Pour Segond 21 et Semeur, EMCI TV (emcitv.com) propose une page
    de lecture simple, juste le texte, sans rien d'autre — préférée à
    bible.com pour ces trois-là. Parole de Vie et Amplified ne sont pas
    disponibles sur EMCI, donc ces deux-là restent sur bible.com. */
@@ -83,7 +83,6 @@ function verseVersionLinks(ref){
     { label:'Segond 21', url: emciBase + '-segond_21.html#' + p.verset },
     { label:'Semeur', url: emciBase + '.html#' + p.verset },
     { label:'Parole de Vie', url:'https://www.bible.com/bible/133/'+loc+'.PDV2017' },
-    { label:'Darby', url: emciBase + '-darby.html#' + p.verset },
     { label:'Amplified (EN)', url:'https://www.bible.com/bible/1588/'+loc+'.AMP' }
   ];
   return links;
@@ -3573,11 +3572,23 @@ function hebMot(btn, i, livre, chapIdx, versIdx){
 const BIBLE_LIVRES = Object.keys(chapters);
 const bibleCache = {}, sensCache = {};
 let bibleL = 0, bibleC = 1, bibleV = 1, bibleOk = false;
-function bibleLoadLivre(i){
-  if(bibleCache[i]) return Promise.resolve(bibleCache[i]);
-  return fetch('bible/lsg/' + i + '.json').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
-    .then(d=>(bibleCache[i] = d.c));
+/* Versions affichées dans l'appli (domaine public) : Louis Segond 1910,
+   Darby 1885 (français) et King James 1769 (anglais). */
+let bibleVersion = 'lsg';
+try{ const v = localStorage.getItem('bibleVersion'); if(v === 'kjv' || v === 'darby') bibleVersion = v; }catch(e){}
+function bibleLoadLivre(i, v){
+  v = v || 'lsg';
+  const k = v + i;
+  if(bibleCache[k]) return Promise.resolve(bibleCache[k]);
+  return fetch('bible/' + v + '/' + i + '.json').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(d=>(bibleCache[k] = d.c));
 }
+function bibleChoixVersion(v){
+  bibleVersion = v;
+  try{ localStorage.setItem('bibleVersion', v); }catch(e){}
+  bibleRendre();
+}
+
 function sensCharger(livre){
   if(sensCache[livre]) return Promise.resolve(sensCache[livre]);
   return fetch('bible/sens/'+livre+'.json').then(r=>{ if(!r.ok) throw 0; return r.json(); })
@@ -3621,10 +3632,16 @@ function bibleRendre(){
   document.getElementById('bibleLivre').value = livre;
   bibleRemplirChap();
   const txt = document.getElementById('bibleTexte');
-  Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null)]).then(r=>{
-    if(livre !== bibleL || chap !== bibleC || vers !== bibleV) return;
+  const version = bibleVersion;
+  document.querySelectorAll('#bibleVersions [data-v]').forEach(b=>b.classList.toggle('sel', b.dataset.v === version));
+  Promise.all([bibleLoadLivre(livre), sensCharger(livre), HEB_DISPO.indexOf(livre) >= 0 ? hebCharger(livre) : Promise.resolve(null),
+               version === 'lsg' ? Promise.resolve(null) : bibleLoadLivre(livre, version).catch(()=>null)]).then(r=>{
+    if(livre !== bibleL || chap !== bibleC || vers !== bibleV || version !== bibleVersion) return;
     const versets = r[0][chap-1] || [];
-    txt.textContent = versets[vers-1] || '';
+    const autreChap = r[3] && r[3][chap-1];
+    const autre = autreChap && autreChap[vers-1];
+    txt.textContent = autre || versets[vers-1] || '';
+    document.getElementById('bibleVNote').hidden = !(autreChap && autreChap.length !== versets.length);
     document.getElementById('bibleVLabel').textContent = 'VERSET ' + vers;
     document.getElementById('biblePills').innerHTML = versets.map((_,i)=>'<button type="button" class="'+(i+1===vers?'sel':'')+'" onclick="bibleChoixVerset('+(i+1)+')">'+(i+1)+'</button>').join('');
     { const sel = document.querySelector('#biblePills .sel'); if(sel) sel.scrollIntoView({inline:'center', block:'nearest'}); }

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=53">
+<link rel="stylesheet" href="style.css?v=54">
 </head>
 <body>
 
@@ -273,7 +273,13 @@
   <div id="biblePills" class="bible-pills" aria-label="Versets"></div>
   <div class="dcard" id="dcbVerset">
     <button type="button" class="dcard-tete" onclick="dcToggle('dcbVerset')"><span id="bibleVLabel">VERSET 1</span><span class="dcard-fl">▾</span></button>
-    <div class="dcard-corps"><div class="bible-vtext"><span id="bibleTexte"></span></div></div>
+    <div class="dcard-corps"><div class="bible-vtext"><span id="bibleTexte"></span></div>
+      <div class="bible-vnote" id="bibleVNote" hidden>Dans ce chapitre, Darby numérote les versets un peu différemment de Segond.</div>
+      <div class="bible-pills bible-versions" id="bibleVersions">
+        <button type="button" data-v="lsg" onclick="bibleChoixVersion('lsg')">Segond</button>
+        <button type="button" data-v="darby" onclick="bibleChoixVersion('darby')">Darby</button>
+        <button type="button" data-v="kjv" onclick="bibleChoixVersion('kjv')">King James</button>
+      </div></div>
   </div>
   <div class="dcard" id="dcbMots" data-groupe="bib">
     <button type="button" class="dcard-tete" onclick="dcToggle('dcbMots')"><span>MOT À MOT</span><span class="dcard-fl">▾</span></button>
@@ -657,7 +663,7 @@
 <script src="video-config.js"></script>
 <script src="music-config.js"></script>
 <script src="livres-config.js"></script>
-<script src="script.js?v=53"></script>
+<script src="script.js?v=54"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

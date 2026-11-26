@@ -1290,3 +1290,8 @@ body[data-bg="nuit"] .set-groupe{ background:#121212; border:1px solid #2B2B2B; 
 body[data-bg="nuit"] .set-ligne + .set-ligne{ border-top-color:#2B2B2B; }
 .set-ligne > summary::before, .set-ligne > summary::after{ content:none !important; }
 .sens-box p + p{ margin-top:10px; }
+.bible-versions{ margin:14px 0 0; }
+.bible-versions button{ height:32px; padding:0 14px; font-size:13px; }
+.bible-vnote{ margin-top:10px; font-size:12px; color:var(--muted); }
+.bible-vnote[hidden]{ display:none; }
+.bible-versions button:not(.sel){ background:var(--page); }
